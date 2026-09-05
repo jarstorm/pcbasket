@@ -19,11 +19,11 @@ export default function Button({ children, onPress, disabled, primary, style }) 
 
 const styles = StyleSheet.create({
   button: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: colors.border,
     backgroundColor: colors.panelAlt,
-    borderRadius: radii.sm,
-    paddingVertical: spacing.xs + 2,
+    borderRadius: radii.sm + 2,
+    paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     alignItems: "center",
     justifyContent: "center",
@@ -38,9 +38,11 @@ const styles = StyleSheet.create({
   text: {
     color: colors.text,
     fontSize: 13,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
   },
   primaryText: {
     color: colors.accentText,
-    fontWeight: "600",
   },
 });

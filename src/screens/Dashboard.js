@@ -1,23 +1,18 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
-import { colors, spacing } from "../theme";
+import { leaguePosition } from "../engine/standings";
+import { colors, spacing, radii } from "../theme";
 
-export default function Dashboard() {
+export default function Dashboard({ quadrants, onNavigate }) {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const nextRound = state.schedule[state.round];
   const myNextGame = nextRound?.find(([h, a]) => h === team.id || a === team.id);
   const totalRounds = state.schedule.length;
 
-  const standings = [...state.teams].sort((a, b) => {
-    if (b.record.wins !== a.record.wins) return b.record.wins - a.record.wins;
-    const diffA = a.record.pointsFor - a.record.pointsAgainst;
-    const diffB = b.record.pointsFor - b.record.pointsAgainst;
-    return diffB - diffA;
-  });
-  const position = standings.findIndex((t) => t.id === team.id) + 1;
+  const position = leaguePosition(team, state.teams);
 
   const lastResult = state.lastRoundResults.find(
     (r) => r.homeId === team.id || r.awayId === team.id
@@ -26,16 +21,12 @@ export default function Dashboard() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>{team.name}</Text>
         <Text style={styles.dim}>
-          Jornada {state.round} / {totalRounds} · Posición #{position} de {state.teams.length}
+          JORNADA {state.round} / {totalRounds} · POSICIÓN #{position} DE {state.teams.length}
         </Text>
         <Text style={styles.p}>
           Récord: <Text style={styles.bold}>{team.record.wins}V - {team.record.losses}D</Text> · Presupuesto:{" "}
           <Text style={[styles.bold, { color: colors.accent }]}>${team.budget.toLocaleString()}</Text>
-        </Text>
-        <Text style={styles.small}>
-          Estadio: {team.stadium.name} (nivel {team.stadium.level}, {team.stadium.capacity.toLocaleString()} asientos)
         </Text>
 
         {myNextGame ? (
@@ -49,20 +40,57 @@ export default function Dashboard() {
         ) : (
           <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>Temporada finalizada.</Text>
         )}
-
-        <Button primary disabled={state.round >= totalRounds} onPress={() => dispatch({ type: "SIM_ROUND" })}>
-          Simular jornada
-        </Button>
       </Card>
 
+      {state.pendingContracts.length > 0 && (
+        <Pressable onPress={() => onNavigate("contracts")}>
+          <Card style={styles.warningCard}>
+            <Text style={styles.warningText}>
+              ⚠ {state.pendingContracts.length} renovación(es) de contrato pendiente(s) — toca para
+              resolverlas
+            </Text>
+          </Card>
+        </Pressable>
+      )}
+
+      <Pressable disabled={!lastResult} onPress={() => onNavigate("result")}>
+        <Card style={!lastResult && { opacity: 0.6 }}>
+          <Text style={styles.h3}>ÚLTIMO RESULTADO</Text>
+          {lastResult ? (
+            <MatchSummary result={lastResult} teams={state.teams} />
+          ) : (
+            <Text style={styles.dim}>Aún no hay partidos jugados.</Text>
+          )}
+        </Card>
+      </Pressable>
+
+      <View style={styles.grid}>
+        {quadrants.map((q) => (
+          <View key={q.header} style={styles.quadrant}>
+            <Text style={styles.quadrantHeader}>{q.header.toUpperCase()}</Text>
+            {q.items.map((item) => (
+              <Button key={item.id} onPress={() => onNavigate(item.id)} style={styles.quadrantBtn}>
+                {item.label}
+              </Button>
+            ))}
+          </View>
+        ))}
+      </View>
+
+      <Button
+        primary
+        disabled={state.round >= totalRounds}
+        onPress={() => {
+          dispatch({ type: "SIM_ROUND" });
+          onNavigate("result");
+        }}
+        style={styles.playBtn}
+      >
+        Jugar jornada
+      </Button>
+
       <Card>
-        <Text style={styles.h3}>Último resultado</Text>
-        {lastResult ? (
-          <MatchSummary result={lastResult} teams={state.teams} />
-        ) : (
-          <Text style={styles.dim}>Aún no hay partidos jugados.</Text>
-        )}
-        <Text style={[styles.h3, { marginTop: spacing.md }]}>Noticias</Text>
+        <Text style={styles.h3}>NOTICIAS</Text>
         <View>
           {state.log.length === 0 && <Text style={styles.logItem}>Sin novedades.</Text>}
           {state.log.map((l, i) => (
@@ -92,11 +120,10 @@ function MatchSummary({ result, teams }) {
 }
 
 const styles = StyleSheet.create({
-  h2: { fontSize: 17, fontWeight: "700", color: colors.text, marginBottom: 4 },
-  h3: { fontSize: 15, fontWeight: "700", color: colors.text, marginBottom: 4 },
+  h3: { fontSize: 13, fontWeight: "800", color: colors.text, marginBottom: 6, letterSpacing: 0.6 },
   p: { color: colors.text, fontSize: 14, marginVertical: 2 },
   small: { fontSize: 13, color: colors.text, marginVertical: 2 },
-  dim: { color: colors.textDim },
+  dim: { color: colors.textDim, fontSize: 12, fontWeight: "700", letterSpacing: 0.4 },
   bold: { fontWeight: "700" },
   matchScore: { fontSize: 16, fontWeight: "700", color: colors.text },
   logItem: {
@@ -106,4 +133,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  quadrant: {
+    flexBasis: "48%",
+    flexGrow: 1,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: radii.sm,
+    padding: spacing.sm,
+    gap: spacing.xs,
+  },
+  quadrantHeader: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: colors.text,
+    letterSpacing: 0.8,
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  quadrantBtn: { marginBottom: 0 },
+  warningCard: { borderColor: colors.accent, backgroundColor: colors.panelAlt },
+  warningText: { color: colors.accent, fontWeight: "700", fontSize: 13 },
+  playBtn: { marginTop: spacing.sm, marginBottom: spacing.md, paddingVertical: spacing.md },
 });

@@ -8,9 +8,9 @@ export default function Card({ children, style }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.panel,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: colors.border,
-    borderRadius: radii.md,
+    borderRadius: radii.sm,
     padding: spacing.md + 2,
     marginBottom: spacing.md + 2,
   },

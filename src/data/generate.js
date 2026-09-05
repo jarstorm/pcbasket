@@ -1,5 +1,6 @@
 import { randomName, CITIES, TEAM_NICKNAMES } from "./names";
 import febData from "./feb_league_data.json";
+import segundaFebData from "./segunda_feb_league_data.json";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
 
@@ -39,6 +40,15 @@ function valueOf(overall, age, potential) {
   return Math.max(20000, Math.round((overall ** 2.1) * 40 * ageFactor + potentialBonus));
 }
 
+// Recurring per-round salary — modest relative to transfer value (valueOf),
+// scaled for a second-tier Spanish league budget (no reliable public salary
+// figure was found for Primera FEB specifically, so this is a reasonable
+// in-game approximation, not a sourced real-world number).
+function wageOf(overall, age) {
+  const ageFactor = age <= 24 ? 1.1 : age <= 29 ? 1.0 : age <= 33 ? 0.85 : 0.65;
+  return Math.max(400, Math.round(overall ** 1.7 * 0.6 * ageFactor));
+}
+
 export function makePlayer({ age, base, spread, isProspect = false, teamId = null } = {}) {
   const ratings = makeRatings(base ?? randInt(45, 80), spread ?? 30);
   const overall = overallOf(ratings);
@@ -53,7 +63,12 @@ export function makePlayer({ age, base, spread, isProspect = false, teamId = nul
     overall,
     potential,
     value: valueOf(overall, playerAge, isProspect ? potential : null),
+    wage: wageOf(overall, playerAge),
+    contractYears: randInt(1, 4),
+    seasonMinutes: 0,
+    listed: false,
     morale: randInt(60, 95),
+    form: 99,
     injured: false,
     teamId,
     isProspect,
@@ -102,7 +117,7 @@ export function generateRealLeague() {
       id: t.id,
       name: t.name,
       city: t.name,
-      budget: randInt(800000, 2500000),
+      budget: randInt(300000, 900000),
       stadium: {
         name: `Pabellón ${t.name}`,
         level: 1,
@@ -113,6 +128,8 @@ export function generateRealLeague() {
       academy: [],
       record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
       lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
+      staff: {},
+      sponsor: null,
     };
     teams.push(team);
   }
@@ -133,7 +150,12 @@ export function generateRealLeague() {
       overall,
       potential,
       value: valueOf(overall, rp.age, potential),
+      wage: wageOf(overall, rp.age),
+      contractYears: randInt(1, 4),
+      seasonMinutes: 0,
+      listed: false,
       morale: randInt(60, 95),
+      form: 99,
       injured: false,
       teamId: rp.teamId,
       isProspect: false,
@@ -147,6 +169,116 @@ export function generateRealLeague() {
     const rosterPlayers = players.filter((p) => p.teamId === team.id);
     pickStartingLineup(team, rosterPlayers);
     addAcademyProspects(team, players);
+  }
+
+  return { teams, players };
+}
+
+// Loads the real, scraped Segunda FEB division (third tier). Same shape as
+// generateRealLeague(), just a different data file and a lower budget range
+// (a lower category should have a smaller budget than Primera FEB).
+export function generateSegundaFebDivision() {
+  const teams = [];
+  const players = [];
+
+  for (const t of segundaFebData.teams) {
+    const team = {
+      id: t.id,
+      name: t.name,
+      city: t.name,
+      budget: randInt(150000, 450000),
+      stadium: { name: `Pabellón ${t.name}`, level: 1, capacity: 4000, ticketPrice: 15 },
+      roster: [],
+      academy: [],
+      record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
+      lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
+      staff: {},
+      sponsor: null,
+    };
+    teams.push(team);
+  }
+
+  const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
+
+  for (const rp of segundaFebData.players) {
+    const overall = rp.overall;
+    const potential = rp.potential;
+    const player = {
+      id: rp.id,
+      name: rp.name,
+      position: rp.position,
+      age: rp.age,
+      nationality: rp.nationality,
+      heightCm: rp.heightCm,
+      ratings: rp.ratings,
+      overall,
+      potential,
+      value: valueOf(overall, rp.age, potential),
+      wage: wageOf(overall, rp.age),
+      contractYears: randInt(1, 4),
+      seasonMinutes: 0,
+      listed: false,
+      morale: randInt(60, 95),
+      form: 99,
+      injured: false,
+      teamId: rp.teamId,
+      isProspect: false,
+    };
+    players.push(player);
+    const team = teamById[rp.teamId];
+    if (team) team.roster.push(player.id);
+  }
+
+  const nonEmptyTeams = teams.filter((t) => t.roster.length >= 5);
+  for (const team of nonEmptyTeams) {
+    const rosterPlayers = players.filter((p) => p.teamId === team.id);
+    pickStartingLineup(team, rosterPlayers);
+    addAcademyProspects(team, players);
+  }
+
+  return { teams: nonEmptyTeams, players };
+}
+
+// Fictional top-tier division (ACB) — no real scraper exists for acb.com yet
+// (it's a client-rendered site, unlike FEB's classic server-rendered pages),
+// so this uses generated rosters with a higher rating base, matching a top
+// category's higher average and bigger budget.
+export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
+  const shuffledCities = [...CITIES, ...CITIES].sort(() => Math.random() - 0.5);
+  const shuffledNicks = [...TEAM_NICKNAMES, ...TEAM_NICKNAMES].sort(() => Math.random() - 0.5);
+
+  const teams = [];
+  const players = [];
+
+  for (let i = 0; i < numTeams; i++) {
+    const teamId = `acb${i + 1}`;
+    const city = shuffledCities[i];
+    const nick = shuffledNicks[i];
+    const team = {
+      id: teamId,
+      name: `${city} ${nick}`,
+      city,
+      budget: randInt(1500000, 4000000),
+      stadium: { name: `${city} Arena`, level: 2, capacity: 10000, ticketPrice: 35 },
+      roster: [],
+      academy: [],
+      record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
+      lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
+      staff: {},
+      sponsor: null,
+    };
+
+    for (let j = 0; j < rosterSize; j++) {
+      const player = makePlayer({ base: randInt(65, 90), spread: 20, teamId });
+      players.push(player);
+      team.roster.push(player.id);
+    }
+
+    const rosterPlayers = players.filter((p) => p.teamId === teamId);
+    pickStartingLineup(team, rosterPlayers);
+    addAcademyProspects(team, players);
+
+    teams.push(team);
   }
 
   return { teams, players };
@@ -170,7 +302,7 @@ export function generateLeague(numTeams = 20, rosterSize = 12) {
       id: teamId,
       name: `${city} ${nick}`,
       city,
-      budget: randInt(800000, 2500000),
+      budget: randInt(300000, 900000),
       stadium: {
         name: `${city} Arena`,
         level: 1,
@@ -181,6 +313,8 @@ export function generateLeague(numTeams = 20, rosterSize = 12) {
       academy: [],
       record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
       lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
+      staff: {},
+      sponsor: null,
     };
 
     for (let j = 0; j < rosterSize; j++) {

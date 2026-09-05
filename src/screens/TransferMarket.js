@@ -6,11 +6,15 @@ import OvrBadge from "../components/OvrBadge";
 import Table from "../components/Table";
 import Select from "../components/Select";
 import Button from "../components/Button";
+import { POSITION_ORDER, POSITION_ABBR, POSITION_LABEL } from "../data/positions";
+import { seededShuffle } from "../engine/random";
 import { colors, spacing } from "../theme";
+
+const MARKET_POOL_SIZE = 40;
 
 const POSITION_OPTIONS = [
   { label: "Todas las posiciones", value: "ALL" },
-  ...["PG", "SG", "SF", "PF", "C"].map((p) => ({ label: p, value: p })),
+  ...POSITION_ORDER.map((p) => ({ label: POSITION_LABEL[p], value: p })),
 ];
 
 const SORT_OPTIONS = [
@@ -29,13 +33,20 @@ export default function TransferMarket() {
     [state.teams]
   );
 
+  // A rotating random pool of listed players (seeded by jornada) instead of
+  // literally every player in the league always being for sale. Restricted
+  // to the active division — background divisions' teams aren't in
+  // state.teams, so buying from them would silently fail.
   const marketPlayers = useMemo(() => {
-    return Object.values(state.playersById)
-      .filter((p) => p.teamId !== team.id && !p.isProspect)
+    const divisionTeamIds = new Set(state.teams.map((t) => t.id));
+    const eligible = Object.values(state.playersById).filter(
+      (p) => p.teamId !== team.id && divisionTeamIds.has(p.teamId) && !p.isProspect && !p.retired
+    );
+    const pool = seededShuffle(eligible, state.round).slice(0, MARKET_POOL_SIZE);
+    return pool
       .filter((p) => posFilter === "ALL" || p.position === posFilter)
-      .sort((a, b) => (sortBy === "overall" ? b.overall - a.overall : a.value - b.value))
-      .slice(0, 60);
-  }, [state.playersById, team.id, posFilter, sortBy]);
+      .sort((a, b) => (sortBy === "overall" ? b.overall - a.overall : a.value - b.value));
+  }, [state.playersById, state.teams, state.round, team.id, posFilter, sortBy]);
 
   return (
     <Card>
@@ -54,7 +65,7 @@ export default function TransferMarket() {
         columns={[
           { key: "name", label: "Nombre", width: 140 },
           { key: "team", label: "Equipo", width: 100, render: (p) => <Text style={styles.cellText}>{teamNameById[p.teamId]}</Text> },
-          { key: "position", label: "Pos", width: 50 },
+          { key: "position", label: "Pos", width: 50, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
           { key: "age", label: "Edad", width: 50 },
           { key: "overall", label: "OVR", width: 60, render: (p) => <OvrBadge value={p.overall} /> },
           { key: "value", label: "Precio", width: 90, render: (p) => <Text style={styles.cellText}>${p.value.toLocaleString()}</Text> },

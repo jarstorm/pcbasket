@@ -2,16 +2,22 @@ import { useState } from "react";
 import { View, Text, Pressable, Modal, FlatList, StyleSheet } from "react-native";
 import { colors, radii, spacing } from "../theme";
 
-export default function Select({ value, options, onChange, placeholder = "-- elegir --" }) {
+export default function Select({ value, options, onChange, placeholder = "-- elegir --", renderTrigger }) {
   const [open, setOpen] = useState(false);
   const current = options.find((o) => o.value === value);
 
   return (
     <View>
-      <Pressable style={styles.trigger} onPress={() => setOpen(true)}>
-        <Text style={styles.triggerText} numberOfLines={1}>
-          {current ? current.label : placeholder}
-        </Text>
+      <Pressable onPress={() => setOpen(true)}>
+        {renderTrigger ? (
+          renderTrigger(current)
+        ) : (
+          <View style={styles.trigger}>
+            <Text style={styles.triggerText} numberOfLines={1}>
+              {current ? current.label : placeholder}
+            </Text>
+          </View>
+        )}
       </Pressable>
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>

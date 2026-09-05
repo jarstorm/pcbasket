@@ -4,6 +4,7 @@ import Card from "../components/Card";
 import OvrBadge from "../components/OvrBadge";
 import Table from "../components/Table";
 import Button from "../components/Button";
+import { POSITION_ABBR } from "../data/positions";
 import { colors, spacing } from "../theme";
 
 export default function AcademyScreen() {
@@ -22,7 +23,7 @@ export default function AcademyScreen() {
       <Table
         columns={[
           { key: "name", label: "Nombre", width: 150 },
-          { key: "position", label: "Pos", width: 60 },
+          { key: "position", label: "Pos", width: 60, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
           { key: "age", label: "Edad", width: 60 },
           { key: "overall", label: "OVR actual", width: 90, render: (p) => <OvrBadge value={p.overall} /> },
           { key: "potential", label: "Potencial", width: 90, render: (p) => <OvrBadge value={p.potential} /> },
@@ -51,4 +52,5 @@ export default function AcademyScreen() {
 const styles = StyleSheet.create({
   h2: { fontSize: 17, fontWeight: "700", color: colors.text, marginBottom: 4 },
   dim: { color: colors.textDim, fontSize: 13, marginBottom: spacing.sm },
+  cellText: { color: colors.text, fontSize: 13 },
 });

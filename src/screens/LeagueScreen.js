@@ -2,17 +2,13 @@ import { View, Text, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Table from "../components/Table";
+import { sortStandings } from "../engine/standings";
 import { colors } from "../theme";
 
 export default function LeagueScreen() {
   const { state } = useGame();
 
-  const standings = [...state.teams].sort((a, b) => {
-    if (b.record.wins !== a.record.wins) return b.record.wins - a.record.wins;
-    const diffA = a.record.pointsFor - a.record.pointsAgainst;
-    const diffB = b.record.pointsFor - b.record.pointsAgainst;
-    return diffB - diffA;
-  });
+  const standings = sortStandings(state.teams);
 
   const rows = standings.map((t, i) => ({
     ...t,
