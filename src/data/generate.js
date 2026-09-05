@@ -1,6 +1,7 @@
 import { randomName, CITIES, TEAM_NICKNAMES } from "./names";
 import febData from "./feb_league_data.json";
 import segundaFebData from "./segunda_feb_league_data.json";
+import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
 
@@ -75,19 +76,25 @@ export function makePlayer({ age, base, spread, isProspect = false, teamId = nul
   };
 }
 
+// Mirrors the FOREIGN_PLAYER_QUOTA rule enforced later in RosterScreen/
+// SET_LINEUP, so auto-generated lineups don't start already in violation of
+// their own quota (a foreign candidate is only picked once room is left).
 function pickStartingLineup(team, rosterPlayers) {
   const posOrder = ["PG", "SG", "SF", "PF", "C"];
   const used = new Set();
+  let foreignCount = 0;
   for (const pos of posOrder) {
+    const eligible = (p) => !used.has(p.id) && (!isForeign(p) || foreignCount < FOREIGN_PLAYER_QUOTA);
     const candidates = rosterPlayers
-      .filter((p) => p.position === pos && !used.has(p.id))
+      .filter((p) => p.position === pos && eligible(p))
       .sort((a, b) => b.overall - a.overall);
     const pick = candidates[0] || rosterPlayers
-      .filter((p) => !used.has(p.id))
+      .filter(eligible)
       .sort((a, b) => b.overall - a.overall)[0];
     if (pick) {
       team.lineup[pos] = pick.id;
       used.add(pick.id);
+      if (isForeign(pick)) foreignCount++;
     }
   }
 }
@@ -123,13 +130,19 @@ export function generateRealLeague() {
         level: 1,
         capacity: 8000,
         ticketPrice: 25,
+        amenities: {},
+        seasonTicketPrice: 375,
+        seasonTicketHolders: 0,
       },
       roster: [],
       academy: [],
       record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
       lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
       staff: {},
-      sponsor: null,
+      sponsors: { jersey: null, stadium: null },
+      financeHistory: [],
+      tactics: { offense: "balanced", defense: "man" },
+      scoutCooldown: null,
     };
     teams.push(team);
   }
@@ -187,13 +200,24 @@ export function generateSegundaFebDivision() {
       name: t.name,
       city: t.name,
       budget: randInt(150000, 450000),
-      stadium: { name: `Pabellón ${t.name}`, level: 1, capacity: 4000, ticketPrice: 15 },
+      stadium: {
+        name: `Pabellón ${t.name}`,
+        level: 1,
+        capacity: 4000,
+        ticketPrice: 15,
+        amenities: {},
+        seasonTicketPrice: 225,
+        seasonTicketHolders: 0,
+      },
       roster: [],
       academy: [],
       record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
       lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
       staff: {},
-      sponsor: null,
+      sponsors: { jersey: null, stadium: null },
+      financeHistory: [],
+      tactics: { offense: "balanced", defense: "man" },
+      scoutCooldown: null,
     };
     teams.push(team);
   }
@@ -259,13 +283,24 @@ export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
       name: `${city} ${nick}`,
       city,
       budget: randInt(1500000, 4000000),
-      stadium: { name: `${city} Arena`, level: 2, capacity: 10000, ticketPrice: 35 },
+      stadium: {
+        name: `${city} Arena`,
+        level: 2,
+        capacity: 10000,
+        ticketPrice: 35,
+        amenities: {},
+        seasonTicketPrice: 525,
+        seasonTicketHolders: 0,
+      },
       roster: [],
       academy: [],
       record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
       lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
       staff: {},
-      sponsor: null,
+      sponsors: { jersey: null, stadium: null },
+      financeHistory: [],
+      tactics: { offense: "balanced", defense: "man" },
+      scoutCooldown: null,
     };
 
     for (let j = 0; j < rosterSize; j++) {
@@ -284,52 +319,3 @@ export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
   return { teams, players };
 }
 
-export function generateLeague(numTeams = 20, rosterSize = 12) {
-  idCounter = 1;
-  const shuffledCities = [...CITIES, ...CITIES, ...CITIES].sort(() => Math.random() - 0.5);
-  const shuffledNicks = [...TEAM_NICKNAMES, ...TEAM_NICKNAMES, ...TEAM_NICKNAMES].sort(
-    () => Math.random() - 0.5
-  );
-
-  const teams = [];
-  const players = [];
-
-  for (let i = 0; i < numTeams; i++) {
-    const teamId = `t${i + 1}`;
-    const city = shuffledCities[i];
-    const nick = shuffledNicks[i];
-    const team = {
-      id: teamId,
-      name: `${city} ${nick}`,
-      city,
-      budget: randInt(300000, 900000),
-      stadium: {
-        name: `${city} Arena`,
-        level: 1,
-        capacity: 8000,
-        ticketPrice: 25,
-      },
-      roster: [],
-      academy: [],
-      record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
-      lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
-      staff: {},
-      sponsor: null,
-    };
-
-    for (let j = 0; j < rosterSize; j++) {
-      const overallBase = randInt(50, 82);
-      const player = makePlayer({ base: overallBase, spread: 24, teamId });
-      players.push(player);
-      team.roster.push(player.id);
-    }
-
-    const rosterPlayers = players.filter((p) => p.teamId === teamId);
-    pickStartingLineup(team, rosterPlayers);
-    addAcademyProspects(team, players);
-
-    teams.push(team);
-  }
-
-  return { teams, players };
-}

@@ -3,7 +3,9 @@ import {
   staffWageTotal,
   stadiumMaintenance,
   sponsorIncome,
-  getSponsorOffers,
+  getJerseySponsorOffers,
+  getStadiumSponsorOffers,
+  tvRightsIncome,
   estimatedTicketIncomePerRound,
 } from "../finance";
 
@@ -36,16 +38,29 @@ describe("finance", () => {
     // 16 teams so the bottom-placed team actually falls outside the
     // "nacional"/"regional" position thresholds.
     const teams = Array.from({ length: 16 }, (_, i) => team(`t${i}`, 15 - i, i, []));
-    const topOffers = getSponsorOffers(teams[0], teams).map((o) => o.id);
-    const bottomOffers = getSponsorOffers(teams[15], teams).map((o) => o.id);
-    expect(topOffers).toContain("nacional");
-    expect(bottomOffers).not.toContain("nacional");
-    expect(bottomOffers).toContain("local");
+    const topJersey = getJerseySponsorOffers(teams[0], teams).map((o) => o.id);
+    const bottomJersey = getJerseySponsorOffers(teams[15], teams).map((o) => o.id);
+    expect(topJersey).toContain("jersey_nacional");
+    expect(bottomJersey).not.toContain("jersey_nacional");
+    expect(bottomJersey).toContain("jersey_local");
+
+    const topStadium = getStadiumSponsorOffers(teams[0], teams).map((o) => o.id);
+    expect(topStadium).toContain("stadium_nacional");
   });
 
   it("estimates more ticket income for a bigger, pricier stadium", () => {
     const small = estimatedTicketIncomePerRound({ capacity: 4000, ticketPrice: 15 });
     const big = estimatedTicketIncomePerRound({ capacity: 12000, ticketPrice: 35 });
     expect(big).toBeGreaterThan(small);
+  });
+
+  it("pays more TV rights for a higher division and a better position", () => {
+    const teams = Array.from({ length: 16 }, (_, i) => team(`t${i}`, 15 - i, i, []));
+    const topPrimera = tvRightsIncome("primerafeb", teams[0], teams);
+    const bottomPrimera = tvRightsIncome("primerafeb", teams[15], teams);
+    expect(topPrimera).toBeGreaterThan(bottomPrimera);
+
+    const topAcb = tvRightsIncome("acb", teams[0], teams);
+    expect(topAcb).toBeGreaterThan(topPrimera);
   });
 });

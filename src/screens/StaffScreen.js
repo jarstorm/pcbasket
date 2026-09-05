@@ -7,8 +7,13 @@ import { STAFF_ROLES, getRoleTiers, currentRoleTier, totalStaffWage } from "../e
 import { seededShuffle } from "../engine/random";
 import { colors, spacing, radii } from "../theme";
 
+// The three coaching roles decide the on-court simulation, so they're
+// always hireable — only the support staff (physio, scout, etc.) rotates
+// through a random subset each jornada, like the transfer market pool.
+const COACHING_ROLE_IDS = ["headCoach", "offenseCoach", "defenseCoach"];
 const ALL_ROLE_IDS = Object.keys(STAFF_ROLES);
-const VISIBLE_ROLE_COUNT = 5;
+const ROTATING_ROLE_IDS = ALL_ROLE_IDS.filter((id) => !COACHING_ROLE_IDS.includes(id));
+const VISIBLE_ROTATING_COUNT = 3;
 
 export default function StaffScreen() {
   const { state, dispatch } = useGame();
@@ -16,11 +21,13 @@ export default function StaffScreen() {
   const [openRole, setOpenRole] = useState(null);
   const [selectedTierByRole, setSelectedTierByRole] = useState({});
 
-  // The market only offers a random subset of roles each jornada — but a
-  // role you've already hired never disappears just because it missed the
-  // draw, so you can still see/fire them.
-  const available = new Set(seededShuffle(ALL_ROLE_IDS, state.round).slice(0, VISIBLE_ROLE_COUNT));
-  const ROLE_IDS = ALL_ROLE_IDS.filter((id) => available.has(id) || team.staff[id]);
+  // A role you've already hired never disappears just because it missed
+  // this jornada's rotation draw, so you can still see/fire them.
+  const available = new Set(seededShuffle(ROTATING_ROLE_IDS, state.round).slice(0, VISIBLE_ROTATING_COUNT));
+  const ROLE_IDS = [
+    ...COACHING_ROLE_IDS,
+    ...ROTATING_ROLE_IDS.filter((id) => available.has(id) || team.staff[id]),
+  ];
 
   return (
     <View>

@@ -48,46 +48,105 @@ export default function TransferMarket() {
       .sort((a, b) => (sortBy === "overall" ? b.overall - a.overall : a.value - b.value));
   }, [state.playersById, state.teams, state.round, team.id, posFilter, sortBy]);
 
+  // Released or rejected-renewal players with no club — free to sign, no fee.
+  const freeAgents = useMemo(() => {
+    const pool = Object.values(state.playersById).filter(
+      (p) => p.teamId === null && !p.isProspect && !p.retired
+    );
+    return pool
+      .filter((p) => posFilter === "ALL" || p.position === posFilter)
+      .sort((a, b) => (sortBy === "overall" ? b.overall - a.overall : a.value - b.value));
+  }, [state.playersById, posFilter, sortBy]);
+
+  const annualWage = (p) => p.wage * state.schedule.length;
+
   return (
-    <Card>
-      <Text style={styles.h2}>Mercado de fichajes</Text>
-      <Text style={styles.dim}>
-        Presupuesto disponible: <Text style={[styles.bold, { color: colors.accent }]}>${team.budget.toLocaleString()}</Text>{" "}
-        · Plantilla: {team.roster.length}/15
-      </Text>
+    <View>
+      <Card>
+        <Text style={styles.h2}>Mercado de fichajes</Text>
+        <Text style={styles.dim}>
+          Presupuesto disponible: <Text style={[styles.bold, { color: colors.accent }]}>${team.budget.toLocaleString()}</Text>{" "}
+          · Plantilla: {team.roster.length}/15
+        </Text>
 
-      <View style={styles.filters}>
-        <Select value={posFilter} options={POSITION_OPTIONS} onChange={setPosFilter} />
-        <Select value={sortBy} options={SORT_OPTIONS} onChange={setSortBy} />
-      </View>
+        <View style={styles.filters}>
+          <Select value={posFilter} options={POSITION_OPTIONS} onChange={setPosFilter} />
+          <Select value={sortBy} options={SORT_OPTIONS} onChange={setSortBy} />
+        </View>
 
-      <Table
-        columns={[
-          { key: "name", label: "Nombre", width: 140 },
-          { key: "team", label: "Equipo", width: 100, render: (p) => <Text style={styles.cellText}>{teamNameById[p.teamId]}</Text> },
-          { key: "position", label: "Pos", width: 50, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
-          { key: "age", label: "Edad", width: 50 },
-          { key: "overall", label: "OVR", width: 60, render: (p) => <OvrBadge value={p.overall} /> },
-          { key: "value", label: "Precio", width: 90, render: (p) => <Text style={styles.cellText}>${p.value.toLocaleString()}</Text> },
-          {
-            key: "buy",
-            label: "",
-            width: 90,
-            render: (p) => (
-              <Button
-                primary
-                disabled={team.budget < p.value || team.roster.length >= 15}
-                onPress={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: p.id })}
-              >
-                Fichar
-              </Button>
-            ),
-          },
-        ]}
-        data={marketPlayers}
-        rowKey={(p) => p.id}
-      />
-    </Card>
+        <Table
+          columns={[
+            { key: "name", label: "Nombre", width: 140 },
+            { key: "team", label: "Equipo", width: 100, render: (p) => <Text style={styles.cellText}>{teamNameById[p.teamId]}</Text> },
+            { key: "position", label: "Pos", width: 50, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
+            { key: "age", label: "Edad", width: 50 },
+            { key: "overall", label: "OVR", width: 60, render: (p) => <OvrBadge value={p.overall} /> },
+            { key: "value", label: "Cláusula", width: 100, render: (p) => <Text style={styles.cellText}>${p.value.toLocaleString()}</Text> },
+            {
+              key: "wage",
+              label: "Salario/año",
+              width: 100,
+              render: (p) => <Text style={styles.cellText}>${annualWage(p).toLocaleString()}</Text>,
+            },
+            {
+              key: "buy",
+              label: "",
+              width: 90,
+              render: (p) => (
+                <Button
+                  primary
+                  disabled={team.budget < p.value || team.roster.length >= 15}
+                  onPress={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: p.id })}
+                >
+                  Fichar
+                </Button>
+              ),
+            },
+          ]}
+          data={marketPlayers}
+          rowKey={(p) => p.id}
+        />
+      </Card>
+
+      <Card>
+        <Text style={styles.h2}>Agentes libres</Text>
+        <Text style={styles.dim}>Sin equipo — se fichan gratis, solo pagas su salario.</Text>
+        {freeAgents.length === 0 ? (
+          <Text style={styles.dim}>No hay agentes libres disponibles ahora mismo.</Text>
+        ) : (
+          <Table
+            columns={[
+              { key: "name", label: "Nombre", width: 140 },
+              { key: "position", label: "Pos", width: 50, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
+              { key: "age", label: "Edad", width: 50 },
+              { key: "overall", label: "OVR", width: 60, render: (p) => <OvrBadge value={p.overall} /> },
+              {
+                key: "wage",
+                label: "Salario/año",
+                width: 100,
+                render: (p) => <Text style={styles.cellText}>${annualWage(p).toLocaleString()}</Text>,
+              },
+              {
+                key: "sign",
+                label: "",
+                width: 90,
+                render: (p) => (
+                  <Button
+                    primary
+                    disabled={team.roster.length >= 15}
+                    onPress={() => dispatch({ type: "SIGN_FREE_AGENT", teamId: team.id, playerId: p.id })}
+                  >
+                    Fichar
+                  </Button>
+                ),
+              },
+            ]}
+            data={freeAgents}
+            rowKey={(p) => p.id}
+          />
+        )}
+      </Card>
+    </View>
   );
 }
 

@@ -174,6 +174,16 @@ export function moraleBonus(staff) {
 export function scoutProspectChance(staff) {
   return effectSum(staff, "prospectChance");
 }
+
+// The scout's tier decides how good a prospect they can dig up — parsed
+// straight from the tier id ("scout_0"/"scout_1"/"scout_2") rather than a
+// separate field, since TIER_LABELS/EFFECT_MULT already encode the same
+// Básico/Avanzado/Élite order everywhere else.
+export function scoutTierIndex(staff) {
+  const tier = currentTier(staff, "scout");
+  if (!tier) return null;
+  return Number(tier.id.split("_")[1]);
+}
 export function maintenanceReduction(staff) {
   return Math.min(0.8, effectSum(staff, "maintenanceReduction"));
 }

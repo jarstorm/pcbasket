@@ -1,17 +1,31 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useState } from "react";
+import { View, Text, Pressable, Alert, Modal, ScrollView, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import TeamLogo from "../components/TeamLogo";
 import { leaguePosition } from "../engine/standings";
-import { colors, spacing, radii } from "../theme";
+import { colors, spacing } from "../theme";
 
-export default function Dashboard({ quadrants, onNavigate }) {
+const MONTHS = [
+  "enero", "febrero", "marzo", "abril", "mayo", "junio",
+  "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+];
+
+function formatFictionalDate(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d} de ${MONTHS[m - 1]} de ${y}`;
+}
+
+export default function Dashboard({ onNavigate }) {
   const { state, dispatch } = useGame();
+  const [showAllNews, setShowAllNews] = useState(false);
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const nextRound = state.schedule[state.round];
   const myNextGame = nextRound?.find(([h, a]) => h === team.id || a === team.id);
   const totalRounds = state.schedule.length;
+  const isPreseason = (state.preseasonWeeksLeft || 0) > 0;
 
   const position = leaguePosition(team, state.teams);
 
@@ -19,29 +33,73 @@ export default function Dashboard({ quadrants, onNavigate }) {
     (r) => r.homeId === team.id || r.awayId === team.id
   );
 
+  const injuredStarter = Object.values(team.lineup)
+    .filter(Boolean)
+    .map((id) => state.playersById[id])
+    .find((p) => p?.injured);
+  const inRedNumbers = team.budget < 0;
+
+  const handlePlayRound = () => {
+    if (injuredStarter) {
+      Alert.alert(
+        "Jugador lesionado en el quinteto",
+        `${injuredStarter.name} está lesionado y no puede jugar. Cámbialo en Plantilla antes de jugar la jornada.`
+      );
+      return;
+    }
+    const play = () => {
+      dispatch({ type: "SIM_ROUND" });
+      onNavigate("result");
+    };
+    if (inRedNumbers) {
+      Alert.alert(
+        "Números rojos",
+        `Tu presupuesto está en negativo (${team.budget.toLocaleString()}$). Los sueldos y gastos de esta jornada lo empeorarán.`,
+        [
+          { text: "Cancelar", style: "cancel" },
+          { text: "Jugar de todas formas", onPress: play },
+        ]
+      );
+      return;
+    }
+    play();
+  };
+
   return (
     <View>
       <Card>
-        <Text style={styles.dim}>
-          JORNADA {state.round} / {totalRounds} · POSICIÓN #{position} DE {state.teams.length}
-        </Text>
+        <Text style={styles.dim}>{formatFictionalDate(state.currentDate)}</Text>
         <Text style={styles.p}>
           Récord: <Text style={styles.bold}>{team.record.wins}V - {team.record.losses}D</Text> · Presupuesto:{" "}
-          <Text style={[styles.bold, { color: colors.accent }]}>${team.budget.toLocaleString()}</Text>
+          <Text style={[styles.bold, { color: inRedNumbers ? colors.loss : colors.accent }]}>
+            ${team.budget.toLocaleString()}
+          </Text>
         </Text>
 
-        {myNextGame ? (
-          <View style={[styles.nextGameRow, { marginBottom: spacing.sm }]}>
-            <Text style={styles.small}>Próximo partido:</Text>
-            <TeamLogo team={state.teams.find((t) => t.id === myNextGame[0])} size={18} />
-            <Text style={[styles.small, styles.bold]} numberOfLines={1}>
-              {state.teams.find((t) => t.id === myNextGame[0]).name} vs{" "}
-              {state.teams.find((t) => t.id === myNextGame[1]).name}
-            </Text>
-            <TeamLogo team={state.teams.find((t) => t.id === myNextGame[1])} size={18} />
-          </View>
+        {isPreseason ? (
+          <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>
+            Pretemporada — faltan {state.preseasonWeeksLeft} semana(s) para el inicio de la liga.
+            Aprovecha para fichar, contratar personal y mejorar el estadio.
+          </Text>
         ) : (
-          <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>Temporada finalizada.</Text>
+          <>
+            <Text style={styles.dim}>
+              JORNADA {state.round} / {totalRounds} · POSICIÓN #{position} DE {state.teams.length}
+            </Text>
+            {myNextGame ? (
+              <View style={[styles.nextGameRow, { marginBottom: spacing.sm }]}>
+                <Text style={styles.small}>Próximo partido:</Text>
+                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[0])} size={18} />
+                <Text style={[styles.small, styles.bold]} numberOfLines={1}>
+                  {state.teams.find((t) => t.id === myNextGame[0]).name} vs{" "}
+                  {state.teams.find((t) => t.id === myNextGame[1]).name}
+                </Text>
+                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[1])} size={18} />
+              </View>
+            ) : (
+              <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>Temporada finalizada.</Text>
+            )}
+          </>
         )}
       </Card>
 
@@ -56,51 +114,96 @@ export default function Dashboard({ quadrants, onNavigate }) {
         </Pressable>
       )}
 
-      <Pressable disabled={!lastResult} onPress={() => onNavigate("result")}>
-        <Card style={!lastResult && { opacity: 0.6 }}>
-          <Text style={styles.h3}>ÚLTIMO RESULTADO</Text>
-          {lastResult ? (
-            <MatchSummary result={lastResult} teams={state.teams} />
-          ) : (
-            <Text style={styles.dim}>Aún no hay partidos jugados.</Text>
-          )}
-        </Card>
-      </Pressable>
+      {!isPreseason && injuredStarter && (
+        <Pressable onPress={() => onNavigate("roster")}>
+          <Card style={styles.dangerCard}>
+            <Text style={styles.dangerText}>
+              ⚠ {injuredStarter.name} está lesionado en el quinteto inicial — toca para cambiarlo
+            </Text>
+          </Card>
+        </Pressable>
+      )}
 
-      <View style={styles.grid}>
-        {quadrants.map((q) => (
-          <View key={q.header} style={styles.quadrant}>
-            <Text style={styles.quadrantHeader}>{q.header.toUpperCase()}</Text>
-            {q.items.map((item) => (
-              <Button key={item.id} onPress={() => onNavigate(item.id)} style={styles.quadrantBtn}>
-                {item.label}
-              </Button>
-            ))}
-          </View>
-        ))}
-      </View>
+      {inRedNumbers && (
+        <Pressable onPress={() => onNavigate("finance")}>
+          <Card style={styles.dangerCard}>
+            <Text style={styles.dangerText}>
+              ⚠ Presupuesto en números rojos (${team.budget.toLocaleString()}) — toca para revisar finanzas
+            </Text>
+          </Card>
+        </Pressable>
+      )}
 
-      <Button
-        primary
-        disabled={state.round >= totalRounds}
-        onPress={() => {
-          dispatch({ type: "SIM_ROUND" });
-          onNavigate("result");
-        }}
-        style={styles.playBtn}
-      >
-        Jugar jornada
-      </Button>
+      {!isPreseason && (
+        <Pressable disabled={!lastResult} onPress={() => onNavigate("result")}>
+          <Card style={!lastResult && { opacity: 0.6 }}>
+            <Text style={styles.h3}>ÚLTIMO RESULTADO</Text>
+            {lastResult ? (
+              <MatchSummary result={lastResult} teams={state.teams} />
+            ) : (
+              <Text style={styles.dim}>Aún no hay partidos jugados.</Text>
+            )}
+          </Card>
+        </Pressable>
+      )}
+
+      {isPreseason ? (
+        <Button
+          primary
+          onPress={() => dispatch({ type: "ADVANCE_PRESEASON" })}
+          style={styles.playBtn}
+        >
+          Avanzar semana
+        </Button>
+      ) : (
+        <Button
+          primary
+          disabled={state.round >= totalRounds}
+          onPress={handlePlayRound}
+          style={styles.playBtn}
+        >
+          Jugar jornada
+        </Button>
+      )}
 
       <Card>
-        <Text style={styles.h3}>NOTICIAS</Text>
+        <View style={styles.newsHeader}>
+          <Text style={styles.h3}>NOTICIAS</Text>
+          {state.log.length > 5 && (
+            <Pressable onPress={() => setShowAllNews(true)}>
+              <Text style={styles.newsLink}>Ver todas ({state.log.length})</Text>
+            </Pressable>
+          )}
+        </View>
         <View>
           {state.log.length === 0 && <Text style={styles.logItem}>Sin novedades.</Text>}
-          {state.log.map((l, i) => (
-            <Text key={i} style={styles.logItem}>{l}</Text>
+          {state.log.slice(0, 5).map((entry, i) => (
+            <Text key={i} style={styles.logItem}>
+              <Text style={styles.logDate}>{formatFictionalDate(entry.date)} · </Text>
+              {entry.text}
+            </Text>
           ))}
         </View>
       </Card>
+
+      <Modal visible={showAllNews} animationType="slide" onRequestClose={() => setShowAllNews(false)}>
+        <View style={styles.modalShell}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.h3}>TODAS LAS NOTICIAS</Text>
+            <Pressable onPress={() => setShowAllNews(false)}>
+              <Text style={styles.newsLink}>Cerrar</Text>
+            </Pressable>
+          </View>
+          <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
+            {state.log.map((entry, i) => (
+              <Text key={i} style={styles.logItem}>
+                <Text style={styles.logDate}>{formatFictionalDate(entry.date)} · </Text>
+                {entry.text}
+              </Text>
+            ))}
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -141,31 +244,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  grid: {
+  logDate: { color: colors.accent, fontWeight: "700" },
+  newsHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 4 },
+  newsLink: { color: colors.accent, fontSize: 12, fontWeight: "700" },
+  modalShell: { flex: 1, backgroundColor: colors.bg },
+  modalHeader: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  quadrant: {
-    flexBasis: "48%",
-    flexGrow: 1,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: radii.sm,
-    padding: spacing.sm,
-    gap: spacing.xs,
-  },
-  quadrantHeader: {
-    fontSize: 12,
-    fontWeight: "800",
-    color: colors.text,
-    letterSpacing: 0.8,
-    marginBottom: 4,
-    textAlign: "center",
-  },
-  quadrantBtn: { marginBottom: 0 },
   warningCard: { borderColor: colors.accent, backgroundColor: colors.panelAlt },
   warningText: { color: colors.accent, fontWeight: "700", fontSize: 13 },
+  dangerCard: { borderColor: colors.loss, backgroundColor: colors.panelAlt },
+  dangerText: { color: colors.loss, fontWeight: "700", fontSize: 13 },
   playBtn: { marginTop: spacing.sm, marginBottom: spacing.md, paddingVertical: spacing.md },
 });

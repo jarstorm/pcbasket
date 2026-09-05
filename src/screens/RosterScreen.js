@@ -9,7 +9,7 @@ import RatingBar from "../components/RatingBar";
 import Button from "../components/Button";
 import { POSITION_ORDER, POSITION_ABBR } from "../data/positions";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
-import { positionMismatchFactor } from "../engine/simulate";
+import { positionMismatchFactor, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
 import { colors, spacing, radii } from "../theme";
 
 export default function RosterScreen() {
@@ -31,8 +31,12 @@ export default function RosterScreen() {
     // picked if there's still room for one more.
     const foreignElsewhere = foreignStarterCount - (isForeign(starter) ? 1 : 0);
     const quotaLeft = FOREIGN_PLAYER_QUOTA - foreignElsewhere;
+    // A foreign candidate is always offered when there's quota room, and
+    // also when the current starter here is foreign too (swapping one
+    // foreigner for another doesn't make an already-over-quota lineup worse
+    // — see the matching "no worse than before" check in SET_LINEUP).
     const eligible = roster.filter(
-      (p) => p.id !== starterId && !p.injured && (!isForeign(p) || quotaLeft > 0)
+      (p) => p.id !== starterId && !p.injured && (!isForeign(p) || quotaLeft > 0 || isForeign(starter))
     );
     const label = (p) => {
       const penalized = p.position !== pos ? Math.round(p.overall * positionMismatchFactor(pos, p.position)) : null;
@@ -52,10 +56,21 @@ export default function RosterScreen() {
     return { pos, starter, starterId, options, outOfPosition, effectiveOverall };
   });
 
+  const filledSlots = lineupSlots.filter((s) => s.starter);
+  const lineupAverage = filledSlots.length
+    ? Math.round(
+        filledSlots.reduce((sum, s) => sum + (s.outOfPosition ? s.effectiveOverall : s.starter.overall), 0) /
+          filledSlots.length
+      )
+    : null;
+
   return (
     <View>
       <Card>
         <Text style={styles.h2}>QUINTETO INICIAL</Text>
+        <Text style={styles.dim}>
+          Media del quinteto: {lineupAverage !== null ? lineupAverage : "-"} ({filledSlots.length}/5)
+        </Text>
         <Text style={styles.dim}>
           Extracomunitarios en el quinteto: {foreignStarterCount}/{FOREIGN_PLAYER_QUOTA}
         </Text>
@@ -101,6 +116,34 @@ export default function RosterScreen() {
       </Card>
 
       <Card>
+        <Text style={styles.h2}>TÁCTICA</Text>
+        <View style={styles.tacticRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.tacticLabel}>Ataque</Text>
+            <Select
+              value={team.tactics?.offense || "balanced"}
+              options={Object.values(OFFENSE_TACTICS).map((t) => ({ label: t.label, value: t.id }))}
+              onChange={(value) => dispatch({ type: "SET_TACTIC", teamId: team.id, kind: "offense", value })}
+            />
+            <Text style={styles.tacticDesc}>
+              {OFFENSE_TACTICS[team.tactics?.offense || "balanced"].desc}
+            </Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.tacticLabel}>Defensa</Text>
+            <Select
+              value={team.tactics?.defense || "man"}
+              options={Object.values(DEFENSE_TACTICS).map((t) => ({ label: t.label, value: t.id }))}
+              onChange={(value) => dispatch({ type: "SET_TACTIC", teamId: team.id, kind: "defense", value })}
+            />
+            <Text style={styles.tacticDesc}>
+              {DEFENSE_TACTICS[team.tactics?.defense || "man"].desc}
+            </Text>
+          </View>
+        </View>
+      </Card>
+
+      <Card>
         <Text style={styles.h2}>SUPLENTES ({bench.length})</Text>
         {bench.length === 0 && <Text style={styles.dim}>No hay suplentes en la plantilla.</Text>}
         {bench.map((p) => (
@@ -117,7 +160,14 @@ export default function RosterScreen() {
   );
 }
 
+function formColor(form) {
+  if (form >= 85) return colors.win;
+  if (form >= 65) return colors.accent;
+  return colors.loss;
+}
+
 function PlayerRow({ player, expanded, onToggle, onToggleListed }) {
+  const form = player.form ?? 99;
   return (
     <Pressable onPress={onToggle} style={styles.playerRow}>
       <View style={styles.playerMain}>
@@ -126,7 +176,8 @@ function PlayerRow({ player, expanded, onToggle, onToggleListed }) {
           <View style={{ marginLeft: 8, flexShrink: 1 }}>
             <Text style={styles.playerName} numberOfLines={1}>{player.name}</Text>
             <Text style={styles.playerSub}>
-              {player.age} años{player.nationality ? ` · ${player.nationality}` : ""}
+              {player.age} años{player.nationality ? ` · ${player.nationality}` : ""} ·{" "}
+              <Text style={{ color: formColor(form), fontWeight: "700" }}>Forma {form}</Text>
             </Text>
           </View>
         </View>
@@ -182,6 +233,9 @@ const styles = StyleSheet.create({
   playerRight: { alignItems: "flex-end", marginLeft: 8 },
   injured: { color: colors.loss, fontSize: 9, fontWeight: "800", marginTop: 2 },
   outOfPosition: { color: colors.loss, fontSize: 8, fontWeight: "800", marginTop: 2, textAlign: "center" },
+  tacticRow: { flexDirection: "row", gap: spacing.md },
+  tacticLabel: { color: colors.textDim, fontSize: 11, fontWeight: "700", marginBottom: 4, letterSpacing: 0.4 },
+  tacticDesc: { color: colors.textDim, fontSize: 11, marginTop: 4 },
   foreign: { color: colors.textDim, fontSize: 9, fontWeight: "800", marginTop: 2 },
   listed: { color: colors.accent, fontSize: 9, fontWeight: "800", marginTop: 2 },
   ratings: {

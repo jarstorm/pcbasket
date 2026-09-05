@@ -1,4 +1,4 @@
-import { simulateMatch } from "../simulate";
+import { simulateMatch, offenseTacticBonus, defenseTacticBonus } from "../simulate";
 
 function makeTeam(id, overalls) {
   const roster = overalls.map((_, i) => `${id}p${i}`);
@@ -91,5 +91,39 @@ describe("simulateMatch", () => {
     };
     const result = simulateMatch(hurtHome, away, hurtPlayers);
     expect(result.boxscore.home.find((p) => p.id === "homep0")).toBeUndefined();
+  });
+});
+
+describe("tactic bonuses", () => {
+  it("balanced/man tactics never help or hurt regardless of ratings", () => {
+    const weakTeam = { lineup: { PG: "p1" }, tactics: { offense: "balanced", defense: "man" } };
+    const players = { p1: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20 } } };
+    expect(offenseTacticBonus(weakTeam, players)).toBe(0);
+    expect(defenseTacticBonus(weakTeam, players)).toBe(0);
+  });
+
+  it("interior/exterior offense rewards a strong lineup and punishes a weak one", () => {
+    const players = {
+      strong: { ratings: { shooting: 90, rebounding: 90, physical: 90, defense: 90 } },
+      weak: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20 } },
+    };
+    const strongTeam = { lineup: { PG: "strong" }, tactics: { offense: "interior" } };
+    const weakTeam = { lineup: { PG: "weak" }, tactics: { offense: "interior" } };
+    expect(offenseTacticBonus(strongTeam, players)).toBeGreaterThan(0);
+    expect(offenseTacticBonus(weakTeam, players)).toBeLessThan(0);
+
+    const strongExterior = { lineup: { PG: "strong" }, tactics: { offense: "exterior" } };
+    expect(offenseTacticBonus(strongExterior, players)).toBeGreaterThan(0);
+  });
+
+  it("zone/press defense rewards a strong lineup and punishes a weak one", () => {
+    const players = {
+      strong: { ratings: { shooting: 90, rebounding: 90, physical: 90, defense: 90 } },
+      weak: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20 } },
+    };
+    const strongTeam = { lineup: { PG: "strong" }, tactics: { defense: "press" } };
+    const weakTeam = { lineup: { PG: "weak" }, tactics: { defense: "press" } };
+    expect(defenseTacticBonus(strongTeam, players)).toBeGreaterThan(0);
+    expect(defenseTacticBonus(weakTeam, players)).toBeLessThan(0);
   });
 });

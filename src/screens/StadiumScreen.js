@@ -4,6 +4,7 @@ import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import { getUpgradeTiers } from "../engine/stadium";
+import { getAmenityOptions } from "../engine/amenities";
 import { colors, spacing, radii } from "../theme";
 
 export default function StadiumScreen() {
@@ -12,6 +13,7 @@ export default function StadiumScreen() {
   const tiers = getUpgradeTiers(team.stadium);
   const [selectedId, setSelectedId] = useState(tiers[1]?.id ?? tiers[0]?.id);
   const selected = tiers.find((t) => t.id === selectedId);
+  const amenities = getAmenityOptions(team.stadium);
 
   return (
     <View>
@@ -20,17 +22,22 @@ export default function StadiumScreen() {
         <View style={styles.statsBox}>
           <StatRow label="NIVEL" value={String(team.stadium.level)} />
           <StatRow label="CAPACIDAD" value={`${team.stadium.capacity.toLocaleString()} asientos`} />
+          <StatRow label="ABONADOS" value={`${(team.stadium.seasonTicketHolders || 0).toLocaleString()}`} />
+          <StatRow
+            label="ENTRADAS A LA VENTA"
+            value={`${Math.max(0, team.stadium.capacity - (team.stadium.seasonTicketHolders || 0)).toLocaleString()}`}
+          />
           <StatRow label="PRECIO ENTRADA" value={`$${team.stadium.ticketPrice}`} />
         </View>
         <Text style={styles.dim}>
-          Cada partido en casa genera ingresos por taquilla proporcionales a capacidad y precio. Un
-          precio demasiado alto ahuyenta afición. Ampliar el estadio da también una pequeña ventaja
-          de local.
+          Los abonados se fijan al empezar la temporada (pagan de golpe) y ocupan su asiento siempre.
+          El resto del aforo se vende partido a partido según asistencia y precio. Ampliar el estadio
+          da también una pequeña ventaja de local.
         </Text>
       </Card>
 
       <Card>
-        <Text style={styles.h2}>PRECIO DE ENTRADA</Text>
+        <Text style={styles.h2}>PRECIO DE ENTRADA (PARTIDO A PARTIDO)</Text>
         <View style={styles.priceRow}>
           <Pressable
             style={styles.priceBtn}
@@ -45,6 +52,40 @@ export default function StadiumScreen() {
             style={styles.priceBtn}
             onPress={() =>
               dispatch({ type: "SET_TICKET_PRICE", teamId: team.id, price: team.stadium.ticketPrice + 5 })
+            }
+          >
+            <Text style={styles.priceBtnText}>+</Text>
+          </Pressable>
+        </View>
+      </Card>
+
+      <Card>
+        <Text style={styles.h2}>PRECIO DEL ABONO</Text>
+        <Text style={styles.dim}>
+          Solo cambia cuántos abonados se apuntan al principio de la próxima temporada.
+        </Text>
+        <View style={styles.priceRow}>
+          <Pressable
+            style={styles.priceBtn}
+            onPress={() =>
+              dispatch({
+                type: "SET_SEASON_TICKET_PRICE",
+                teamId: team.id,
+                price: team.stadium.seasonTicketPrice - 25,
+              })
+            }
+          >
+            <Text style={styles.priceBtnText}>−</Text>
+          </Pressable>
+          <Text style={styles.priceValue}>${team.stadium.seasonTicketPrice}</Text>
+          <Pressable
+            style={styles.priceBtn}
+            onPress={() =>
+              dispatch({
+                type: "SET_SEASON_TICKET_PRICE",
+                teamId: team.id,
+                price: team.stadium.seasonTicketPrice + 25,
+              })
             }
           >
             <Text style={styles.priceBtnText}>+</Text>
@@ -87,6 +128,38 @@ export default function StadiumScreen() {
         >
           Mejorar estadio
         </Button>
+      </Card>
+
+      <Card>
+        <Text style={styles.h2}>INSTALACIONES</Text>
+        <Text style={styles.dim}>
+          5 niveles por instalación — cada uno sube algo más la afluencia y el precio de entrada que
+          la afición tolera, y cuesta más que el anterior.
+        </Text>
+        {amenities.map((a) => (
+          <View key={a.id} style={[styles.tierRow, a.maxed && styles.tierRowBuilt]}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.tierLabel}>
+                {a.label} · Nivel {a.level}/5
+              </Text>
+              <Text style={styles.tierDesc}>
+                {a.currentTierName ? `Actual: ${a.currentTierName}` : "Sin construir"}
+              </Text>
+              {!a.maxed && <Text style={styles.tierDesc}>Siguiente: {a.nextTierName}</Text>}
+            </View>
+            {a.maxed ? (
+              <Text style={styles.builtText}>AL MÁXIMO</Text>
+            ) : (
+              <Button
+                disabled={team.budget < a.cost}
+                onPress={() => dispatch({ type: "BUILD_AMENITY", teamId: team.id, amenityId: a.id })}
+                style={styles.amenityBtn}
+              >
+                ${a.cost.toLocaleString()}
+              </Button>
+            )}
+          </View>
+        ))}
       </Card>
     </View>
   );
@@ -148,6 +221,9 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
     backgroundColor: colors.panelAlt,
   },
+  tierRowBuilt: { borderColor: colors.win, opacity: 0.8 },
+  builtText: { color: colors.win, fontWeight: "800", fontSize: 11 },
+  amenityBtn: { marginBottom: 0, paddingHorizontal: spacing.md },
   checkbox: {
     width: 20,
     height: 20,

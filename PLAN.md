@@ -62,11 +62,15 @@ equipos de fondo (`src/engine/pyramid.js` → `simulateBackgroundRound`).
 Al terminar la temporada de la división activa: `resolvePyramid()` calcula
 ascenso/descenso en **ambos** límites (ACB↔Primera FEB, Primera FEB↔Segunda
 FEB) a la vez a partir de la clasificación original de las 3 (no en cascada,
-para que un equipo no pueda subir y bajar en la misma transición), sube 1 y
-baja 1 por límite, y arranca las 3 con calendario nuevo y récord a cero. Si el
-equipo del usuario asciende o desciende, `state.activeDivisionId` cambia solo
-y el aviso sale en el log. Pantalla `PyramidScreen.js` con pestañas ACB/Primera
-FEB/Segunda FEB.
+para que un equipo no pueda subir y bajar en la misma transición), y arranca
+las 3 con calendario nuevo y récord a cero. Si el equipo del usuario asciende
+o desciende, `state.activeDivisionId` cambia solo y el aviso sale en el log.
+Pantalla `PyramidScreen.js` con pestañas ACB/Primera FEB/Segunda FEB, filas de
+ascenso/descenso/tu-equipo marcadas.
 
-**Simplificado respecto al fútbol/baloncesto real:** 1 ascenso + 1 descenso por
-límite (no 2), sin playoffs de ascenso — swap directo por posición en la tabla.
+**Reglas reales de la FEB (2026-09-05):** 2 plazas de ascenso por límite —
+1º clasificado sube directo, la 2ª plaza se decide en un playoff a 4 (2º-5º,
+cruces 2vs5/3vs4, luego la final) entre los siguientes mejor clasificados
+(`resolvePromotionPlayoff` en `pyramid.js`, favorito gana ~65% cada cruce).
+Descenso: 2 plazas directas por límite, sin playout (el playout solo existe
+en el límite Segunda FEB↔Tercera FEB, división que este juego no modela).

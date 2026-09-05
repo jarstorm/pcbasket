@@ -1,20 +1,48 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
-import { getSponsorOffers } from "../engine/finance";
+import { getJerseySponsorOffers, getStadiumSponsorOffers, tvRightsIncome } from "../engine/finance";
 import { leaguePosition } from "../engine/standings";
+import { DIVISION_META } from "../engine/pyramid";
 import { colors, spacing, radii } from "../theme";
+
+function OfferList({ title, offers, current, onSelect }) {
+  return (
+    <Card>
+      <Text style={styles.h2}>{title}</Text>
+      {offers.map((offer) => {
+        const isCurrent = current?.id === offer.id;
+        return (
+          <Pressable
+            key={offer.id}
+            onPress={() => onSelect(offer.id)}
+            style={[styles.offerRow, isCurrent && styles.offerRowSelected]}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={styles.offerLabel}>{offer.label}</Text>
+              {isCurrent && <Text style={styles.offerCurrent}>Patrocinador actual</Text>}
+            </View>
+            <Text style={styles.offerIncome}>+${offer.incomePerRound.toLocaleString()}/jornada</Text>
+          </Pressable>
+        );
+      })}
+    </Card>
+  );
+}
 
 export default function SponsorScreen() {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const position = leaguePosition(team, state.teams);
-  const offers = getSponsorOffers(team, state.teams);
+  const jerseyOffers = getJerseySponsorOffers(team, state.teams);
+  const stadiumOffers = getStadiumSponsorOffers(team, state.teams);
+  const tvIncome = tvRightsIncome(state.activeDivisionId, team, state.teams);
+  const divisionName = DIVISION_META[state.activeDivisionId]?.name || state.activeDivisionId;
 
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>PUBLICIDAD</Text>
+        <Text style={styles.h2}>PUBLICIDAD E INGRESOS DE MEDIA</Text>
         <Text style={styles.dim}>
           Posición actual en la liga: #{position}. Los mejores patrocinadores solo firman con
           equipos arriba en la clasificación.
@@ -22,24 +50,27 @@ export default function SponsorScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>OFERTAS DISPONIBLES</Text>
-        {offers.map((offer) => {
-          const isCurrent = team.sponsor?.id === offer.id;
-          return (
-            <Pressable
-              key={offer.id}
-              onPress={() => dispatch({ type: "SELECT_SPONSOR", teamId: team.id, sponsorId: offer.id })}
-              style={[styles.offerRow, isCurrent && styles.offerRowSelected]}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={styles.offerLabel}>{offer.label}</Text>
-                {isCurrent && <Text style={styles.offerCurrent}>Patrocinador actual</Text>}
-              </View>
-              <Text style={styles.offerIncome}>+${offer.incomePerRound.toLocaleString()}/jornada</Text>
-            </Pressable>
-          );
-        })}
+        <Text style={styles.h2}>DERECHOS DE TV</Text>
+        <Text style={styles.dim}>
+          Automáticos, según división ({divisionName}) y posición — no se eligen, suben si mejoras
+          en la tabla o asciendes de categoría.
+        </Text>
+        <Text style={styles.tvIncome}>+${tvIncome.toLocaleString()}/jornada</Text>
       </Card>
+
+      <OfferList
+        title="PATROCINADOR DE CAMISETA"
+        offers={jerseyOffers}
+        current={team.sponsors?.jersey}
+        onSelect={(sponsorId) => dispatch({ type: "SELECT_SPONSOR", teamId: team.id, slot: "jersey", sponsorId })}
+      />
+
+      <OfferList
+        title="PATROCINADOR DE ESTADIO"
+        offers={stadiumOffers}
+        current={team.sponsors?.stadium}
+        onSelect={(sponsorId) => dispatch({ type: "SELECT_SPONSOR", teamId: team.id, slot: "stadium", sponsorId })}
+      />
     </View>
   );
 }
@@ -47,6 +78,7 @@ export default function SponsorScreen() {
 const styles = StyleSheet.create({
   h2: { fontSize: 13, fontWeight: "800", color: colors.text, marginBottom: 8, letterSpacing: 0.6 },
   dim: { color: colors.textDim, fontSize: 12 },
+  tvIncome: { color: colors.win, fontWeight: "800", fontSize: 18, marginTop: spacing.sm },
   offerRow: {
     flexDirection: "row",
     alignItems: "center",

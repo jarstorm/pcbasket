@@ -7,9 +7,11 @@ function baseState() {
     budget: 500000,
     roster: ["p1", "p2", "p3"],
     academy: [],
-    stadium: { name: "Arena A", level: 1, capacity: 8000, ticketPrice: 25 },
+    stadium: { name: "Arena A", level: 1, capacity: 8000, ticketPrice: 25, seasonTicketPrice: 375, seasonTicketHolders: 0 },
     staff: {},
-    sponsor: null,
+    sponsors: { jersey: null, stadium: null },
+    financeHistory: [],
+    tactics: { offense: "balanced", defense: "man" },
     record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
     lineup: { PG: "p1", SG: null, SF: null, PF: null, C: null },
   };
@@ -19,9 +21,11 @@ function baseState() {
     budget: 500000,
     roster: ["p4"],
     academy: [],
-    stadium: { name: "Arena B", level: 1, capacity: 8000, ticketPrice: 25 },
+    stadium: { name: "Arena B", level: 1, capacity: 8000, ticketPrice: 25, seasonTicketPrice: 375, seasonTicketHolders: 0 },
     staff: {},
-    sponsor: null,
+    sponsors: { jersey: null, stadium: null },
+    financeHistory: [],
+    tactics: { offense: "balanced", defense: "man" },
     record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
     lineup: { PG: "p4", SG: null, SF: null, PF: null, C: null },
   };
@@ -62,6 +66,9 @@ function baseState() {
     lastRoundResults: [],
     pendingContracts: [],
     log: [],
+    seasonYear: 2025,
+    currentDate: "2025-09-01",
+    preseasonWeeksLeft: 0,
     activeDivisionId: "primerafeb",
     otherDivisions: {
       acb: {
@@ -90,7 +97,91 @@ function baseState() {
   };
 }
 
+function dummyTeam(id) {
+  return {
+    id,
+    name: id,
+    stadium: { level: 1 },
+    staff: {},
+    roster: [],
+    lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
+    record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
+  };
+}
+
+// resolvePyramid's promotion playoff pool is positions 2-5 and relegation is
+// the bottom 2 — pad every division up to 10 teams (real divisions are
+// 14-18) so those two zones never overlap the way they would in a tiny
+// fixture, which would relegate and promote the same filler team.
+function withPlayoffSizedDivisions(state) {
+  const fillerIds = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"];
+  return {
+    ...state,
+    teams: [...state.teams, ...fillerIds.map(dummyTeam)],
+    otherDivisions: Object.fromEntries(
+      Object.entries(state.otherDivisions).map(([id, div]) => [
+        id,
+        { ...div, teams: [...div.teams, ...fillerIds.map((s) => dummyTeam(`${id}${s}`))] },
+      ])
+    ),
+  };
+}
+
 describe("reducer", () => {
+  it("SIM_ROUND never finds an academy prospect without a scout hired", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.academy).toEqual([]);
+    expect(team.scoutCooldown).toBeNull();
+  });
+
+  it("a scout on cooldown 1 finds a 16-22yo prospect this round and resets the cooldown", () => {
+    const state = baseState();
+    state.teams = state.teams.map((t) =>
+      t.id === "a" ? { ...t, staff: { scout: { tierId: "scout_2" } }, scoutCooldown: 1 } : t
+    );
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.academy).toHaveLength(1);
+    const prospect = next.playersById[team.academy[0]];
+    expect(prospect.age).toBeGreaterThanOrEqual(16);
+    expect(prospect.age).toBeLessThanOrEqual(22);
+    expect(team.scoutCooldown).toBeGreaterThanOrEqual(13);
+    expect(team.scoutCooldown).toBeLessThanOrEqual(26);
+  });
+
+  it("a scout with cooldown left just ticks down without finding anyone", () => {
+    const state = baseState();
+    state.teams = state.teams.map((t) =>
+      t.id === "a" ? { ...t, staff: { scout: { tierId: "scout_0" } }, scoutCooldown: 10 } : t
+    );
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.academy).toEqual([]);
+    expect(team.scoutCooldown).toBe(9);
+  });
+
+  it("firing the scout resets the cooldown so a new hire starts a fresh search", () => {
+    const state = baseState();
+    state.teams = state.teams.map((t) =>
+      t.id === "a" ? { ...t, staff: { scout: { tierId: "scout_0" } }, scoutCooldown: 5 } : t
+    );
+    const next = reducer(state, { type: "FIRE_STAFF_ROLE", teamId: "a", roleId: "scout" });
+    expect(next.teams.find((t) => t.id === "a").scoutCooldown).toBeNull();
+  });
+
+  it("SET_TACTIC updates the given kind and rejects an unknown value", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "SET_TACTIC", teamId: "a", kind: "offense", value: "exterior" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.tactics.offense).toBe("exterior");
+    expect(team.tactics.defense).toBe("man");
+
+    const rejected = reducer(state, { type: "SET_TACTIC", teamId: "a", kind: "offense", value: "nope" });
+    expect(rejected).toBe(state);
+  });
+
   it("SET_LINEUP clears the player's previous slot so nobody starts twice", () => {
     const state = baseState();
     const next = reducer(state, { type: "SET_LINEUP", teamId: "a", position: "SG", playerId: "p1" });
@@ -169,10 +260,17 @@ describe("reducer", () => {
     expect(team.budget).toBeLessThan(500000);
   });
 
-  it("SELECT_SPONSOR signs one of the available offers", () => {
+  it("SELECT_SPONSOR signs one of the available offers into the given slot", () => {
     const state = baseState();
-    const next = reducer(state, { type: "SELECT_SPONSOR", teamId: "a", sponsorId: "local" });
-    expect(next.teams.find((t) => t.id === "a").sponsor.id).toBe("local");
+    const next = reducer(state, {
+      type: "SELECT_SPONSOR",
+      teamId: "a",
+      slot: "jersey",
+      sponsorId: "jersey_local",
+    });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.sponsors.jersey.id).toBe("jersey_local");
+    expect(team.sponsors.stadium).toBeNull();
   });
 
   it("SIM_ROUND advances the round and records a result", () => {
@@ -181,6 +279,17 @@ describe("reducer", () => {
     expect(next.round).toBe(1);
     expect(next.lastRoundResults).toHaveLength(1);
     expect(next.results).toHaveLength(1);
+  });
+
+  it("SIM_ROUND records a financeHistory entry only for the user's own team", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const userTeam = next.teams.find((t) => t.id === "a");
+    const aiTeam = next.teams.find((t) => t.id === "b");
+    expect(userTeam.financeHistory).toHaveLength(1);
+    expect(userTeam.financeHistory[0]).toMatchObject({ round: 0, seasonYear: 2025 });
+    expect(userTeam.financeHistory[0].net).toBe(userTeam.financeHistory[0].income - userTeam.financeHistory[0].expenses);
+    expect(aiTeam.financeHistory).toEqual([]);
   });
 
   it("SIM_ROUND deducts player wages and stadium maintenance from the budget", () => {
@@ -200,7 +309,7 @@ describe("reducer", () => {
   });
 
   it("SIM_ROUND starts a new season after the last round: ages players and resets records", () => {
-    const state = { ...baseState(), round: 1 };
+    const state = { ...withPlayoffSizedDivisions(baseState()), round: 1 };
     const next = reducer(state, { type: "SIM_ROUND" });
     expect(next.round).toBe(0);
     expect(next.schedule.length).toBeGreaterThan(0);
@@ -212,7 +321,7 @@ describe("reducer", () => {
   });
 
   it("SIM_ROUND resolves promotion/relegation at season end, keeping the pyramid's team count constant", () => {
-    const state = { ...baseState(), round: 1 };
+    const state = { ...withPlayoffSizedDivisions(baseState()), round: 1 };
     const countTeams = (s) =>
       s.teams.length + Object.values(s.otherDivisions).reduce((sum, d) => sum + d.teams.length, 0);
     const before = countTeams(state);
@@ -232,7 +341,7 @@ describe("reducer", () => {
   });
 
   it("SIM_ROUND flags the user's team's expired contracts for renewal, but auto-renews AI teams", () => {
-    const state = { ...baseState(), round: 1 };
+    const state = { ...withPlayoffSizedDivisions(baseState()), round: 1 };
     state.playersById.p1.contractYears = 1; // hits 0 after this season's aging step
     state.playersById.p4.contractYears = 1;
     const next = reducer(state, { type: "SIM_ROUND" });
@@ -266,11 +375,96 @@ describe("reducer", () => {
     });
     const team = next.teams.find((t) => t.id === "a");
     expect(team.roster).not.toContain("p1");
+    expect(next.playersById.p1.teamId).toBeNull();
+  });
+
+  it("SIGN_FREE_AGENT adds a teamId-less player to the roster for free", () => {
+    const state = baseState();
+    state.playersById.p1 = { ...state.playersById.p1, teamId: null };
+    state.teams = state.teams.map((t) =>
+      t.id === "a" ? { ...t, roster: t.roster.filter((id) => id !== "p1") } : t
+    );
+    const budgetBefore = state.teams.find((t) => t.id === "a").budget;
+
+    const next = reducer(state, { type: "SIGN_FREE_AGENT", teamId: "a", playerId: "p1" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.roster).toContain("p1");
+    expect(team.budget).toBe(budgetBefore);
+    expect(next.playersById.p1.teamId).toBe("a");
+  });
+
+  it("SIGN_FREE_AGENT is a no-op for a player who still has a team", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "SIGN_FREE_AGENT", teamId: "b", playerId: "p1" });
+    expect(next).toBe(state);
   });
 
   it("LIST_PLAYER toggles the listed flag", () => {
     const state = baseState();
     const next = reducer(state, { type: "LIST_PLAYER", playerId: "p2", listed: true });
     expect(next.playersById.p2.listed).toBe(true);
+  });
+
+  it("SIM_ROUND is a no-op during preseason, ADVANCE_PRESEASON ticks the calendar instead", () => {
+    const state = { ...baseState(), preseasonWeeksLeft: 2, currentDate: "2025-07-01" };
+    const blocked = reducer(state, { type: "SIM_ROUND" });
+    expect(blocked).toBe(state);
+
+    const advanced = reducer(state, { type: "ADVANCE_PRESEASON" });
+    expect(advanced.preseasonWeeksLeft).toBe(1);
+    expect(advanced.currentDate).toBe("2025-07-08");
+
+    const done = reducer(advanced, { type: "ADVANCE_PRESEASON" });
+    expect(done.preseasonWeeksLeft).toBe(0);
+    const noopAfterDone = reducer(done, { type: "ADVANCE_PRESEASON" });
+    expect(noopAfterDone).toBe(done);
+  });
+
+  it("SIM_ROUND advances the fictional date by a week once preseason is over", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "SIM_ROUND" });
+    expect(next.currentDate).toBe("2025-09-08");
+  });
+
+  it("the last ADVANCE_PRESEASON tick locks in season ticket holders and pays the lump sum upfront", () => {
+    const state = { ...baseState(), preseasonWeeksLeft: 1 };
+    const budgetBefore = state.teams.find((t) => t.id === "a").budget;
+
+    const next = reducer(state, { type: "ADVANCE_PRESEASON" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(next.preseasonWeeksLeft).toBe(0);
+    expect(team.stadium.seasonTicketHolders).toBeGreaterThan(0);
+    expect(team.budget).toBeGreaterThan(budgetBefore);
+    expect(next.log[0].text).toMatch(/Abonos vendidos/);
+    expect(next.log[0].date).toBe(next.currentDate);
+  });
+
+  it("SET_SEASON_TICKET_PRICE updates and clamps the season ticket price", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "SET_SEASON_TICKET_PRICE", teamId: "a", price: 500 });
+    expect(next.teams.find((t) => t.id === "a").stadium.seasonTicketPrice).toBe(500);
+
+    const clamped = reducer(state, { type: "SET_SEASON_TICKET_PRICE", teamId: "a", price: 10 });
+    expect(clamped.teams.find((t) => t.id === "a").stadium.seasonTicketPrice).toBe(50);
+  });
+
+  it("BUILD_AMENITY upgrades one level at a time, each one pricier than the last", () => {
+    const state = baseState();
+    const level1 = reducer(state, { type: "BUILD_AMENITY", teamId: "a", amenityId: "shops" });
+    const team1 = level1.teams.find((t) => t.id === "a");
+    expect(team1.stadium.amenities.shops).toBe(1);
+
+    const level2 = reducer(level1, { type: "BUILD_AMENITY", teamId: "a", amenityId: "shops" });
+    const team2 = level2.teams.find((t) => t.id === "a");
+    expect(team2.stadium.amenities.shops).toBe(2);
+    expect(team1.budget - team2.budget).toBeGreaterThan(500000 - team1.budget);
+  });
+
+  it("pushLog keeps entries within the retention window and drops older ones", () => {
+    let state = baseState();
+    state = { ...state, log: [{ text: "old news", date: "2025-01-01" }] };
+    const next = reducer(state, { type: "BUY_PLAYER", buyerTeamId: "a", playerId: "p4" });
+    expect(next.log.some((e) => e.text === "old news")).toBe(false);
+    expect(next.log[0].date).toBe(state.currentDate);
   });
 });

@@ -33,13 +33,19 @@ export default function ContractsScreen() {
         </Text>
       </Card>
       {pendingPlayers.map((player) => (
-        <ContractOffer key={player.id} player={player} team={team} dispatch={dispatch} />
+        <ContractOffer
+          key={player.id}
+          player={player}
+          team={team}
+          dispatch={dispatch}
+          roundsPerSeason={state.schedule.length}
+        />
       ))}
     </View>
   );
 }
 
-function ContractOffer({ player, team, dispatch }) {
+function ContractOffer({ player, team, dispatch, roundsPerSeason }) {
   const [years, setYears] = useState(2);
   const [wage, setWage] = useState(player.wage);
 
@@ -47,7 +53,8 @@ function ContractOffer({ player, team, dispatch }) {
     <Card>
       <Text style={styles.name}>{player.name}</Text>
       <Text style={styles.dim}>
-        {player.age} años · OVR {player.overall} · sueldo actual ${player.wage.toLocaleString()}/jornada
+        {player.age} años · OVR {player.overall} · sueldo actual ${player.wage.toLocaleString()}/jornada ($
+        {(player.wage * roundsPerSeason).toLocaleString()}/año)
       </Text>
 
       <Text style={styles.label}>AÑOS</Text>
@@ -73,6 +80,7 @@ function ContractOffer({ player, team, dispatch }) {
           <Text style={styles.stepBtnText}>+</Text>
         </Pressable>
       </View>
+      <Text style={styles.dim}>${(wage * roundsPerSeason).toLocaleString()}/año</Text>
 
       <Button
         primary

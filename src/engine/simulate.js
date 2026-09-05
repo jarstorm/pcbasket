@@ -15,6 +15,58 @@ export function positionMismatchFactor(slotPos, playerPos) {
   return Math.max(0.4, 1 - distance * 0.15);
 }
 
+export const OFFENSE_TACTICS = {
+  balanced: { id: "balanced", label: "Equilibrado", desc: "Sin sesgo — rinde igual con cualquier quinteto." },
+  interior: { id: "interior", label: "Juego interior", desc: "Más puntos si el quinteto reboatea y físico fuerte; penaliza si no." },
+  exterior: { id: "exterior", label: "Juego exterior", desc: "Más puntos si el quinteto tira bien; penaliza si no." },
+};
+
+export const DEFENSE_TACTICS = {
+  man: { id: "man", label: "Hombre a hombre", desc: "Sin sesgo — rinde igual con cualquier quinteto." },
+  zone: { id: "zone", label: "Zona", desc: "Defensa algo mejor si el quinteto defiende bien; floja si no." },
+  press: { id: "press", label: "Presión", desc: "Fuerte si el quinteto defiende y es físico; floja si no." },
+};
+
+function startersAvgRating(team, playersById, key) {
+  const starters = Object.values(team.lineup)
+    .filter(Boolean)
+    .map((id) => playersById[id])
+    .filter(Boolean);
+  if (!starters.length) return 60;
+  return starters.reduce((sum, p) => sum + (p.ratings?.[key] ?? 60), 0) / starters.length;
+}
+
+// Tactics don't give a flat bonus — they're a bet on the roster you have.
+// "Interior"/"exterior" pay off only with the ratings they lean on, same for
+// "zona"/"presión" on defense; a mismatched pick actively costs you.
+export function offenseTacticBonus(team, playersById) {
+  const tactic = team.tactics?.offense || "balanced";
+  if (tactic === "interior") {
+    const reb = startersAvgRating(team, playersById, "rebounding");
+    const phys = startersAvgRating(team, playersById, "physical");
+    return ((reb + phys) / 2 - 60) * 0.1;
+  }
+  if (tactic === "exterior") {
+    const shooting = startersAvgRating(team, playersById, "shooting");
+    return (shooting - 60) * 0.12;
+  }
+  return 0;
+}
+
+export function defenseTacticBonus(team, playersById) {
+  const tactic = team.tactics?.defense || "man";
+  if (tactic === "zone") {
+    const defense = startersAvgRating(team, playersById, "defense");
+    return (defense - 60) * 0.08;
+  }
+  if (tactic === "press") {
+    const defense = startersAvgRating(team, playersById, "defense");
+    const phys = startersAvgRating(team, playersById, "physical");
+    return ((defense + phys) / 2 - 60) * 0.11;
+  }
+  return 0;
+}
+
 function teamStrength(team, playersById) {
   const starterEntries = Object.entries(team.lineup)
     .filter(([, id]) => id)
@@ -108,10 +160,10 @@ export function simulateMatch(homeTeam, awayTeam, playersById) {
   const awayStr = teamStrength(awayTeam, playersById);
 
   const base = 95;
-  const homeOffense = offenseBonus(homeTeam.staff || {});
-  const awayOffense = offenseBonus(awayTeam.staff || {});
-  const homeDefense = defenseBonus(homeTeam.staff || {});
-  const awayDefense = defenseBonus(awayTeam.staff || {});
+  const homeOffense = offenseBonus(homeTeam.staff || {}) + offenseTacticBonus(homeTeam, playersById);
+  const awayOffense = offenseBonus(awayTeam.staff || {}) + offenseTacticBonus(awayTeam, playersById);
+  const homeDefense = defenseBonus(homeTeam.staff || {}) + defenseTacticBonus(homeTeam, playersById);
+  const awayDefense = defenseBonus(awayTeam.staff || {}) + defenseTacticBonus(awayTeam, playersById);
   let homeScore = Math.max(
     60,
     Math.round(base + (homeStr - 65) * 0.9 + homeOffense - awayDefense + randNormal() * 8)

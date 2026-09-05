@@ -11,6 +11,7 @@ import {
   injuryRiskReduction,
   moraleBonus,
   scoutProspectChance,
+  scoutTierIndex,
   maintenanceReduction,
 } from "../staff";
 
@@ -50,6 +51,14 @@ describe("staff roles", () => {
     expect(scoutProspectChance({})).toBe(0);
     expect(maintenanceReduction({})).toBe(0);
     expect(injuryRecoveryChance({})).toBeCloseTo(0.1); // baseline recovery chance
+  });
+
+  it("scoutTierIndex reads the hired tier's rank, null with no scout", () => {
+    expect(scoutTierIndex({})).toBeNull();
+    const eliteTier = STAFF_ROLES.scout.tiers[2];
+    expect(scoutTierIndex({ scout: { tierId: eliteTier.id } })).toBe(2);
+    const basicTier = STAFF_ROLES.scout.tiers[0];
+    expect(scoutTierIndex({ scout: { tierId: basicTier.id } })).toBe(0);
   });
 
   it("higher tiers cost and pay more than lower ones for the same role", () => {

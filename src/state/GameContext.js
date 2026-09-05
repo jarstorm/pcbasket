@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateRealLeague, generateAcbDivision, generateSegundaFebDivision, makePlayer } from "../data/generate";
 import { generateSchedule } from "../engine/schedule";
 import { simulateBackgroundRound, resolvePyramid, findDivisionOf } from "../engine/pyramid";
-import { simulateMatch } from "../engine/simulate";
+import { simulateMatch, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
 import { getUpgradeTiers } from "../engine/stadium";
 import {
   getRoleTiers,
@@ -11,17 +11,56 @@ import {
   formRecoveryBonus,
   injuryRecoveryChance,
   moraleBonus,
-  scoutProspectChance,
+  scoutTierIndex,
 } from "../engine/staff";
 import { leaguePosition } from "../engine/standings";
-import { playerWageTotal, staffWageTotal, stadiumMaintenance, sponsorIncome, getSponsorOffers } from "../engine/finance";
+import {
+  playerWageTotal,
+  staffWageTotal,
+  stadiumMaintenance,
+  sponsorIncome,
+  getJerseySponsorOffers,
+  getStadiumSponsorOffers,
+  tvRightsIncome,
+} from "../engine/finance";
 import { seasonAgeStep, shouldRetire, evaluateContractOffer } from "../engine/career";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
+import { getAmenityOptions, amenityAttendanceBonus, amenityPriceTolerance } from "../engine/amenities";
 
 const SAVE_KEY = "pcbasket-save-v1";
 const SNAPSHOT_KEY = "pcbasket-snapshot-v1";
 const BASE_TICKET_PRICE = 25; // starting price in generate.js, reference for "reasonable"
 const MAX_ACADEMY_SIZE = 5;
+// The league proper (state.schedule) doesn't kick off until September — this
+// many fictional weeks of preseason come first so there's time to use the
+// market, staff and stadium screens before round 0 is playable.
+const PRESEASON_WEEKS = 6;
+const FIRST_SEASON_YEAR = 2025;
+const LOG_RETENTION_DAYS = 30;
+
+// Every log entry is dated so Dashboard can show only the last 5 and purge
+// anything older than a month — entries are matches against `currentDate`
+// (lexical comparison works fine on "YYYY-MM-DD" strings).
+function pushLog(currentDate, existingLog, messages) {
+  const list = Array.isArray(messages) ? messages : [messages];
+  const dated = list.map((text) => ({ text, date: currentDate }));
+  const cutoff = addDays(currentDate, -LOG_RETENTION_DAYS);
+  const kept = existingLog.filter((entry) => entry.date >= cutoff);
+  return [...dated, ...kept].slice(0, 200);
+}
+// Prospect quality by scout tier index (0=Básico, 1=Avanzado, 2=Élite) — a
+// better scout doesn't just find prospects faster, they find better ones.
+const SCOUT_TIER_RANGES = [
+  { base: [35, 55], spread: 20 },
+  { base: [45, 65], spread: 22 },
+  { base: [55, 78], spread: 25 },
+];
+
+function addDays(iso, days) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -35,13 +74,30 @@ function randInt(min, max) {
 function attendanceRate(team, teams) {
   const position = leaguePosition(team, teams);
   const positionFactor = teams.length > 1 ? 1 - (position - 1) / (teams.length - 1) : 1;
+  // Amenities raise the ticket price fans tolerate before staying home.
+  const priceReference = BASE_TICKET_PRICE + amenityPriceTolerance(team.stadium);
   const priceFactor = clamp(
-    1 - (Math.max(0, team.stadium.ticketPrice - BASE_TICKET_PRICE) / BASE_TICKET_PRICE) * 0.5,
+    1 - (Math.max(0, team.stadium.ticketPrice - priceReference) / priceReference) * 0.5,
     0.25,
     1
   );
-  const base = 0.35 + positionFactor * 0.35 + priceFactor * 0.2;
+  const base = 0.35 + positionFactor * 0.35 + priceFactor * 0.2 + amenityAttendanceBonus(team.stadium);
   return clamp(base + (Math.random() - 0.5) * 0.15, 0.15, 0.98);
+}
+
+// Season ticket holders lock in a chunk of capacity at the start of the
+// season (paid upfront, in ADVANCE_PRESEASON below) — no position factor,
+// since standings just reset and can't judge demand yet, only amenities and
+// how the season ticket price compares to a normal ticket's own reference.
+function seasonTicketRate(stadium) {
+  const priceReference = (BASE_TICKET_PRICE + amenityPriceTolerance(stadium)) * 15;
+  const priceFactor = clamp(
+    1 - (Math.max(0, (stadium.seasonTicketPrice || 0) - priceReference) / priceReference) * 0.6,
+    0.2,
+    1
+  );
+  const base = 0.35 + amenityAttendanceBonus(stadium) * 2;
+  return clamp(base * priceFactor, 0.1, 0.75);
 }
 
 // Backfills fields added after a save/snapshot was written, so old saves
@@ -93,17 +149,45 @@ function normalizeState(loaded) {
   );
   for (const p of extraPlayers) playersById[p.id] = p;
 
+  // Older saves predate the preseason/calendar system — treat them as
+  // already past preseason so they don't suddenly get gated on load.
+  const currentDate = loaded.currentDate ?? addDays(`${FIRST_SEASON_YEAR}-09-01`, loaded.round * 7);
+  // Even older saves stored log entries as plain strings with no date —
+  // stamp them with the save's current date rather than dropping them.
+  const log = (loaded.log ?? []).map((entry) =>
+    typeof entry === "string" ? { text: entry, date: currentDate } : entry
+  );
+
   return {
     ...loaded,
     teams: loaded.teams.map((t) => ({
       ...t,
       staff: t.staff && typeof t.staff.level === "undefined" ? t.staff : {},
-      sponsor: t.sponsor ?? null,
+      // Older saves had one generic sponsor slot — carry it forward as the
+      // jersey deal, the closest match, and start the stadium slot empty.
+      sponsors: t.sponsors ?? { jersey: t.sponsor ?? null, stadium: null },
+      stadium: {
+        ...t.stadium,
+        // Older saves stored amenities as a list of built ids (each one
+        // level 1); the current shape is a level (0-5) per amenity id.
+        amenities: Array.isArray(t.stadium.amenities)
+          ? Object.fromEntries(t.stadium.amenities.map((id) => [id, 1]))
+          : t.stadium.amenities ?? {},
+        seasonTicketPrice: t.stadium.seasonTicketPrice ?? t.stadium.ticketPrice * 15,
+        seasonTicketHolders: t.stadium.seasonTicketHolders ?? 0,
+      },
+      financeHistory: t.financeHistory ?? [],
+      tactics: t.tactics ?? { offense: "balanced", defense: "man" },
+      scoutCooldown: t.scoutCooldown ?? null,
     })),
     playersById,
     pendingContracts: loaded.pendingContracts ?? [],
     activeDivisionId: loaded.activeDivisionId ?? "primerafeb",
     otherDivisions,
+    log,
+    seasonYear: loaded.seasonYear ?? FIRST_SEASON_YEAR,
+    currentDate,
+    preseasonWeeksLeft: loaded.preseasonWeeksLeft ?? 0,
   };
 }
 
@@ -131,6 +215,9 @@ function freshGame() {
     lastRoundResults: [],
     pendingContracts: [],
     log: [],
+    seasonYear: FIRST_SEASON_YEAR,
+    currentDate: `${FIRST_SEASON_YEAR}-07-01`,
+    preseasonWeeksLeft: PRESEASON_WEEKS,
     activeDivisionId: "primerafeb",
     otherDivisions: {
       acb: {
@@ -166,6 +253,53 @@ export function reducer(state, action) {
     case "LOAD":
       return action.state;
 
+    case "ADVANCE_PRESEASON": {
+      if ((state.preseasonWeeksLeft || 0) <= 0) return state;
+      const preseasonWeeksLeft = state.preseasonWeeksLeft - 1;
+      const currentDate = addDays(state.currentDate, 7);
+
+      // Last tick before the league kicks off: lock in this season's season
+      // ticket holders (paid upfront, one lump sum) for every team in the
+      // active division — after this the remaining "walk-up" capacity is
+      // what SIM_ROUND sells game by game.
+      if (preseasonWeeksLeft > 0) {
+        return { ...state, preseasonWeeksLeft, currentDate };
+      }
+
+      let log = state.log;
+      const teams = state.teams.map((t) => {
+        const holders = Math.round(t.stadium.capacity * seasonTicketRate(t.stadium));
+        const lumpSum = holders * t.stadium.seasonTicketPrice;
+        if (t.id === state.userTeamId) {
+          log = pushLog(
+            currentDate,
+            log,
+            `Abonos vendidos: ${holders.toLocaleString()} (+$${lumpSum.toLocaleString()})`
+          );
+        }
+        return {
+          ...t,
+          budget: t.budget + lumpSum,
+          stadium: { ...t.stadium, seasonTicketHolders: holders },
+        };
+      });
+
+      return { ...state, preseasonWeeksLeft, currentDate, teams, log };
+    }
+
+    case "SET_TACTIC": {
+      const { teamId, kind, value } = action;
+      const team = state.teams.find((t) => t.id === teamId);
+      if (!team) return state;
+      if (kind !== "offense" && kind !== "defense") return state;
+      const validValues = kind === "offense" ? OFFENSE_TACTICS : DEFENSE_TACTICS;
+      if (!validValues[value]) return state;
+      const teams = state.teams.map((t) =>
+        t.id === teamId ? { ...t, tactics: { ...t.tactics, [kind]: value } } : t
+      );
+      return { ...state, teams };
+    }
+
     case "SET_LINEUP": {
       const { teamId, position, playerId } = action;
       const team = state.teams.find((t) => t.id === teamId);
@@ -180,10 +314,14 @@ export function reducer(state, action) {
       );
       nextLineup[position] = playerId;
 
-      const foreignStarters = Object.values(nextLineup).filter((id) =>
-        isForeign(id && state.playersById[id])
-      ).length;
-      if (foreignStarters > FOREIGN_PLAYER_QUOTA) return state;
+      const countForeign = (lineup) =>
+        Object.values(lineup).filter((id) => isForeign(id && state.playersById[id])).length;
+      const foreignBefore = countForeign(team.lineup);
+      const foreignAfter = countForeign(nextLineup);
+      // Block moves that make the quota worse, but always allow fixing an
+      // already-over-quota lineup (e.g. one inherited from auto-generation)
+      // one substitution at a time.
+      if (foreignAfter > FOREIGN_PLAYER_QUOTA && foreignAfter > foreignBefore) return state;
 
       const teams = state.teams.map((t) => (t.id === teamId ? { ...t, lineup: nextLineup } : t));
       return { ...state, teams };
@@ -226,7 +364,29 @@ export function reducer(state, action) {
         ...state,
         teams,
         playersById,
-        log: [`${player.name} fichado por ${buyer.name} por $${price.toLocaleString()}`, ...state.log].slice(0, 30),
+        log: pushLog(state.currentDate, state.log, `${player.name} fichado por ${buyer.name} por $${price.toLocaleString()}`),
+      };
+    }
+
+    case "SIGN_FREE_AGENT": {
+      const { teamId, playerId } = action;
+      const player = state.playersById[playerId];
+      const team = state.teams.find((t) => t.id === teamId);
+      if (!player || !team || player.teamId !== null || player.retired) return state;
+      if (team.roster.length >= 15) return state;
+
+      const teams = state.teams.map((t) =>
+        t.id === teamId ? { ...t, roster: [...t.roster, playerId] } : t
+      );
+      const playersById = {
+        ...state.playersById,
+        [playerId]: { ...player, teamId, contractYears: player.contractYears || 2 },
+      };
+      return {
+        ...state,
+        teams,
+        playersById,
+        log: pushLog(state.currentDate, state.log, `${player.name} fichado como agente libre por ${team.name}`),
       };
     }
 
@@ -256,24 +416,27 @@ export function reducer(state, action) {
           ...state,
           playersById,
           pendingContracts: state.pendingContracts.filter((id) => id !== playerId),
-          log: [
-            `${player.name} renovó ${offeredYears} año(s) por $${offeredWage.toLocaleString()}/jornada`,
-            ...state.log,
-          ].slice(0, 30),
+          log: pushLog(
+            state.currentDate,
+            state.log,
+            `${player.name} renovó ${offeredYears} año(s) por $${offeredWage.toLocaleString()}/jornada`
+          ),
         };
       }
 
       if (outcome.result === "counter") {
         return {
           ...state,
-          log: [
-            `${player.name} pide al menos $${outcome.counterWage.toLocaleString()}/jornada`,
-            ...state.log,
-          ].slice(0, 30),
+          log: pushLog(
+            state.currentDate,
+            state.log,
+            `${player.name} pide al menos $${outcome.counterWage.toLocaleString()}/jornada`
+          ),
         };
       }
 
-      // "reject" or "retiring": the player leaves the roster.
+      // "reject": the player leaves the roster and becomes a free agent,
+      // signable by anyone from the market. "retiring": leaves for good.
       const teams = state.teams.map((t) =>
         t.id === teamId
           ? {
@@ -285,14 +448,23 @@ export function reducer(state, action) {
             }
           : t
       );
+      const playersById = {
+        ...state.playersById,
+        [playerId]:
+          outcome.result === "retiring"
+            ? { ...player, teamId: null, retired: true }
+            : { ...player, teamId: null, listed: false },
+      };
       return {
         ...state,
         teams,
+        playersById,
         pendingContracts: state.pendingContracts.filter((id) => id !== playerId),
-        log: [
-          `${player.name} ${outcome.result === "retiring" ? "se retiró" : "rechazó la renovación y se marchó"}`,
-          ...state.log,
-        ].slice(0, 30),
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `${player.name} ${outcome.result === "retiring" ? "se retiró" : "rechazó la renovación y quedó libre"}`
+        ),
       };
     }
 
@@ -318,7 +490,7 @@ export function reducer(state, action) {
         ...state,
         teams,
         playersById,
-        log: [`${state.playersById[prospectId].name} promovido al primer equipo`, ...state.log].slice(0, 30),
+        log: pushLog(state.currentDate, state.log, `${state.playersById[prospectId].name} promovido al primer equipo`),
       };
     }
 
@@ -346,7 +518,33 @@ export function reducer(state, action) {
       return {
         ...state,
         teams,
-        log: [`${team.name} amplió su estadio: ${tier.label}`, ...state.log].slice(0, 30),
+        log: pushLog(state.currentDate, state.log, `${team.name} amplió su estadio: ${tier.label}`),
+      };
+    }
+
+    case "BUILD_AMENITY": {
+      const { teamId, amenityId } = action;
+      const team = state.teams.find((t) => t.id === teamId);
+      if (!team) return state;
+      const option = getAmenityOptions(team.stadium).find((a) => a.id === amenityId);
+      if (!option || option.maxed) return state;
+      if (team.budget < option.cost) return state;
+      const teams = state.teams.map((t) =>
+        t.id === teamId
+          ? {
+              ...t,
+              budget: t.budget - option.cost,
+              stadium: {
+                ...t.stadium,
+                amenities: { ...(t.stadium.amenities || {}), [amenityId]: option.level + 1 },
+              },
+            }
+          : t
+      );
+      return {
+        ...state,
+        teams,
+        log: pushLog(state.currentDate, state.log, `${team.name}: ${option.label} → ${option.nextTierName}`),
       };
     }
 
@@ -359,13 +557,19 @@ export function reducer(state, action) {
       if (team.budget < tier.hireCost) return state;
       const teams = state.teams.map((t) =>
         t.id === teamId
-          ? { ...t, budget: t.budget - tier.hireCost, staff: { ...t.staff, [roleId]: { tierId } } }
+          ? {
+              ...t,
+              budget: t.budget - tier.hireCost,
+              staff: { ...t.staff, [roleId]: { tierId } },
+              // A newly hired scout starts a fresh search cycle.
+              scoutCooldown: roleId === "scout" ? null : t.scoutCooldown,
+            }
           : t
       );
       return {
         ...state,
         teams,
-        log: [`${team.name} contrató: ${tier.label}`, ...state.log].slice(0, 30),
+        log: pushLog(state.currentDate, state.log, `${team.name} contrató: ${tier.label}`),
       };
     }
 
@@ -378,30 +582,39 @@ export function reducer(state, action) {
       const severance = tier.wage * state.schedule.length;
       const teams = state.teams.map((t) =>
         t.id === teamId
-          ? { ...t, budget: t.budget - severance, staff: { ...t.staff, [roleId]: null } }
+          ? {
+              ...t,
+              budget: t.budget - severance,
+              staff: { ...t.staff, [roleId]: null },
+              scoutCooldown: roleId === "scout" ? null : t.scoutCooldown,
+            }
           : t
       );
       return {
         ...state,
         teams,
-        log: [
-          `${team.name} despidió a: ${tier.label} (indemnización $${severance.toLocaleString()})`,
-          ...state.log,
-        ].slice(0, 30),
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `${team.name} despidió a: ${tier.label} (indemnización $${severance.toLocaleString()})`
+        ),
       };
     }
 
     case "SELECT_SPONSOR": {
-      const { teamId, sponsorId } = action;
+      const { teamId, slot, sponsorId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const offer = getSponsorOffers(team, state.teams).find((s) => s.id === sponsorId);
+      const offers = slot === "stadium" ? getStadiumSponsorOffers(team, state.teams) : getJerseySponsorOffers(team, state.teams);
+      const offer = offers.find((s) => s.id === sponsorId);
       if (!offer) return state;
-      const teams = state.teams.map((t) => (t.id === teamId ? { ...t, sponsor: offer } : t));
+      const teams = state.teams.map((t) =>
+        t.id === teamId ? { ...t, sponsors: { ...t.sponsors, [slot]: offer } } : t
+      );
       return {
         ...state,
         teams,
-        log: [`${team.name} firmó con ${offer.label}`, ...state.log].slice(0, 30),
+        log: pushLog(state.currentDate, state.log, `${team.name} firmó con ${offer.label}`),
       };
     }
 
@@ -416,19 +629,36 @@ export function reducer(state, action) {
       return { ...state, teams };
     }
 
+    case "SET_SEASON_TICKET_PRICE": {
+      const { teamId, price } = action;
+      const team = state.teams.find((t) => t.id === teamId);
+      if (!team) return state;
+      const seasonTicketPrice = clamp(Math.round(price), 50, 3000);
+      const teams = state.teams.map((t) =>
+        t.id === teamId ? { ...t, stadium: { ...t.stadium, seasonTicketPrice } } : t
+      );
+      return { ...state, teams };
+    }
+
     case "SIM_ROUND": {
       if (state.round >= state.schedule.length) return state;
+      if ((state.preseasonWeeksLeft || 0) > 0) return state;
       const round = state.schedule[state.round];
       let teamsById = Object.fromEntries(state.teams.map((t) => [t.id, t]));
       const roundResults = [];
       let playersById = { ...state.playersById };
       const teamUpdates = {};
+      // Staff only "speak up" in the news feed for discrete events on the
+      // user's own team (recurring passive bonuses stay silent — a message
+      // every round for every hired role would drown out everything else).
+      const roundLog = [];
 
-      // Players listed for sale have a small chance each round of being
-      // bought by another team, before this round's matches are simulated.
+      // Players listed for sale have a decent chance each round of being
+      // bought by another team (so listing one reliably sells within a few
+      // rounds, not sits forever), resolved before this round's matches.
       for (const player of Object.values(playersById)) {
         if (!player.listed) continue;
-        if (Math.random() >= 0.05) continue;
+        if (Math.random() >= 0.25) continue;
         const seller = teamsById[player.teamId];
         if (!seller) continue;
         const candidates = Object.values(teamsById).filter(
@@ -461,8 +691,12 @@ export function reducer(state, action) {
         const result = simulateMatch(home, away, playersById);
         roundResults.push(result);
 
+        // Season ticket holders already paid upfront (see ADVANCE_PRESEASON)
+        // and always show up — only the remaining walk-up capacity is sold
+        // game by game, subject to the usual attendance swings.
+        const walkUpCapacity = Math.max(0, home.stadium.capacity - (home.stadium.seasonTicketHolders || 0));
         const ticketRevenue = Math.round(
-          home.stadium.capacity * attendanceRate(home, state.teams) * home.stadium.ticketPrice
+          walkUpCapacity * attendanceRate(home, state.teams) * home.stadium.ticketPrice
         );
 
         for (const ev of result.injuryEvents) {
@@ -470,6 +704,7 @@ export function reducer(state, action) {
         }
 
         const newProspects = { home: null, away: null };
+        const scoutCooldowns = { home: null, away: null };
         for (const teamRef of ["home", "away"]) {
           const team = teamRef === "home" ? home : away;
           const staff = team.staff || {};
@@ -494,6 +729,9 @@ export function reducer(state, action) {
               next = { ...next, form: clamp((next.form ?? 99) + 3 + recovery, 40, 99) };
               if (next.injured && Math.random() < recoverChance) {
                 next = { ...next, injured: false };
+                if (team.id === state.userTeamId) {
+                  roundLog.push(`El fisioterapeuta recuperó a ${next.name} de su lesión.`);
+                }
               }
             }
             if (moraleBump > 0) {
@@ -502,54 +740,103 @@ export function reducer(state, action) {
             playersById[pid] = next;
           }
 
-          const prospectChance = scoutProspectChance(staff);
-          if (prospectChance > 0 && team.academy.length < MAX_ACADEMY_SIZE && Math.random() < prospectChance) {
-            const prospect = makePlayer({
-              age: randInt(16, 19),
-              base: randInt(35, 55),
-              spread: 20,
-              isProspect: true,
-              teamId: team.id,
-            });
-            playersById[prospect.id] = prospect;
-            newProspects[teamRef] = prospect.id;
+          // A scout takes a real search cycle (3-6 months, i.e. ~13-26 weekly
+          // rounds) to dig up one prospect — not a per-round lottery. Better
+          // tiers find better raw talent, but nobody scouts a 15-year-old or
+          // a 23-year-old "prospect".
+          const tierIndex = scoutTierIndex(staff);
+          if (tierIndex === null) {
+            scoutCooldowns[teamRef] = null;
+          } else {
+            let cooldown = team.scoutCooldown == null ? randInt(13, 26) : team.scoutCooldown - 1;
+            if (cooldown <= 0) {
+              if (team.academy.length < MAX_ACADEMY_SIZE) {
+                const range = SCOUT_TIER_RANGES[tierIndex];
+                const prospect = makePlayer({
+                  age: randInt(16, 22),
+                  base: randInt(range.base[0], range.base[1]),
+                  spread: range.spread,
+                  isProspect: true,
+                  teamId: team.id,
+                });
+                playersById[prospect.id] = prospect;
+                newProspects[teamRef] = prospect.id;
+                cooldown = randInt(13, 26);
+                if (team.id === state.userTeamId) {
+                  roundLog.push(`El ojeador encontró un nuevo prospecto de cantera: ${prospect.name}.`);
+                }
+              } else {
+                cooldown = 1; // academy full — retry as soon as there's room
+              }
+            }
+            scoutCooldowns[teamRef] = cooldown;
           }
         }
 
+        const sponsorAndTvIncome = (t) =>
+          sponsorIncome(t.sponsors?.jersey) +
+          sponsorIncome(t.sponsors?.stadium) +
+          tvRightsIncome(state.activeDivisionId, t, state.teams);
+
         const homeWage = playerWageTotal(home, playersById) + staffWageTotal(home.staff || {});
         const homeMaintenance = stadiumMaintenance(home.stadium, home.staff || {});
-        const homeNet = ticketRevenue + sponsorIncome(home.sponsor) - homeWage - homeMaintenance;
+        const homeIncome = ticketRevenue + sponsorAndTvIncome(home);
+        const homeExpenses = homeWage + homeMaintenance;
 
         const awayWage = playerWageTotal(away, playersById) + staffWageTotal(away.staff || {});
         const awayMaintenance = stadiumMaintenance(away.stadium, away.staff || {});
-        const awayNet = sponsorIncome(away.sponsor) - awayWage - awayMaintenance;
+        const awayIncome = sponsorAndTvIncome(away);
+        const awayExpenses = awayWage + awayMaintenance;
 
         teamUpdates[homeId] = {
           wins: (teamUpdates[homeId]?.wins || 0) + (result.homeScore > result.awayScore ? 1 : 0),
           losses: (teamUpdates[homeId]?.losses || 0) + (result.homeScore < result.awayScore ? 1 : 0),
           pf: (teamUpdates[homeId]?.pf || 0) + result.homeScore,
           pa: (teamUpdates[homeId]?.pa || 0) + result.awayScore,
-          netIncome: homeNet,
+          netIncome: homeIncome - homeExpenses,
+          income: homeIncome,
+          expenses: homeExpenses,
           ticketRevenue,
           newProspectId: newProspects.home,
+          scoutCooldown: scoutCooldowns.home,
         };
         teamUpdates[awayId] = {
           wins: (teamUpdates[awayId]?.wins || 0) + (result.awayScore > result.homeScore ? 1 : 0),
           losses: (teamUpdates[awayId]?.losses || 0) + (result.awayScore < result.homeScore ? 1 : 0),
           pf: (teamUpdates[awayId]?.pf || 0) + result.awayScore,
           pa: (teamUpdates[awayId]?.pa || 0) + result.homeScore,
-          netIncome: awayNet,
+          netIncome: awayIncome - awayExpenses,
+          income: awayIncome,
+          expenses: awayExpenses,
           ticketRevenue: 0,
           newProspectId: newProspects.away,
+          scoutCooldown: scoutCooldowns.away,
         };
       }
 
       const teams = Object.values(teamsById).map((t) => {
         const upd = teamUpdates[t.id];
         if (!upd) return t;
+        const nextBudget = t.budget + (upd.netIncome || 0);
+        const financeHistory =
+          t.id === state.userTeamId
+            ? [
+                ...(t.financeHistory || []),
+                {
+                  round: state.round,
+                  seasonYear: state.seasonYear || FIRST_SEASON_YEAR,
+                  income: upd.income,
+                  expenses: upd.expenses,
+                  net: upd.netIncome,
+                  budget: nextBudget,
+                },
+              ].slice(-120)
+            : t.financeHistory;
         return {
           ...t,
-          budget: t.budget + (upd.netIncome || 0),
+          budget: nextBudget,
+          financeHistory,
+          scoutCooldown: upd.scoutCooldown,
           lastTicketRevenue: upd.ticketRevenue || 0,
           academy: upd.newProspectId ? [...t.academy, upd.newProspectId] : t.academy,
           record: {
@@ -574,6 +861,7 @@ export function reducer(state, action) {
 
       const nextRound = state.round + 1;
       if (nextRound < state.schedule.length) {
+        const roundDate = addDays(state.currentDate, 7);
         return {
           ...state,
           teams,
@@ -582,6 +870,8 @@ export function reducer(state, action) {
           round: nextRound,
           results: [...state.results, ...roundResults],
           lastRoundResults: roundResults,
+          currentDate: roundDate,
+          log: roundLog.length ? pushLog(roundDate, state.log, roundLog) : state.log,
         };
       }
 
@@ -658,15 +948,18 @@ export function reducer(state, action) {
       );
 
       const movedDivision = newActiveDivisionId !== state.activeDivisionId;
-      const log = [
+      const nextSeasonYear = (state.seasonYear || FIRST_SEASON_YEAR) + 1;
+      const nextSeasonDate = `${nextSeasonYear}-07-01`;
+
+      const messages = [
+        ...roundLog,
         retiredNames.length
           ? `Nueva temporada. Se retiran: ${retiredNames.join(", ")}.`
           : "Nueva temporada.",
-        ...state.log,
       ];
       if (movedDivision) {
         const divisionName = newActive.name || newActiveDivisionId;
-        log.unshift(`¡Tu equipo cambia de categoría! Ahora juegas en ${divisionName}.`);
+        messages.unshift(`¡Tu equipo cambia de categoría! Ahora juegas en ${divisionName}.`);
       }
 
       return {
@@ -680,7 +973,10 @@ export function reducer(state, action) {
         pendingContracts,
         activeDivisionId: newActiveDivisionId,
         otherDivisions: newOtherDivisions,
-        log: log.slice(0, 30),
+        log: pushLog(nextSeasonDate, state.log, messages),
+        seasonYear: nextSeasonYear,
+        currentDate: nextSeasonDate,
+        preseasonWeeksLeft: PRESEASON_WEEKS,
       };
     }
 

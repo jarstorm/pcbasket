@@ -18,6 +18,7 @@ export default function PyramidScreen() {
 
   const [tab, setTab] = useState(state.activeDivisionId);
   const division = divisionsById[tab] || divisionsById[state.activeDivisionId];
+  const viewingOwn = tab === state.activeDivisionId;
 
   const standings = sortStandings(division.teams);
   const rows = standings.map((t, i) => ({
@@ -27,13 +28,29 @@ export default function PyramidScreen() {
     diff: t.record.pointsFor - t.record.pointsAgainst,
   }));
 
+  // Matches resolvePyramid: 1st promotes directly, 2nd-5th contest the
+  // second promotion spot in a playoff, and the bottom 2 relegate directly.
+  const divisionIndex = DIVISION_ORDER.indexOf(tab);
+  const canPromote = divisionIndex > 0;
+  const canRelegate = divisionIndex < DIVISION_ORDER.length - 1;
+
+  const rowStyle = (t) => {
+    const s = [];
+    if (canPromote && t.pos === 1) s.push(styles.promotionRow);
+    else if (canPromote && t.pos >= 2 && t.pos <= 5) s.push(styles.playoffRow);
+    if (canRelegate && t.pos > rows.length - 2) s.push(styles.relegationRow);
+    if (t.id === state.userTeamId) s.push(styles.meRow);
+    return s;
+  };
+
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>PIRÁMIDE DE LIGAS</Text>
+        <Text style={styles.h2}>OTRAS LIGAS</Text>
         <Text style={styles.dim}>
           Tu equipo juega en {DIVISION_META[state.activeDivisionId].name}. Al final de cada
-          temporada sube el primero de cada categoría y baja el último de la de arriba.
+          temporada suben 2 equipos por categoría (1º directo + 1 por playoff entre el 2º-5º) y
+          bajan los 2 últimos de la de arriba.
         </Text>
         <View style={styles.tabRow}>
           {DIVISION_ORDER.map((id) => (
@@ -53,6 +70,11 @@ export default function PyramidScreen() {
 
       <Card>
         <Text style={styles.h2}>{division.name.toUpperCase()}</Text>
+        {viewingOwn && (
+          <Text style={styles.dim}>
+            Jornada {state.round} de {state.schedule.length}
+          </Text>
+        )}
         <Table
           columns={[
             { key: "pos", label: "#", width: 40 },
@@ -70,6 +92,8 @@ export default function PyramidScreen() {
             { key: "pj", label: "PJ", width: 50 },
             { key: "wins", label: "V", width: 40, render: (t) => <Text style={styles.cellText}>{t.record.wins}</Text> },
             { key: "losses", label: "D", width: 40, render: (t) => <Text style={styles.cellText}>{t.record.losses}</Text> },
+            { key: "pointsFor", label: "PF", width: 60, render: (t) => <Text style={styles.cellText}>{t.record.pointsFor}</Text> },
+            { key: "pointsAgainst", label: "PC", width: 60, render: (t) => <Text style={styles.cellText}>{t.record.pointsAgainst}</Text> },
             {
               key: "diff",
               label: "Dif",
@@ -79,8 +103,32 @@ export default function PyramidScreen() {
           ]}
           data={rows}
           rowKey={(t) => t.id}
-          rowStyle={(t) => (t.id === state.userTeamId ? styles.meRow : null)}
+          rowStyle={rowStyle}
         />
+        <View style={styles.legendRow}>
+          {canPromote && (
+            <View style={styles.legendItem}>
+              <View style={[styles.legendSwatch, { backgroundColor: colors.win }]} />
+              <Text style={styles.legendText}>Asciende directo</Text>
+            </View>
+          )}
+          {canPromote && (
+            <View style={styles.legendItem}>
+              <View style={[styles.legendSwatch, { backgroundColor: "rgba(62, 207, 126, 0.45)" }]} />
+              <Text style={styles.legendText}>Playoff ascenso</Text>
+            </View>
+          )}
+          {canRelegate && (
+            <View style={styles.legendItem}>
+              <View style={[styles.legendSwatch, { backgroundColor: colors.loss }]} />
+              <Text style={styles.legendText}>Desciende directo</Text>
+            </View>
+          )}
+          <View style={styles.legendItem}>
+            <View style={[styles.legendSwatch, { backgroundColor: colors.accent }]} />
+            <Text style={styles.legendText}>Tu equipo</Text>
+          </View>
+        </View>
       </Card>
     </View>
   );
@@ -92,6 +140,13 @@ const styles = StyleSheet.create({
   cellText: { color: colors.text, fontSize: 13 },
   teamCell: { flexDirection: "row", alignItems: "center", gap: 8, flexShrink: 1 },
   meRow: { backgroundColor: "rgba(255, 122, 41, 0.08)" },
+  promotionRow: { borderLeftWidth: 4, borderLeftColor: colors.win },
+  playoffRow: { borderLeftWidth: 4, borderLeftColor: "rgba(62, 207, 126, 0.45)" },
+  relegationRow: { borderLeftWidth: 4, borderLeftColor: colors.loss },
+  legendRow: { flexDirection: "row", gap: spacing.md, marginTop: spacing.sm, flexWrap: "wrap" },
+  legendItem: { flexDirection: "row", alignItems: "center", gap: 5 },
+  legendSwatch: { width: 10, height: 10, borderRadius: 2 },
+  legendText: { color: colors.textDim, fontSize: 11, fontWeight: "700" },
   tabRow: { flexDirection: "row", gap: spacing.sm },
   tabBtn: {
     flex: 1,

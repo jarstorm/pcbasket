@@ -19,6 +19,11 @@ export default function AcademyScreen() {
         Jóvenes promesas del club. Promociónalos al primer equipo cuando tengas hueco en la plantilla
         (máx. 15 jugadores).
       </Text>
+      {!team.staff?.scout && (
+        <Text style={styles.warning}>
+          ⚠ Sin Ojeador y Cantera contratado no aparecen nuevos prospectos — contrátalo en Personal.
+        </Text>
+      )}
       {prospects.length === 0 && <Text style={styles.dim}>No hay prospectos disponibles.</Text>}
       <Table
         columns={[
@@ -52,5 +57,6 @@ export default function AcademyScreen() {
 const styles = StyleSheet.create({
   h2: { fontSize: 17, fontWeight: "700", color: colors.text, marginBottom: 4 },
   dim: { color: colors.textDim, fontSize: 13, marginBottom: spacing.sm },
+  warning: { color: colors.accent, fontSize: 12, fontWeight: "700", marginBottom: spacing.sm },
   cellText: { color: colors.text, fontSize: 13 },
 });

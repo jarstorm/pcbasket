@@ -68,6 +68,32 @@ function rebuildSeason(division) {
   };
 }
 
+// Matches the real FEB rules: 2 promotion spots out of Primera FEB/Segunda
+// FEB (1st place goes up directly, the 2nd spot is a playoff among the next
+// 4 best), and 2 direct relegation spots into ACB/Primera FEB (no playout —
+// that only applies to Segunda FEB's own relegation to Tercera FEB, a tier
+// this game doesn't model).
+const RELEGATION_COUNT = 2;
+
+// A single win-or-go-home game, not a coin flip — the better-seeded team is
+// still favored, just not guaranteed.
+function singleGameWinner(a, b, favoriteEdge = 0.65) {
+  return Math.random() < favoriteEdge ? a : b;
+}
+
+// standings[0] auto-promotes; standings[1..4] (positions 2-5) contest the
+// second spot in a 4-team single-elimination bracket seeded 2v5 / 3v4.
+function resolvePromotionPlayoff(standings) {
+  const [, seed2, seed3, seed4, seed5] = standings;
+  const finalistA = singleGameWinner(seed2, seed5);
+  const finalistB = singleGameWinner(seed3, seed4);
+  return singleGameWinner(finalistA, finalistB, 0.5);
+}
+
+function promotedPair(standings) {
+  return [standings[0], resolvePromotionPlayoff(standings)];
+}
+
 // Resolves promotion/relegation at both tier boundaries (ACB/Primera FEB,
 // Primera FEB/Segunda FEB) from each division's current standings — both
 // boundaries computed off the ORIGINAL standings at once (not chained), so
@@ -80,22 +106,26 @@ export function resolvePyramid(divisions) {
   const primeraStandings = sortStandings(primerafeb.teams);
   const segundaStandings = sortStandings(segundafeb.teams);
 
-  const acbRelegated = acbStandings[acbStandings.length - 1];
-  const primeraPromoted = primeraStandings[0];
-  const primeraRelegated = primeraStandings[primeraStandings.length - 1];
-  const segundaPromoted = segundaStandings[0];
+  const acbRelegated = acbStandings.slice(-RELEGATION_COUNT);
+  const primeraPromoted = promotedPair(primeraStandings);
+  const primeraRelegated = primeraStandings.slice(-RELEGATION_COUNT);
+  const segundaPromoted = promotedPair(segundaStandings);
 
-  const newAcbTeams = acbRelegated
-    ? acb.teams.map((t) => (t.id === acbRelegated.id ? primeraPromoted : t))
-    : acb.teams;
-  const newPrimeraTeams = primerafeb.teams.map((t) => {
-    if (primeraPromoted && t.id === primeraPromoted.id) return acbRelegated || t;
-    if (primeraRelegated && t.id === primeraRelegated.id) return segundaPromoted || t;
-    return t;
-  });
-  const newSegundaTeams = segundaPromoted
-    ? segundafeb.teams.map((t) => (t.id === segundaPromoted.id ? primeraRelegated : t))
-    : segundafeb.teams;
+  const acbRelegatedIds = new Set(acbRelegated.map((t) => t.id));
+  const primeraPromotedIds = new Set(primeraPromoted.map((t) => t.id));
+  const primeraRelegatedIds = new Set(primeraRelegated.map((t) => t.id));
+  const segundaPromotedIds = new Set(segundaPromoted.map((t) => t.id));
+
+  const newAcbTeams = [...acb.teams.filter((t) => !acbRelegatedIds.has(t.id)), ...primeraPromoted];
+  const newPrimeraTeams = [
+    ...primerafeb.teams.filter((t) => !primeraPromotedIds.has(t.id) && !primeraRelegatedIds.has(t.id)),
+    ...acbRelegated,
+    ...segundaPromoted,
+  ];
+  const newSegundaTeams = [
+    ...segundafeb.teams.filter((t) => !segundaPromotedIds.has(t.id)),
+    ...primeraRelegated,
+  ];
 
   return {
     acb: rebuildSeason({ ...acb, teams: newAcbTeams }),

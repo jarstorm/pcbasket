@@ -7,7 +7,6 @@ import { GameProvider, useGame } from "./src/state/GameContext";
 import TeamPicker from "./src/screens/TeamPicker";
 import Dashboard from "./src/screens/Dashboard";
 import RosterScreen from "./src/screens/RosterScreen";
-import LeagueScreen from "./src/screens/LeagueScreen";
 import TransferMarket from "./src/screens/TransferMarket";
 import AcademyScreen from "./src/screens/AcademyScreen";
 import StadiumScreen from "./src/screens/StadiumScreen";
@@ -19,44 +18,59 @@ import PyramidScreen from "./src/screens/PyramidScreen";
 import MainMenu from "./src/screens/MainMenu";
 import MatchResult from "./src/screens/MatchResult";
 import TeamLogo from "./src/components/TeamLogo";
-import { colors, spacing } from "./src/theme";
+import BottomNav from "./src/components/BottomNav";
+import { colors, spacing, radii } from "./src/theme";
 
-const QUADRANTS = [
-  {
-    header: "Clasificación",
-    items: [
-      { id: "league", label: "Liga" },
-      { id: "pyramid", label: "Pirámide" },
-    ],
+// Bottom nav groups related screens under one tab; a tab with more than one
+// screen shows its own pill sub-nav under the topbar (see HubTabs below).
+const HUBS = {
+  standings: {
+    label: "Clasificación",
+    icon: "🏆",
+    screens: [{ id: "pyramid", label: "Liga" }],
   },
-  {
-    header: "Plantilla",
-    items: [
+  roster: {
+    label: "Plantilla",
+    icon: "👥",
+    screens: [
       { id: "roster", label: "Plantilla" },
       { id: "academy", label: "Cantera" },
       { id: "contracts", label: "Contratos" },
     ],
   },
-  { header: "Mercado", items: [{ id: "market", label: "Mercado" }] },
-  {
-    header: "Club",
-    items: [
+  management: {
+    label: "Gestiones",
+    icon: "🛠️",
+    screens: [
+      { id: "market", label: "Mercado" },
       { id: "stadium", label: "Estadio" },
       { id: "staff", label: "Personal" },
     ],
   },
-  {
-    header: "Finanzas",
-    items: [
+  finance: {
+    label: "Finanzas",
+    icon: "💰",
+    screens: [
       { id: "finance", label: "Finanzas" },
       { id: "sponsor", label: "Publicidad" },
     ],
   },
+};
+
+const BOTTOM_TABS = [
+  { id: "standings", label: HUBS.standings.label, icon: HUBS.standings.icon },
+  { id: "roster", label: HUBS.roster.label, icon: HUBS.roster.icon },
+  { id: "home", label: "Home", icon: "🏠" },
+  { id: "management", label: HUBS.management.label, icon: HUBS.management.icon },
+  { id: "finance", label: HUBS.finance.label, icon: HUBS.finance.icon },
 ];
+
+const LEAF_TO_HUB = Object.fromEntries(
+  Object.entries(HUBS).flatMap(([hubId, hub]) => hub.screens.map((s) => [s.id, hubId]))
+);
 
 const SCREEN_COMPONENTS = {
   roster: RosterScreen,
-  league: LeagueScreen,
   market: TransferMarket,
   academy: AcademyScreen,
   stadium: StadiumScreen,
@@ -66,6 +80,25 @@ const SCREEN_COMPONENTS = {
   contracts: ContractsScreen,
   pyramid: PyramidScreen,
 };
+
+function HubTabs({ hub, activeId, onSelect }) {
+  if (hub.screens.length < 2) return null;
+  return (
+    <View style={styles.hubTabRow}>
+      {hub.screens.map((s) => (
+        <Pressable
+          key={s.id}
+          onPress={() => onSelect(s.id)}
+          style={[styles.hubTabBtn, s.id === activeId && styles.hubTabBtnActive]}
+        >
+          <Text style={[styles.hubTabText, s.id === activeId && styles.hubTabTextActive]}>
+            {s.label}
+          </Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
 
 function GameShell() {
   const { state } = useGame();
@@ -83,6 +116,13 @@ function GameShell() {
   const ActiveScreen = SCREEN_COMPONENTS[screen];
   const goHome = () => setScreen("home");
 
+  const hubId = LEAF_TO_HUB[screen];
+  const hub = hubId ? HUBS[hubId] : null;
+  const showBack = screen === "menu" || screen === "result";
+  const activeTab = hubId || (screen === "home" ? "home" : null);
+
+  const title = screen === "menu" ? "MENÚ" : screen === "result" ? "RESULTADO" : hub ? hub.label.toUpperCase() : null;
+
   return (
     <View style={styles.shell}>
       <View style={styles.topbar}>
@@ -93,10 +133,12 @@ function GameShell() {
               PC BASKET — {team.name.toUpperCase()}
             </Text>
           </View>
-        ) : (
+        ) : showBack ? (
           <Pressable onPress={goHome} style={styles.backBtn}>
             <Text style={styles.backText}>‹ VOLVER</Text>
           </Pressable>
+        ) : (
+          <Text style={styles.title} numberOfLines={1}>{title}</Text>
         )}
         <View style={styles.topbarRight}>
           <Text style={styles.budget}>${team.budget.toLocaleString()}</Text>
@@ -108,9 +150,10 @@ function GameShell() {
         </View>
       </View>
       <View style={styles.accentLine} />
+      {hub && <HubTabs hub={hub} activeId={screen} onSelect={setScreen} />}
       <Animated.View style={{ flex: 1, opacity: fade }}>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm }}>
-          {screen === "home" && <Dashboard quadrants={QUADRANTS} onNavigate={setScreen} />}
+          {screen === "home" && <Dashboard onNavigate={setScreen} />}
           {screen === "menu" && <MainMenu onDone={goHome} />}
           {screen === "result" && <MatchResult onContinue={goHome} />}
           {ActiveScreen && <ActiveScreen />}
@@ -122,6 +165,11 @@ function GameShell() {
           )}
         </ScrollView>
       </Animated.View>
+      <BottomNav
+        tabs={BOTTOM_TABS}
+        activeId={activeTab}
+        onSelect={(id) => setScreen(id === "home" ? "home" : HUBS[id].screens[0].id)}
+      />
     </View>
   );
 }
@@ -209,6 +257,23 @@ const styles = StyleSheet.create({
   },
   menuText: { color: colors.text, fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
   accentLine: { height: 3, backgroundColor: colors.accent },
+  hubTabRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
+  },
+  hubTabBtn: {
+    flex: 1,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: radii.sm,
+    paddingVertical: spacing.xs + 2,
+    alignItems: "center",
+  },
+  hubTabBtnActive: { borderColor: colors.accent, backgroundColor: colors.panelAlt },
+  hubTabText: { color: colors.textDim, fontSize: 11, fontWeight: "700" },
+  hubTabTextActive: { color: colors.accent },
   footer: {
     fontSize: 11,
     color: colors.textDim,
