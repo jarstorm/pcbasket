@@ -2,6 +2,7 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
+import TeamLogo from "../components/TeamLogo";
 import { leaguePosition } from "../engine/standings";
 import { colors, spacing, radii } from "../theme";
 
@@ -30,13 +31,15 @@ export default function Dashboard({ quadrants, onNavigate }) {
         </Text>
 
         {myNextGame ? (
-          <Text style={[styles.small, { marginBottom: spacing.sm }]}>
-            Próximo partido:{" "}
-            <Text style={styles.bold}>
+          <View style={[styles.nextGameRow, { marginBottom: spacing.sm }]}>
+            <Text style={styles.small}>Próximo partido:</Text>
+            <TeamLogo team={state.teams.find((t) => t.id === myNextGame[0])} size={18} />
+            <Text style={[styles.small, styles.bold]} numberOfLines={1}>
               {state.teams.find((t) => t.id === myNextGame[0]).name} vs{" "}
               {state.teams.find((t) => t.id === myNextGame[1]).name}
             </Text>
-          </Text>
+            <TeamLogo team={state.teams.find((t) => t.id === myNextGame[1])} size={18} />
+          </View>
         ) : (
           <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>Temporada finalizada.</Text>
         )}
@@ -109,9 +112,13 @@ function MatchSummary({ result, teams }) {
   const topAway = [...result.boxscore.away].sort((a, b) => b.points - a.points)[0];
   return (
     <View>
-      <Text style={styles.matchScore}>
-        {home.name} {result.homeScore} - {result.awayScore} {away.name}
-      </Text>
+      <View style={styles.nextGameRow}>
+        <TeamLogo team={home} size={18} />
+        <Text style={styles.matchScore} numberOfLines={1}>
+          {home.name} {result.homeScore} - {result.awayScore} {away.name}
+        </Text>
+        <TeamLogo team={away} size={18} />
+      </View>
       <Text style={[styles.small, styles.dim]}>
         Top local: {topHome?.name} ({topHome?.points} pts) · Top visitante: {topAway?.name} ({topAway?.points} pts)
       </Text>
@@ -125,7 +132,8 @@ const styles = StyleSheet.create({
   small: { fontSize: 13, color: colors.text, marginVertical: 2 },
   dim: { color: colors.textDim, fontSize: 12, fontWeight: "700", letterSpacing: 0.4 },
   bold: { fontWeight: "700" },
-  matchScore: { fontSize: 16, fontWeight: "700", color: colors.text },
+  matchScore: { fontSize: 16, fontWeight: "700", color: colors.text, flexShrink: 1 },
+  nextGameRow: { flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" },
   logItem: {
     fontSize: 12,
     color: colors.textDim,

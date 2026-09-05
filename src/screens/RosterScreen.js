@@ -9,6 +9,7 @@ import RatingBar from "../components/RatingBar";
 import Button from "../components/Button";
 import { POSITION_ORDER, POSITION_ABBR } from "../data/positions";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
+import { positionMismatchFactor } from "../engine/simulate";
 import { colors, spacing, radii } from "../theme";
 
 export default function RosterScreen() {
@@ -33,14 +34,22 @@ export default function RosterScreen() {
     const eligible = roster.filter(
       (p) => p.id !== starterId && !p.injured && (!isForeign(p) || quotaLeft > 0)
     );
-    const label = (p) =>
-      `${p.name} (${POSITION_ABBR[p.position] || p.position}, ${p.overall})${isForeign(p) ? " · EXT" : ""}`;
+    const label = (p) => {
+      const penalized = p.position !== pos ? Math.round(p.overall * positionMismatchFactor(pos, p.position)) : null;
+      const ovrLabel = penalized !== null ? `${p.overall}→${penalized}` : `${p.overall}`;
+      return `${p.name} (${POSITION_ABBR[p.position] || p.position}, ${ovrLabel})${isForeign(p) ? " · EXT" : ""}${penalized !== null ? " ⚠" : ""}`;
+    };
     const options = [
       { label: "-- vacío --", value: "" },
       ...(starter ? [{ label: `${label(starter)} (actual)`, value: starter.id }] : []),
       ...eligible.map((p) => ({ label: label(p), value: p.id })),
     ];
-    return { pos, starter, starterId, options };
+    const outOfPosition = starter && starter.position !== pos;
+    const effectiveOverall = starter
+      ? Math.round(starter.overall * positionMismatchFactor(pos, starter.position))
+      : null;
+
+    return { pos, starter, starterId, options, outOfPosition, effectiveOverall };
   });
 
   return (
@@ -71,9 +80,14 @@ export default function RosterScreen() {
                     {slot.starter ? (
                       <>
                         <Text style={styles.lineupName} numberOfLines={2}>{slot.starter.name}</Text>
-                        <OvrBadge value={slot.starter.overall} />
+                        <OvrBadge value={slot.outOfPosition ? slot.effectiveOverall : slot.starter.overall} />
                         {isForeign(slot.starter) && <Text style={styles.foreign}>EXT</Text>}
                         {slot.starter.injured && <Text style={styles.injured}>LESIONADO</Text>}
+                        {slot.outOfPosition && (
+                          <Text style={styles.outOfPosition}>
+                            FUERA DE POSICIÓN ({slot.starter.overall}→{slot.effectiveOverall})
+                          </Text>
+                        )}
                       </>
                     ) : (
                       <Text style={styles.lineupEmpty}>VACÍO</Text>
@@ -167,6 +181,7 @@ const styles = StyleSheet.create({
   playerSub: { color: colors.textDim, fontSize: 11, marginTop: 1 },
   playerRight: { alignItems: "flex-end", marginLeft: 8 },
   injured: { color: colors.loss, fontSize: 9, fontWeight: "800", marginTop: 2 },
+  outOfPosition: { color: colors.loss, fontSize: 8, fontWeight: "800", marginTop: 2, textAlign: "center" },
   foreign: { color: colors.textDim, fontSize: 9, fontWeight: "800", marginTop: 2 },
   listed: { color: colors.accent, fontSize: 9, fontWeight: "800", marginTop: 2 },
   ratings: {

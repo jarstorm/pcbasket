@@ -4,6 +4,7 @@ import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Table from "../components/Table";
 import Button from "../components/Button";
+import TeamLogo from "../components/TeamLogo";
 import { colors, spacing, radii } from "../theme";
 
 function buildRows(team, boxscoreArr, playersById) {
@@ -66,7 +67,10 @@ function TeamBox({ team, result, side }) {
 
   return (
     <Card>
-      <Text style={styles.teamName}>{team.name.toUpperCase()}</Text>
+      <View style={styles.boxHeader}>
+        <TeamLogo team={team} size={22} />
+        <Text style={styles.teamName}>{team.name.toUpperCase()}</Text>
+      </View>
       <Table columns={COLUMNS} data={rows} rowKey={(r) => r.id} />
     </Card>
   );
@@ -114,11 +118,13 @@ export default function MatchResult({ onContinue }) {
 
         <View style={styles.scoreRow}>
           <View style={styles.scoreSide}>
+            <TeamLogo team={home} size={32} />
             <Text style={styles.scoreName} numberOfLines={1}>{home.name}</Text>
             <Text style={styles.scoreNumber}>{result.homeScore}</Text>
           </View>
           <Text style={styles.scoreDash}>-</Text>
           <View style={styles.scoreSide}>
+            <TeamLogo team={away} size={32} />
             <Text style={styles.scoreName} numberOfLines={1}>{away.name}</Text>
             <Text style={styles.scoreNumber}>{result.awayScore}</Text>
           </View>
@@ -171,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: spacing.md,
   },
-  scoreSide: { flex: 1, alignItems: "center" },
+  scoreSide: { flex: 1, alignItems: "center", gap: 4 },
   scoreName: { color: colors.text, fontWeight: "700", fontSize: 12, marginBottom: 2, textAlign: "center" },
   scoreNumber: { color: colors.accent, fontWeight: "800", fontSize: 30 },
   scoreDash: { color: colors.textDim, fontSize: 20, fontWeight: "700" },
@@ -190,7 +196,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   expandText: { color: colors.accent, fontSize: 12, fontWeight: "700" },
-  teamName: { color: colors.text, fontWeight: "800", fontSize: 14, letterSpacing: 0.6, marginBottom: 8 },
+  boxHeader: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 },
+  teamName: { color: colors.text, fontWeight: "800", fontSize: 14, letterSpacing: 0.6 },
   nameCell: { flexDirection: "row", alignItems: "center", gap: 6 },
   avatar: {
     width: 20,

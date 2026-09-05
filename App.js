@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { View, Text, Pressable, ScrollView, Animated, StyleSheet } from "react-native";
+import { View, Text, Pressable, ScrollView, Animated, Easing, StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -18,6 +18,7 @@ import ContractsScreen from "./src/screens/ContractsScreen";
 import PyramidScreen from "./src/screens/PyramidScreen";
 import MainMenu from "./src/screens/MainMenu";
 import MatchResult from "./src/screens/MatchResult";
+import TeamLogo from "./src/components/TeamLogo";
 import { colors, spacing } from "./src/theme";
 
 const QUADRANTS = [
@@ -86,9 +87,12 @@ function GameShell() {
     <View style={styles.shell}>
       <View style={styles.topbar}>
         {screen === "home" ? (
-          <Text style={styles.title} numberOfLines={1}>
-            PC BASKET — {team.name.toUpperCase()}
-          </Text>
+          <View style={styles.titleRow}>
+            <TeamLogo team={team} size={22} />
+            <Text style={styles.title} numberOfLines={1}>
+              PC BASKET — {team.name.toUpperCase()}
+            </Text>
+          </View>
         ) : (
           <Pressable onPress={goHome} style={styles.backBtn}>
             <Text style={styles.backText}>‹ VOLVER</Text>
@@ -123,8 +127,29 @@ function GameShell() {
 }
 
 function Loading() {
+  const spin = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.timing(spin, {
+        toValue: 1,
+        duration: 1100,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [spin]);
+
+  const rotate = spin.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
+
   return (
     <View style={styles.loading}>
+      <Animated.Image
+        source={require("./assets/splash-icon.png")}
+        style={[styles.loadingBall, { transform: [{ rotate }] }]}
+      />
       <Text style={styles.loadingText}>CARGANDO…</Text>
     </View>
   );
@@ -153,6 +178,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   shell: { flex: 1 },
   loading: { flex: 1, alignItems: "center", justifyContent: "center" },
+  loadingBall: { width: 72, height: 72, marginBottom: spacing.lg },
   loadingText: { color: colors.textDim, fontSize: 14, fontWeight: "700", letterSpacing: 1 },
   topbar: {
     flexDirection: "row",
@@ -161,12 +187,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
   },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, flexShrink: 1, marginRight: spacing.sm },
   title: {
     fontSize: 15,
     fontWeight: "800",
     color: colors.text,
     flexShrink: 1,
-    marginRight: spacing.sm,
     letterSpacing: 0.5,
   },
   backBtn: { paddingVertical: 4, paddingHorizontal: 4 },

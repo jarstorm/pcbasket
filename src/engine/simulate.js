@@ -7,7 +7,7 @@ const INJURY_FORM_THRESHOLD = Number(process.env.EXPO_PUBLIC_INJURY_FORM_THRESHO
 
 // A player fielded out of position performs worse the further the slot is
 // from their real position (PG in at C is much worse than PG at SG).
-function positionMismatchFactor(slotPos, playerPos) {
+export function positionMismatchFactor(slotPos, playerPos) {
   const a = POSITION_ORDER.indexOf(slotPos);
   const b = POSITION_ORDER.indexOf(playerPos);
   if (a < 0 || b < 0) return 1;

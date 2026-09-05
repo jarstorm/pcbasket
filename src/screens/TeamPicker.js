@@ -1,5 +1,6 @@
 import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
+import TeamLogo from "../components/TeamLogo";
 import { colors, spacing, radii } from "../theme";
 
 export default function TeamPicker() {
@@ -20,8 +21,13 @@ export default function TeamPicker() {
             style={styles.teamCard}
             onPress={() => dispatch({ type: "CHOOSE_TEAM", teamId: t.id })}
           >
-            <Text style={styles.teamName}>{t.name}</Text>
-            <Text style={styles.teamBudget}>Presupuesto: ${t.budget.toLocaleString()}</Text>
+            <View style={styles.teamRow}>
+              <TeamLogo team={t} size={36} />
+              <View style={{ flexShrink: 1 }}>
+                <Text style={styles.teamName}>{t.name}</Text>
+                <Text style={styles.teamBudget}>Presupuesto: ${t.budget.toLocaleString()}</Text>
+              </View>
+            </View>
           </Pressable>
         ))}
       </View>
@@ -43,6 +49,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
   },
+  teamRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   teamName: { fontWeight: "700", color: colors.text, fontSize: 14 },
   teamBudget: { fontSize: 12, color: colors.textDim, marginTop: 4 },
 });

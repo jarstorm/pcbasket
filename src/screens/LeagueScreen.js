@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Table from "../components/Table";
+import TeamLogo from "../components/TeamLogo";
 import { sortStandings } from "../engine/standings";
 import { colors } from "../theme";
 
@@ -26,7 +27,17 @@ export default function LeagueScreen() {
       <Table
         columns={[
           { key: "pos", label: "#", width: 40 },
-          { key: "name", label: "Equipo", width: 150 },
+          {
+            key: "name",
+            label: "Equipo",
+            width: 170,
+            render: (t) => (
+              <View style={styles.teamCell}>
+                <TeamLogo team={t} size={22} />
+                <Text style={styles.cellText} numberOfLines={1}>{t.name}</Text>
+              </View>
+            ),
+          },
           { key: "pj", label: "PJ", width: 50 },
           { key: "wins", label: "V", width: 40, render: (t) => <Text style={styles.cellText}>{t.record.wins}</Text> },
           { key: "losses", label: "D", width: 40, render: (t) => <Text style={styles.cellText}>{t.record.losses}</Text> },
@@ -51,5 +62,6 @@ const styles = StyleSheet.create({
   h2: { fontSize: 17, fontWeight: "700", color: colors.text, marginBottom: 4 },
   dim: { color: colors.textDim, fontSize: 13, marginBottom: 8 },
   cellText: { color: colors.text, fontSize: 13 },
+  teamCell: { flexDirection: "row", alignItems: "center", gap: 8, flexShrink: 1 },
   meRow: { backgroundColor: "rgba(255, 122, 41, 0.08)" },
 });
