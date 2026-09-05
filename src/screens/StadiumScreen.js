@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import { getUpgradeTiers } from "../engine/stadium";
 import { getAmenityOptions } from "../engine/amenities";
 import { colors, spacing, radii } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 export default function StadiumScreen() {
   const { state, dispatch } = useGame();
@@ -18,7 +19,7 @@ export default function StadiumScreen() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>{team.stadium.name.toUpperCase()}</Text>
+        <SectionHeader>{team.stadium.name.toUpperCase()}</SectionHeader>
         <View style={styles.statsBox}>
           <StatRow label="NIVEL" value={String(team.stadium.level)} />
           <StatRow label="CAPACIDAD" value={`${team.stadium.capacity.toLocaleString()} asientos`} />
@@ -37,7 +38,7 @@ export default function StadiumScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>PRECIO DE ENTRADA (PARTIDO A PARTIDO)</Text>
+        <SectionHeader>PRECIO DE ENTRADA (PARTIDO A PARTIDO)</SectionHeader>
         <View style={styles.priceRow}>
           <Pressable
             style={styles.priceBtn}
@@ -60,7 +61,7 @@ export default function StadiumScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>PRECIO DEL ABONO</Text>
+        <SectionHeader>PRECIO DEL ABONO</SectionHeader>
         <Text style={styles.dim}>
           Solo cambia cuántos abonados se apuntan al principio de la próxima temporada.
         </Text>
@@ -94,7 +95,7 @@ export default function StadiumScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>REMODELACIÓN</Text>
+        <SectionHeader>REMODELACIÓN</SectionHeader>
         {tiers.map((tier) => {
           const isSelected = tier.id === selectedId;
           const affordable = team.budget >= tier.cost;
@@ -131,7 +132,7 @@ export default function StadiumScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>INSTALACIONES</Text>
+        <SectionHeader>INSTALACIONES</SectionHeader>
         <Text style={styles.dim}>
           5 niveles por instalación — cada uno sube algo más la afluencia y el precio de entrada que
           la afición tolera, y cuesta más que el anterior.

@@ -12,6 +12,7 @@ import {
   tvRightsIncome,
 } from "../engine/finance";
 import { colors, spacing, radii } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 // Rounds happen weekly (see currentDate/ADVANCE_PRESEASON in GameContext),
 // so a ~30-day month is roughly this many rounds — used only to convert the
@@ -67,13 +68,13 @@ export default function FinanceScreen() {
   return (
     <View>
       <Card style={{ borderColor: verdict.color }}>
-        <Text style={styles.h2}>SALUD ECONÓMICA</Text>
+        <SectionHeader>SALUD ECONÓMICA</SectionHeader>
         <Text style={[styles.verdict, { color: verdict.color }]}>{verdict.label}</Text>
         <Text style={styles.dim}>{verdict.desc}</Text>
       </Card>
 
       <Card>
-        <Text style={styles.h3}>INGRESOS MEDIOS POR MES</Text>
+        <SectionHeader>INGRESOS MEDIOS POR MES</SectionHeader>
         <Row label="Patrocinador de camiseta" value={jerseySponsor} positive />
         <Row label="Patrocinador de estadio" value={stadiumSponsor} positive />
         <Row label="Derechos de TV" value={tv} positive />
@@ -87,7 +88,7 @@ export default function FinanceScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h3}>GASTOS FIJOS POR MES</Text>
+        <SectionHeader>GASTOS FIJOS POR MES</SectionHeader>
         <Row label="Sueldos de jugadores" value={-wages} />
         <Row label="Sueldos de personal" value={-staffWages} />
         <Row label="Mantenimiento de estadio" value={-maintenance} />
@@ -96,7 +97,7 @@ export default function FinanceScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h3}>BALANCE MEDIO POR MES</Text>
+        <SectionHeader>BALANCE MEDIO POR MES</SectionHeader>
         <Text style={[styles.netValue, { color: avgNet >= 0 ? colors.win : colors.loss }]}>
           {avgNet >= 0 ? "+" : ""}
           ${Math.round(avgNet).toLocaleString()}
@@ -105,7 +106,7 @@ export default function FinanceScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h3}>HISTORIAL POR JORNADA</Text>
+        <SectionHeader>HISTORIAL POR JORNADA</SectionHeader>
         {!shownEntry ? (
           <Text style={styles.dim}>Aún no hay jornadas jugadas.</Text>
         ) : (
@@ -141,7 +142,7 @@ export default function FinanceScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h3}>POR TEMPORADA</Text>
+        <SectionHeader>POR TEMPORADA</SectionHeader>
         {seasons.length === 0 ? (
           <Text style={styles.dim}>Aún no hay temporadas completas registradas.</Text>
         ) : (

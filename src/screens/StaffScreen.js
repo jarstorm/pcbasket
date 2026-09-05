@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import { STAFF_ROLES, getRoleTiers, currentRoleTier, totalStaffWage } from "../engine/staff";
 import { seededShuffle } from "../engine/random";
 import { colors, spacing, radii } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 // The three coaching roles decide the on-court simulation, so they're
 // always hireable — only the support staff (physio, scout, etc.) rotates
@@ -32,7 +33,7 @@ export default function StaffScreen() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>PERSONAL TÉCNICO</Text>
+        <SectionHeader>PERSONAL TÉCNICO</SectionHeader>
         <Text style={styles.dim}>
           Cada puesto es opcional — un equipo pequeño puede competir sin contratar nada. Cada
           contratación tiene un coste de fichaje y un sueldo por jornada. Para cambiar a alguien de

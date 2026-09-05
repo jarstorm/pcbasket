@@ -6,6 +6,7 @@ import Table from "../components/Table";
 import Button from "../components/Button";
 import { POSITION_ABBR } from "../data/positions";
 import { colors, spacing } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 export default function AcademyScreen() {
   const { state, dispatch } = useGame();
@@ -14,7 +15,7 @@ export default function AcademyScreen() {
 
   return (
     <Card>
-      <Text style={styles.h2}>Cantera</Text>
+      <SectionHeader>Cantera</SectionHeader>
       <Text style={styles.dim}>
         Jóvenes promesas del club. Promociónalos al primer equipo cuando tengas hueco en la plantilla
         (máx. 15 jugadores).
@@ -22,6 +23,12 @@ export default function AcademyScreen() {
       {!team.staff?.scout && (
         <Text style={styles.warning}>
           ⚠ Sin Ojeador y Cantera contratado no aparecen nuevos prospectos — contrátalo en Personal.
+        </Text>
+      )}
+      {team.staff?.scout && team.scoutCooldown != null && team.scoutSearchTotal != null && (
+        <Text style={styles.dim}>
+          Ojeador buscando desde hace {Math.max(0, team.scoutSearchTotal - team.scoutCooldown)} jornada(s)
+          (de unas {team.scoutSearchTotal}).
         </Text>
       )}
       {prospects.length === 0 && <Text style={styles.dim}>No hay prospectos disponibles.</Text>}

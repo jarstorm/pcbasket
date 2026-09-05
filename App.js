@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { View, Text, Pressable, ScrollView, Animated, Easing, StyleSheet } from "react-native";
+import { View, Text, Pressable, ScrollView, Animated, Easing, ImageBackground, StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -17,6 +17,7 @@ import ContractsScreen from "./src/screens/ContractsScreen";
 import PyramidScreen from "./src/screens/PyramidScreen";
 import MainMenu from "./src/screens/MainMenu";
 import MatchResult from "./src/screens/MatchResult";
+import SeasonSummaryScreen from "./src/screens/SeasonSummaryScreen";
 import TeamLogo from "./src/components/TeamLogo";
 import BottomNav from "./src/components/BottomNav";
 import { colors, spacing, radii } from "./src/theme";
@@ -118,10 +119,19 @@ function GameShell() {
 
   const hubId = LEAF_TO_HUB[screen];
   const hub = hubId ? HUBS[hubId] : null;
-  const showBack = screen === "menu" || screen === "result";
+  const showBack = screen === "menu" || screen === "result" || screen === "seasonSummary";
   const activeTab = hubId || (screen === "home" ? "home" : null);
 
-  const title = screen === "menu" ? "MENÚ" : screen === "result" ? "RESULTADO" : hub ? hub.label.toUpperCase() : null;
+  const title =
+    screen === "menu"
+      ? "MENÚ"
+      : screen === "result"
+      ? "RESULTADO"
+      : screen === "seasonSummary"
+      ? "TEMPORADA"
+      : hub
+      ? hub.label.toUpperCase()
+      : null;
 
   return (
     <View style={styles.shell}>
@@ -149,13 +159,19 @@ function GameShell() {
           )}
         </View>
       </View>
-      <View style={styles.accentLine} />
+      <LinearGradient
+        colors={[colors.accentDim, colors.accent, colors.accentDim]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.accentLine}
+      />
       {hub && <HubTabs hub={hub} activeId={screen} onSelect={setScreen} />}
       <Animated.View style={{ flex: 1, opacity: fade }}>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm }}>
           {screen === "home" && <Dashboard onNavigate={setScreen} />}
           {screen === "menu" && <MainMenu onDone={goHome} />}
           {screen === "result" && <MatchResult onContinue={goHome} />}
+          {screen === "seasonSummary" && <SeasonSummaryScreen onContinue={goHome} />}
           {ActiveScreen && <ActiveScreen />}
           {screen === "home" && (
             <Text style={styles.footer}>
@@ -210,12 +226,18 @@ export default function App() {
         colors={[colors.bgGradientTop, colors.bgGradientBottom]}
         style={styles.gradient}
       >
-        <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
-          <StatusBar style="light" />
-          <GameProvider loadingFallback={<Loading />}>
-            <GameShell />
-          </GameProvider>
-        </SafeAreaView>
+        <ImageBackground
+          source={require("./assets/court-texture.png")}
+          resizeMode="repeat"
+          style={styles.safe}
+        >
+          <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
+            <StatusBar style="light" />
+            <GameProvider loadingFallback={<Loading />}>
+              <GameShell />
+            </GameProvider>
+          </SafeAreaView>
+        </ImageBackground>
       </LinearGradient>
     </SafeAreaProvider>
   );

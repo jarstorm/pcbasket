@@ -2,7 +2,7 @@ import { createContext, useContext, useReducer, useEffect, useState } from "reac
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateRealLeague, generateAcbDivision, generateSegundaFebDivision, makePlayer } from "../data/generate";
 import { generateSchedule } from "../engine/schedule";
-import { simulateBackgroundRound, resolvePyramid, findDivisionOf } from "../engine/pyramid";
+import { simulateBackgroundRound, resolvePyramid, findDivisionOf, DIVISION_META, DIVISION_ORDER } from "../engine/pyramid";
 import { simulateMatch, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
 import { getUpgradeTiers } from "../engine/stadium";
 import {
@@ -13,7 +13,7 @@ import {
   moraleBonus,
   scoutTierIndex,
 } from "../engine/staff";
-import { leaguePosition } from "../engine/standings";
+import { leaguePosition, sortStandings } from "../engine/standings";
 import {
   playerWageTotal,
   staffWageTotal,
@@ -139,7 +139,7 @@ function normalizeState(loaded) {
       id,
       {
         ...p,
-        form: p.form ?? 99,
+        form: Math.round(p.form ?? 99),
         wage: p.wage ?? Math.round((p.overall || 60) ** 1.7 * 0.6),
         contractYears: p.contractYears ?? randInt(1, 4),
         seasonMinutes: p.seasonMinutes ?? 0,
@@ -179,6 +179,7 @@ function normalizeState(loaded) {
       financeHistory: t.financeHistory ?? [],
       tactics: t.tactics ?? { offense: "balanced", defense: "man" },
       scoutCooldown: t.scoutCooldown ?? null,
+      scoutSearchTotal: t.scoutSearchTotal ?? null,
     })),
     playersById,
     pendingContracts: loaded.pendingContracts ?? [],
@@ -188,6 +189,7 @@ function normalizeState(loaded) {
     seasonYear: loaded.seasonYear ?? FIRST_SEASON_YEAR,
     currentDate,
     preseasonWeeksLeft: loaded.preseasonWeeksLeft ?? 0,
+    lastSeasonSummary: loaded.lastSeasonSummary ?? null,
   };
 }
 
@@ -218,6 +220,7 @@ function freshGame() {
     seasonYear: FIRST_SEASON_YEAR,
     currentDate: `${FIRST_SEASON_YEAR}-07-01`,
     preseasonWeeksLeft: PRESEASON_WEEKS,
+    lastSeasonSummary: null,
     activeDivisionId: "primerafeb",
     otherDivisions: {
       acb: {
@@ -563,6 +566,7 @@ export function reducer(state, action) {
               staff: { ...t.staff, [roleId]: { tierId } },
               // A newly hired scout starts a fresh search cycle.
               scoutCooldown: roleId === "scout" ? null : t.scoutCooldown,
+              scoutSearchTotal: roleId === "scout" ? null : t.scoutSearchTotal,
             }
           : t
       );
@@ -587,6 +591,7 @@ export function reducer(state, action) {
               budget: t.budget - severance,
               staff: { ...t.staff, [roleId]: null },
               scoutCooldown: roleId === "scout" ? null : t.scoutCooldown,
+              scoutSearchTotal: roleId === "scout" ? null : t.scoutSearchTotal,
             }
           : t
       );
@@ -705,6 +710,7 @@ export function reducer(state, action) {
 
         const newProspects = { home: null, away: null };
         const scoutCooldowns = { home: null, away: null };
+        const scoutSearchTotals = { home: null, away: null };
         for (const teamRef of ["home", "away"]) {
           const team = teamRef === "home" ? home : away;
           const staff = team.staff || {};
@@ -722,11 +728,11 @@ export function reducer(state, action) {
               const loss = Math.max(0, Math.round(played.minutes * 0.15) - recovery);
               next = {
                 ...next,
-                form: clamp((next.form ?? 99) - loss, 40, 99),
+                form: clamp(Math.round((next.form ?? 99) - loss), 40, 99),
                 seasonMinutes: (next.seasonMinutes || 0) + played.minutes,
               };
             } else {
-              next = { ...next, form: clamp((next.form ?? 99) + 3 + recovery, 40, 99) };
+              next = { ...next, form: clamp(Math.round((next.form ?? 99) + 3 + recovery), 40, 99) };
               if (next.injured && Math.random() < recoverChance) {
                 next = { ...next, injured: false };
                 if (team.id === state.userTeamId) {
@@ -747,8 +753,10 @@ export function reducer(state, action) {
           const tierIndex = scoutTierIndex(staff);
           if (tierIndex === null) {
             scoutCooldowns[teamRef] = null;
+            scoutSearchTotals[teamRef] = null;
           } else {
             let cooldown = team.scoutCooldown == null ? randInt(13, 26) : team.scoutCooldown - 1;
+            let total = team.scoutCooldown == null ? cooldown : team.scoutSearchTotal || cooldown + 1;
             if (cooldown <= 0) {
               if (team.academy.length < MAX_ACADEMY_SIZE) {
                 const range = SCOUT_TIER_RANGES[tierIndex];
@@ -762,14 +770,17 @@ export function reducer(state, action) {
                 playersById[prospect.id] = prospect;
                 newProspects[teamRef] = prospect.id;
                 cooldown = randInt(13, 26);
+                total = cooldown;
                 if (team.id === state.userTeamId) {
                   roundLog.push(`El ojeador encontró un nuevo prospecto de cantera: ${prospect.name}.`);
                 }
               } else {
                 cooldown = 1; // academy full — retry as soon as there's room
+                total = 1;
               }
             }
             scoutCooldowns[teamRef] = cooldown;
+            scoutSearchTotals[teamRef] = total;
           }
         }
 
@@ -799,6 +810,7 @@ export function reducer(state, action) {
           ticketRevenue,
           newProspectId: newProspects.home,
           scoutCooldown: scoutCooldowns.home,
+          scoutSearchTotal: scoutSearchTotals.home,
         };
         teamUpdates[awayId] = {
           wins: (teamUpdates[awayId]?.wins || 0) + (result.awayScore > result.homeScore ? 1 : 0),
@@ -811,6 +823,7 @@ export function reducer(state, action) {
           ticketRevenue: 0,
           newProspectId: newProspects.away,
           scoutCooldown: scoutCooldowns.away,
+          scoutSearchTotal: scoutSearchTotals.away,
         };
       }
 
@@ -837,6 +850,7 @@ export function reducer(state, action) {
           budget: nextBudget,
           financeHistory,
           scoutCooldown: upd.scoutCooldown,
+          scoutSearchTotal: upd.scoutSearchTotal,
           lastTicketRevenue: upd.ticketRevenue || 0,
           academy: upd.newProspectId ? [...t.academy, upd.newProspectId] : t.academy,
           record: {
@@ -937,12 +951,57 @@ export function reducer(state, action) {
       // Resolve promotion/relegation across the whole pyramid from this
       // season's final standings (using the pre-reset records captured in
       // finalTeams/otherDivisions), then start every division fresh.
-      const resolved = resolvePyramid({
+      const preDivisions = {
         ...otherDivisions,
-        [state.activeDivisionId]: { ...otherDivisions[state.activeDivisionId], teams: finalTeams },
-      });
+        [state.activeDivisionId]: {
+          name: DIVISION_META[state.activeDivisionId].name,
+          ...otherDivisions[state.activeDivisionId],
+          teams: finalTeams,
+        },
+      };
+      const resolved = resolvePyramid(preDivisions);
       const newActiveDivisionId = findDivisionOf(resolved, state.userTeamId) || state.activeDivisionId;
       const newActive = resolved[newActiveDivisionId];
+
+      // Champions come straight from this season's final (pre-reset)
+      // standings; who moved is read off the id-set difference between the
+      // pre- and post-resolvePyramid rosters — no need to re-run (and
+      // duplicate the randomness of) the promotion playoff here.
+      // Which division each team came FROM, so a team appearing in a new
+      // division after resolvePyramid can be classified as promoted
+      // (moved to a lower tier number) or relegated (higher tier number) —
+      // a per-division id-set diff alone can't tell direction apart from
+      // "some other team just relegated in".
+      const divisionOfId = {};
+      for (const divId of DIVISION_ORDER) {
+        for (const t of preDivisions[divId].teams) divisionOfId[t.id] = divId;
+      }
+      const moves = [];
+      for (const divId of DIVISION_ORDER) {
+        for (const t of resolved[divId].teams) {
+          const from = divisionOfId[t.id];
+          if (from && from !== divId) moves.push({ name: t.name, from, to: divId });
+        }
+      }
+
+      const seasonSummary = {
+        seasonYear: state.seasonYear || FIRST_SEASON_YEAR,
+        retiredNames,
+        userMoved: null,
+        divisions: DIVISION_ORDER.map((divId) => {
+          const pre = preDivisions[divId];
+          const champion = sortStandings(pre.teams)[0];
+          const tier = DIVISION_META[divId].tier;
+          const outgoing = moves.filter((m) => m.from === divId);
+          return {
+            id: divId,
+            name: DIVISION_META[divId].name,
+            championName: champion?.name || null,
+            promoted: outgoing.filter((m) => DIVISION_META[m.to].tier < tier).map((m) => m.name),
+            relegated: outgoing.filter((m) => DIVISION_META[m.to].tier > tier).map((m) => m.name),
+          };
+        }),
+      };
       const newOtherDivisions = Object.fromEntries(
         Object.entries(resolved).filter(([id]) => id !== newActiveDivisionId)
       );
@@ -960,6 +1019,10 @@ export function reducer(state, action) {
       if (movedDivision) {
         const divisionName = newActive.name || newActiveDivisionId;
         messages.unshift(`¡Tu equipo cambia de categoría! Ahora juegas en ${divisionName}.`);
+        seasonSummary.userMoved = {
+          from: DIVISION_META[state.activeDivisionId].name,
+          to: DIVISION_META[newActiveDivisionId].name,
+        };
       }
 
       return {
@@ -977,6 +1040,7 @@ export function reducer(state, action) {
         seasonYear: nextSeasonYear,
         currentDate: nextSeasonDate,
         preseasonWeeksLeft: PRESEASON_WEEKS,
+        lastSeasonSummary: seasonSummary,
       };
     }
 

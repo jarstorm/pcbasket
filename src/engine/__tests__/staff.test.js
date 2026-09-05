@@ -12,6 +12,7 @@ import {
   moraleBonus,
   scoutProspectChance,
   scoutTierIndex,
+  lawyerTierIndex,
   maintenanceReduction,
 } from "../staff";
 
@@ -59,6 +60,12 @@ describe("staff roles", () => {
     expect(scoutTierIndex({ scout: { tierId: eliteTier.id } })).toBe(2);
     const basicTier = STAFF_ROLES.scout.tiers[0];
     expect(scoutTierIndex({ scout: { tierId: basicTier.id } })).toBe(0);
+  });
+
+  it("lawyerTierIndex reads the hired tier's rank, null with no lawyer", () => {
+    expect(lawyerTierIndex({})).toBeNull();
+    const eliteTier = STAFF_ROLES.lawyer.tiers[2];
+    expect(lawyerTierIndex({ lawyer: { tierId: eliteTier.id } })).toBe(2);
   });
 
   it("higher tiers cost and pay more than lower ones for the same role", () => {

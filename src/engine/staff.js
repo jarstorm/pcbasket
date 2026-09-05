@@ -121,6 +121,18 @@ export const STAFF_ROLES = {
       effect: 0.15,
     }),
   },
+  lawyer: {
+    label: "Abogado",
+    desc: "Revela el rango de sueldo que aceptaría un jugador al renovar contrato.",
+    tiers: makeTiers({
+      prefix: "law",
+      roleLabel: "Abogado",
+      hireCost: 55000,
+      wage: 2200,
+      effectKey: "insightLevel",
+      effect: 1,
+    }),
+  },
 };
 
 const ROLE_IDS = Object.keys(STAFF_ROLES);
@@ -175,14 +187,19 @@ export function scoutProspectChance(staff) {
   return effectSum(staff, "prospectChance");
 }
 
-// The scout's tier decides how good a prospect they can dig up — parsed
-// straight from the tier id ("scout_0"/"scout_1"/"scout_2") rather than a
-// separate field, since TIER_LABELS/EFFECT_MULT already encode the same
-// Básico/Avanzado/Élite order everywhere else.
-export function scoutTierIndex(staff) {
-  const tier = currentTier(staff, "scout");
+// A role's tier index (0/1/2 = Básico/Avanzado/Élite), parsed straight from
+// the tier id ("scout_0"/"law_1"/...) rather than a separate field, since
+// TIER_LABELS/EFFECT_MULT already encode the same order everywhere else.
+function tierIndexOf(staff, roleId) {
+  const tier = currentTier(staff, roleId);
   if (!tier) return null;
   return Number(tier.id.split("_")[1]);
+}
+export function scoutTierIndex(staff) {
+  return tierIndexOf(staff, "scout");
+}
+export function lawyerTierIndex(staff) {
+  return tierIndexOf(staff, "lawyer");
 }
 export function maintenanceReduction(staff) {
   return Math.min(0.8, effectSum(staff, "maintenanceReduction"));

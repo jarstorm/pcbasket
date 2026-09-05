@@ -74,8 +74,8 @@ function baseState() {
       acb: {
         name: "ACB",
         teams: [
-          { id: "acb1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
-          { id: "acb2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+          { id: "acb1", name: "acb1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+          { id: "acb2", name: "acb2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
         ],
         schedule: [[["acb1", "acb2"]], [["acb2", "acb1"]]],
         round: 0,
@@ -85,8 +85,8 @@ function baseState() {
       segundafeb: {
         name: "Segunda FEB",
         teams: [
-          { id: "sf1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
-          { id: "sf2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+          { id: "sf1", name: "sf1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+          { id: "sf2", name: "sf2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
         ],
         schedule: [[["sf1", "sf2"]], [["sf2", "sf1"]]],
         round: 0,
@@ -149,17 +149,19 @@ describe("reducer", () => {
     expect(prospect.age).toBeLessThanOrEqual(22);
     expect(team.scoutCooldown).toBeGreaterThanOrEqual(13);
     expect(team.scoutCooldown).toBeLessThanOrEqual(26);
+    expect(team.scoutSearchTotal).toBe(team.scoutCooldown);
   });
 
-  it("a scout with cooldown left just ticks down without finding anyone", () => {
+  it("a scout with cooldown left just ticks down without finding anyone, keeping the same search total", () => {
     const state = baseState();
     state.teams = state.teams.map((t) =>
-      t.id === "a" ? { ...t, staff: { scout: { tierId: "scout_0" } }, scoutCooldown: 10 } : t
+      t.id === "a" ? { ...t, staff: { scout: { tierId: "scout_0" } }, scoutCooldown: 10, scoutSearchTotal: 20 } : t
     );
     const next = reducer(state, { type: "SIM_ROUND" });
     const team = next.teams.find((t) => t.id === "a");
     expect(team.academy).toEqual([]);
     expect(team.scoutCooldown).toBe(9);
+    expect(team.scoutSearchTotal).toBe(20);
   });
 
   it("firing the scout resets the cooldown so a new hire starts a fresh search", () => {
@@ -338,6 +340,18 @@ describe("reducer", () => {
       expect(div.round).toBe(0);
       for (const t of div.teams) expect(t.record.wins).toBe(0);
     }
+
+    // season summary: one entry per division, each with a champion and
+    // exactly 2 promoted/relegated names (this fixture's playoff sizing)
+    expect(next.lastSeasonSummary.seasonYear).toBe(2025);
+    expect(next.lastSeasonSummary.divisions).toHaveLength(3);
+    for (const div of next.lastSeasonSummary.divisions) {
+      expect(typeof div.championName).toBe("string");
+    }
+    const acbSummary = next.lastSeasonSummary.divisions.find((d) => d.id === "acb");
+    expect(acbSummary.relegated).toHaveLength(2);
+    const segundaSummary = next.lastSeasonSummary.divisions.find((d) => d.id === "segundafeb");
+    expect(segundaSummary.promoted).toHaveLength(2);
   });
 
   it("SIM_ROUND flags the user's team's expired contracts for renewal, but auto-renews AI teams", () => {

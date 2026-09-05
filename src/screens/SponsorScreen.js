@@ -5,11 +5,12 @@ import { getJerseySponsorOffers, getStadiumSponsorOffers, tvRightsIncome } from 
 import { leaguePosition } from "../engine/standings";
 import { DIVISION_META } from "../engine/pyramid";
 import { colors, spacing, radii } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 function OfferList({ title, offers, current, onSelect }) {
   return (
     <Card>
-      <Text style={styles.h2}>{title}</Text>
+      <SectionHeader>{title}</SectionHeader>
       {offers.map((offer) => {
         const isCurrent = current?.id === offer.id;
         return (
@@ -42,7 +43,7 @@ export default function SponsorScreen() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>PUBLICIDAD E INGRESOS DE MEDIA</Text>
+        <SectionHeader>PUBLICIDAD E INGRESOS DE MEDIA</SectionHeader>
         <Text style={styles.dim}>
           Posición actual en la liga: #{position}. Los mejores patrocinadores solo firman con
           equipos arriba en la clasificación.
@@ -50,7 +51,7 @@ export default function SponsorScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>DERECHOS DE TV</Text>
+        <SectionHeader>DERECHOS DE TV</SectionHeader>
         <Text style={styles.dim}>
           Automáticos, según división ({divisionName}) y posición — no se eligen, suben si mejoras
           en la tabla o asciendes de categoría.

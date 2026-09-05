@@ -143,6 +143,7 @@ export function generateRealLeague() {
       financeHistory: [],
       tactics: { offense: "balanced", defense: "man" },
       scoutCooldown: null,
+      scoutSearchTotal: null,
     };
     teams.push(team);
   }
@@ -218,6 +219,7 @@ export function generateSegundaFebDivision() {
       financeHistory: [],
       tactics: { offense: "balanced", defense: "man" },
       scoutCooldown: null,
+      scoutSearchTotal: null,
     };
     teams.push(team);
   }
@@ -301,6 +303,7 @@ export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
       financeHistory: [],
       tactics: { offense: "balanced", defense: "man" },
       scoutCooldown: null,
+      scoutSearchTotal: null,
     };
 
     for (let j = 0; j < rosterSize; j++) {

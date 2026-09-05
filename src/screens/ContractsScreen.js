@@ -3,13 +3,29 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
+import { lawyerTierIndex } from "../engine/staff";
 import { colors, spacing, radii } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 const YEAR_OPTIONS = [1, 2, 3, 4];
+
+// Mirrors evaluateContractOffer's thresholds in career.js: a ratio >= 1.15
+// always gets accepted, so that's the exact figure an élite lawyer reveals.
+// The lower tiers give a wider, fuzzier window around that same number.
+function renewalInsight(wage, tierIndex) {
+  if (tierIndex === 2) {
+    return { exact: Math.round(wage * 1.15) };
+  }
+  if (tierIndex === 1) {
+    return { low: Math.round(wage * 0.85), high: Math.round(wage * 1.2) };
+  }
+  return { low: Math.round(wage * 0.6), high: Math.round(wage * 1.4) };
+}
 
 export default function ContractsScreen() {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
+  const lawyerTier = lawyerTierIndex(team.staff);
   const pendingPlayers = state.pendingContracts
     .map((id) => state.playersById[id])
     .filter(Boolean);
@@ -17,7 +33,7 @@ export default function ContractsScreen() {
   if (pendingPlayers.length === 0) {
     return (
       <Card>
-        <Text style={styles.h2}>CONTRATOS</Text>
+        <SectionHeader>CONTRATOS</SectionHeader>
         <Text style={styles.dim}>No hay renovaciones pendientes ahora mismo.</Text>
       </Card>
     );
@@ -26,7 +42,7 @@ export default function ContractsScreen() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>RENOVACIONES PENDIENTES</Text>
+        <SectionHeader>RENOVACIONES PENDIENTES</SectionHeader>
         <Text style={styles.dim}>
           A estos jugadores se les acaba el contrato. Ofrece años y sueldo — pueden aceptar, pedir
           más, o rechazar y marcharse (si se retiran, rechazan igualmente).
@@ -39,13 +55,14 @@ export default function ContractsScreen() {
           team={team}
           dispatch={dispatch}
           roundsPerSeason={state.schedule.length}
+          lawyerTier={lawyerTier}
         />
       ))}
     </View>
   );
 }
 
-function ContractOffer({ player, team, dispatch, roundsPerSeason }) {
+function ContractOffer({ player, team, dispatch, roundsPerSeason, lawyerTier }) {
   const [years, setYears] = useState(2);
   const [wage, setWage] = useState(player.wage);
 
@@ -56,6 +73,23 @@ function ContractOffer({ player, team, dispatch, roundsPerSeason }) {
         {player.age} años · OVR {player.overall} · sueldo actual ${player.wage.toLocaleString()}/jornada ($
         {(player.wage * roundsPerSeason).toLocaleString()}/año)
       </Text>
+
+      {lawyerTier === null ? (
+        <Text style={styles.lawyerHint}>
+          Contrata un Abogado en Personal para saber qué sueldo aceptaría.
+        </Text>
+      ) : (
+        (() => {
+          const insight = renewalInsight(player.wage, lawyerTier);
+          return (
+            <Text style={styles.lawyerHint}>
+              {insight.exact
+                ? `El abogado dice que aceptará exactamente $${insight.exact.toLocaleString()}/jornada.`
+                : `El abogado estima que aceptaría entre $${insight.low.toLocaleString()} y $${insight.high.toLocaleString()}/jornada.`}
+            </Text>
+          );
+        })()
+      )}
 
       <Text style={styles.label}>AÑOS</Text>
       <View style={styles.optionRow}>
@@ -104,6 +138,7 @@ function ContractOffer({ player, team, dispatch, roundsPerSeason }) {
 const styles = StyleSheet.create({
   h2: { fontSize: 13, fontWeight: "800", color: colors.text, marginBottom: 6, letterSpacing: 0.6 },
   dim: { color: colors.textDim, fontSize: 12 },
+  lawyerHint: { color: colors.accent, fontSize: 12, fontWeight: "700", marginTop: spacing.xs },
   name: { color: colors.text, fontWeight: "800", fontSize: 14, marginBottom: 2 },
   label: { color: colors.textDim, fontSize: 11, fontWeight: "700", letterSpacing: 0.5, marginTop: spacing.sm, marginBottom: 4 },
   optionRow: { flexDirection: "row", gap: spacing.sm },

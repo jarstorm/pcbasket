@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import { POSITION_ORDER, POSITION_ABBR, POSITION_LABEL } from "../data/positions";
 import { seededShuffle } from "../engine/random";
 import { colors, spacing } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 const MARKET_POOL_SIZE = 40;
 
@@ -63,7 +64,7 @@ export default function TransferMarket() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>Mercado de fichajes</Text>
+        <SectionHeader>Mercado de fichajes</SectionHeader>
         <Text style={styles.dim}>
           Presupuesto disponible: <Text style={[styles.bold, { color: colors.accent }]}>${team.budget.toLocaleString()}</Text>{" "}
           · Plantilla: {team.roster.length}/15
@@ -109,7 +110,7 @@ export default function TransferMarket() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>Agentes libres</Text>
+        <SectionHeader>Agentes libres</SectionHeader>
         <Text style={styles.dim}>Sin equipo — se fichan gratis, solo pagas su salario.</Text>
         {freeAgents.length === 0 ? (
           <Text style={styles.dim}>No hay agentes libres disponibles ahora mismo.</Text>

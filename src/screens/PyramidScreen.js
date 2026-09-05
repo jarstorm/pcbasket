@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Table from "../components/Table";
@@ -7,6 +8,7 @@ import TeamLogo from "../components/TeamLogo";
 import { sortStandings } from "../engine/standings";
 import { DIVISION_META, DIVISION_ORDER } from "../engine/pyramid";
 import { colors, spacing, radii } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 export default function PyramidScreen() {
   const { state } = useGame();
@@ -46,7 +48,7 @@ export default function PyramidScreen() {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>OTRAS LIGAS</Text>
+        <SectionHeader>OTRAS LIGAS</SectionHeader>
         <Text style={styles.dim}>
           Tu equipo juega en {DIVISION_META[state.activeDivisionId].name}. Al final de cada
           temporada suben 2 equipos por categoría (1º directo + 1 por playoff entre el 2º-5º) y
@@ -54,11 +56,15 @@ export default function PyramidScreen() {
         </Text>
         <View style={styles.tabRow}>
           {DIVISION_ORDER.map((id) => (
-            <Pressable
-              key={id}
-              onPress={() => setTab(id)}
-              style={[styles.tabBtn, tab === id && styles.tabBtnActive]}
-            >
+            <Pressable key={id} onPress={() => setTab(id)} style={styles.tabBtn}>
+              {tab === id && (
+                <LinearGradient
+                  colors={["#ffb14d", colors.accent]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              )}
               <Text style={[styles.tabText, tab === id && styles.tabTextActive]}>
                 {DIVISION_META[id].name}
                 {id === state.activeDivisionId ? " (tú)" : ""}
@@ -69,7 +75,7 @@ export default function PyramidScreen() {
       </Card>
 
       <Card>
-        <Text style={styles.h2}>{division.name.toUpperCase()}</Text>
+        <SectionHeader>{division.name.toUpperCase()}</SectionHeader>
         {viewingOwn && (
           <Text style={styles.dim}>
             Jornada {state.round} de {state.schedule.length}
@@ -155,8 +161,8 @@ const styles = StyleSheet.create({
     borderRadius: radii.sm,
     paddingVertical: spacing.sm,
     alignItems: "center",
+    overflow: "hidden",
   },
-  tabBtnActive: { borderColor: colors.accent, backgroundColor: colors.panelAlt },
   tabText: { color: colors.textDim, fontSize: 11, fontWeight: "700" },
-  tabTextActive: { color: colors.accent },
+  tabTextActive: { color: colors.accentText },
 });

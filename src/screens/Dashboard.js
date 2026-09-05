@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import TeamLogo from "../components/TeamLogo";
 import { leaguePosition } from "../engine/standings";
 import { colors, spacing } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 const MONTHS = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -48,8 +49,9 @@ export default function Dashboard({ onNavigate }) {
       return;
     }
     const play = () => {
+      const isSeasonEnd = state.round >= totalRounds - 1;
       dispatch({ type: "SIM_ROUND" });
-      onNavigate("result");
+      onNavigate(isSeasonEnd ? "seasonSummary" : "result");
     };
     if (inRedNumbers) {
       Alert.alert(
@@ -137,7 +139,7 @@ export default function Dashboard({ onNavigate }) {
       {!isPreseason && (
         <Pressable disabled={!lastResult} onPress={() => onNavigate("result")}>
           <Card style={!lastResult && { opacity: 0.6 }}>
-            <Text style={styles.h3}>ÚLTIMO RESULTADO</Text>
+            <SectionHeader>ÚLTIMO RESULTADO</SectionHeader>
             {lastResult ? (
               <MatchSummary result={lastResult} teams={state.teams} />
             ) : (
@@ -168,7 +170,7 @@ export default function Dashboard({ onNavigate }) {
 
       <Card>
         <View style={styles.newsHeader}>
-          <Text style={styles.h3}>NOTICIAS</Text>
+          <SectionHeader>NOTICIAS</SectionHeader>
           {state.log.length > 5 && (
             <Pressable onPress={() => setShowAllNews(true)}>
               <Text style={styles.newsLink}>Ver todas ({state.log.length})</Text>
@@ -189,7 +191,7 @@ export default function Dashboard({ onNavigate }) {
       <Modal visible={showAllNews} animationType="slide" onRequestClose={() => setShowAllNews(false)}>
         <View style={styles.modalShell}>
           <View style={styles.modalHeader}>
-            <Text style={styles.h3}>TODAS LAS NOTICIAS</Text>
+            <SectionHeader>TODAS LAS NOTICIAS</SectionHeader>
             <Pressable onPress={() => setShowAllNews(false)}>
               <Text style={styles.newsLink}>Cerrar</Text>
             </Pressable>

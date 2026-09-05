@@ -3,6 +3,7 @@ import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import { colors, spacing } from "../theme";
+import SectionHeader from "../components/SectionHeader";
 
 export default function MainMenu({ onDone }) {
   const { dispatch, saveSnapshot, loadSnapshot } = useGame();
@@ -52,7 +53,7 @@ export default function MainMenu({ onDone }) {
   return (
     <View>
       <Card>
-        <Text style={styles.h2}>Menú</Text>
+        <SectionHeader>Menú</SectionHeader>
         <Text style={styles.dim}>Gestiona tu partida.</Text>
         <Button primary onPress={handleSave} style={{ marginTop: spacing.sm }}>
           Guardar partida

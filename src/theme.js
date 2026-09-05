@@ -12,6 +12,8 @@ export const colors = {
   accentText: "#1a0f00",
   win: "#3ecf7e",
   loss: "#ff5c5c",
+  headerGradTop: "#24467f",
+  headerGradBottom: "#14285a",
 };
 
 export const spacing = {
