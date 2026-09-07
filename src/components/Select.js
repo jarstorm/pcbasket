@@ -1,6 +1,13 @@
 import { useState } from "react";
-import { View, Text, Pressable, Modal, FlatList, StyleSheet } from "react-native";
+import { View, Text, Pressable, Modal, FlatList, StyleSheet, Dimensions } from "react-native";
 import { colors, radii, spacing } from "../theme";
+
+// A percentage maxHeight on the sheet isn't enough on its own to bound the
+// FlatList inside it (Yoga still lets a non-flexed child grow to its full
+// content height, which then overflows the sheet's box silently since
+// Views default to overflow:"visible") — the list itself needs an explicit
+// pixel cap so it actually has a fixed viewport to scroll within.
+const SHEET_MAX_HEIGHT = Math.round(Dimensions.get("window").height * 0.6);
 
 export default function Select({ value, options, onChange, placeholder = "-- elegir --", renderTrigger }) {
   const [open, setOpen] = useState(false);
@@ -23,7 +30,9 @@ export default function Select({ value, options, onChange, placeholder = "-- ele
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
           <View style={styles.sheet}>
             <FlatList
+              style={styles.list}
               data={options}
+              showsVerticalScrollIndicator
               keyExtractor={(o, i) => String(o.value ?? i)}
               renderItem={({ item }) => (
                 <Pressable
@@ -69,10 +78,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
     borderTopLeftRadius: radii.md,
     borderTopRightRadius: radii.md,
-    maxHeight: "60%",
+    maxHeight: SHEET_MAX_HEIGHT,
     paddingVertical: spacing.sm,
     borderWidth: 1,
     borderColor: colors.border,
+    overflow: "hidden",
+  },
+  list: {
+    maxHeight: SHEET_MAX_HEIGHT,
+    flexGrow: 0,
   },
   option: {
     paddingVertical: 12,
