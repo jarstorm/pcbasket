@@ -1,6 +1,6 @@
 - la media de los jugadores debe ser proporcional a la categoria, no puede se gente de media 80 en tercera
 - cuando se avanza una semana sin liga poner un loader o algo
-- al inicio poder seleccionar equipos de cualquier liga
+- [hecho] al inicio poder seleccionar equipos de cualquier liga
 - no se si la economia es real, se gana demasiado dinero
 - las mejoras de estadio son demasiado beneficiosas hoy. Por cada ampliacion de aforo por ejemplo no debe ser atraer a mas gente y subir el precio de las entradas. SI cabe mas gentre deberia ser mas dificl llenar.
 - el precio de las entradas deberia tener 100 euros maximo

@@ -13,6 +13,7 @@ import {
   findGroupOf,
   makeGroup,
   makeDivision,
+  assembleActiveDivision,
   DIVISION_META,
   DIVISION_ORDER,
 } from "../engine/pyramid";
@@ -277,8 +278,46 @@ export function reducer(state, action) {
     case "NEW_GAME":
       return freshGame();
 
-    case "CHOOSE_TEAM":
-      return { ...state, userTeamId: action.teamId, teamChosen: true };
+    case "CHOOSE_TEAM": {
+      // The user can pick a team from any division at the pyramid, not just
+      // the default active one (Primera FEB) — if the pick lives elsewhere,
+      // swap that division's live group into the top-level state (mirroring
+      // the same active-division swap the season-rollover promotion/
+      // relegation logic does), sending the old active division wholesale
+      // into otherDivisions.
+      const activeDivision = assembleActiveDivision(state);
+      const divisions = { ...state.otherDivisions, [state.activeDivisionId]: activeDivision };
+      const found = findGroupOf(divisions, action.teamId);
+      if (!found) return state;
+      if (found.divisionId === state.activeDivisionId) {
+        return { ...state, userTeamId: action.teamId, teamChosen: true };
+      }
+
+      const newActiveDivision = divisions[found.divisionId];
+      const newActive = newActiveDivision.groups.find((g) => g.id === found.groupId);
+      const siblingGroups = newActiveDivision.groups.filter((g) => g.id !== found.groupId);
+
+      const newOtherDivisions = { ...state.otherDivisions };
+      delete newOtherDivisions[found.divisionId];
+      newOtherDivisions[state.activeDivisionId] = activeDivision;
+      if (siblingGroups.length) {
+        newOtherDivisions[found.divisionId] = { name: newActiveDivision.name, groups: siblingGroups };
+      }
+
+      return {
+        ...state,
+        teams: newActive.teams,
+        schedule: newActive.schedule,
+        round: newActive.round,
+        results: newActive.results,
+        lastRoundResults: newActive.lastRoundResults,
+        activeDivisionId: found.divisionId,
+        activeGroupId: found.groupId,
+        otherDivisions: newOtherDivisions,
+        userTeamId: action.teamId,
+        teamChosen: true,
+      };
+    }
 
     case "LOAD":
       return action.state;
