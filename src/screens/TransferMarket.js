@@ -2,11 +2,9 @@ import { useMemo, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
-import OvrBadge from "../components/OvrBadge";
-import Table from "../components/Table";
+import PlayerMarketCard from "../components/PlayerMarketCard";
 import Select from "../components/Select";
-import Button from "../components/Button";
-import { POSITION_ORDER, POSITION_ABBR, POSITION_LABEL } from "../data/positions";
+import { POSITION_ORDER, POSITION_LABEL } from "../data/positions";
 import { seededShuffle } from "../engine/random";
 import { colors, spacing } from "../theme";
 import SectionHeader from "../components/SectionHeader";
@@ -75,38 +73,19 @@ export default function TransferMarket() {
           <Select value={sortBy} options={SORT_OPTIONS} onChange={setSortBy} />
         </View>
 
-        <Table
-          columns={[
-            { key: "name", label: "Nombre", width: 140 },
-            { key: "team", label: "Equipo", width: 100, render: (p) => <Text style={styles.cellText}>{teamNameById[p.teamId]}</Text> },
-            { key: "position", label: "Pos", width: 50, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
-            { key: "age", label: "Edad", width: 50 },
-            { key: "overall", label: "OVR", width: 60, render: (p) => <OvrBadge value={p.overall} /> },
-            { key: "value", label: "Cláusula", width: 100, render: (p) => <Text style={styles.cellText}>${p.value.toLocaleString()}</Text> },
-            {
-              key: "wage",
-              label: "Salario/año",
-              width: 100,
-              render: (p) => <Text style={styles.cellText}>${annualWage(p).toLocaleString()}</Text>,
-            },
-            {
-              key: "buy",
-              label: "",
-              width: 90,
-              render: (p) => (
-                <Button
-                  primary
-                  disabled={team.budget < p.value || team.roster.length >= 15}
-                  onPress={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: p.id })}
-                >
-                  Fichar
-                </Button>
-              ),
-            },
-          ]}
-          data={marketPlayers}
-          rowKey={(p) => p.id}
-        />
+        {marketPlayers.map((p) => (
+          <PlayerMarketCard
+            key={p.id}
+            player={p}
+            teamName={teamNameById[p.teamId]}
+            feeLabel="CLÁUSULA"
+            feeValue={p.value}
+            wageValue={annualWage(p)}
+            disabled={team.budget < p.value || team.roster.length >= 15}
+            buyLabel="Fichar"
+            onBuy={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: p.id })}
+          />
+        ))}
       </Card>
 
       <Card>
@@ -115,36 +94,16 @@ export default function TransferMarket() {
         {freeAgents.length === 0 ? (
           <Text style={styles.dim}>No hay agentes libres disponibles ahora mismo.</Text>
         ) : (
-          <Table
-            columns={[
-              { key: "name", label: "Nombre", width: 140 },
-              { key: "position", label: "Pos", width: 50, render: (p) => <Text style={styles.cellText}>{POSITION_ABBR[p.position] || p.position}</Text> },
-              { key: "age", label: "Edad", width: 50 },
-              { key: "overall", label: "OVR", width: 60, render: (p) => <OvrBadge value={p.overall} /> },
-              {
-                key: "wage",
-                label: "Salario/año",
-                width: 100,
-                render: (p) => <Text style={styles.cellText}>${annualWage(p).toLocaleString()}</Text>,
-              },
-              {
-                key: "sign",
-                label: "",
-                width: 90,
-                render: (p) => (
-                  <Button
-                    primary
-                    disabled={team.roster.length >= 15}
-                    onPress={() => dispatch({ type: "SIGN_FREE_AGENT", teamId: team.id, playerId: p.id })}
-                  >
-                    Fichar
-                  </Button>
-                ),
-              },
-            ]}
-            data={freeAgents}
-            rowKey={(p) => p.id}
-          />
+          freeAgents.map((p) => (
+            <PlayerMarketCard
+              key={p.id}
+              player={p}
+              wageValue={annualWage(p)}
+              disabled={team.roster.length >= 15}
+              buyLabel="Fichar"
+              onBuy={() => dispatch({ type: "SIGN_FREE_AGENT", teamId: team.id, playerId: p.id })}
+            />
+          ))
         )}
       </Card>
     </View>
@@ -152,9 +111,7 @@ export default function TransferMarket() {
 }
 
 const styles = StyleSheet.create({
-  h2: { fontSize: 17, fontWeight: "700", color: colors.text, marginBottom: 4 },
   dim: { color: colors.textDim, fontSize: 13, marginBottom: spacing.sm },
   bold: { fontWeight: "700" },
-  cellText: { color: colors.text, fontSize: 13 },
   filters: { flexDirection: "row", gap: 8, marginBottom: spacing.md },
 });

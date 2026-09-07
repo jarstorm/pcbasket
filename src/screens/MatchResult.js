@@ -71,7 +71,7 @@ function TeamBox({ team, result, side }) {
         <TeamLogo team={team} size={22} />
         <Text style={styles.teamName}>{team.name.toUpperCase()}</Text>
       </View>
-      <Table columns={COLUMNS} data={rows} rowKey={(r) => r.id} />
+      <Table columns={COLUMNS} data={rows} rowKey={(r) => r.id} pinFirst />
     </Card>
   );
 }
@@ -118,13 +118,13 @@ export default function MatchResult({ onContinue }) {
 
         <View style={styles.scoreRow}>
           <View style={styles.scoreSide}>
-            <TeamLogo team={home} size={32} />
+            <TeamLogo team={home} size={48} />
             <Text style={styles.scoreName} numberOfLines={1}>{home.name}</Text>
             <Text style={styles.scoreNumber}>{result.homeScore}</Text>
           </View>
           <Text style={styles.scoreDash}>-</Text>
           <View style={styles.scoreSide}>
-            <TeamLogo team={away} size={32} />
+            <TeamLogo team={away} size={48} />
             <Text style={styles.scoreName} numberOfLines={1}>{away.name}</Text>
             <Text style={styles.scoreNumber}>{result.awayScore}</Text>
           </View>

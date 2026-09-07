@@ -18,6 +18,7 @@ import PyramidScreen from "./src/screens/PyramidScreen";
 import MainMenu from "./src/screens/MainMenu";
 import MatchResult from "./src/screens/MatchResult";
 import SeasonSummaryScreen from "./src/screens/SeasonSummaryScreen";
+import PlayerDetailScreen from "./src/screens/PlayerDetailScreen";
 import TeamLogo from "./src/components/TeamLogo";
 import BottomNav from "./src/components/BottomNav";
 import { colors, spacing, radii } from "./src/theme";
@@ -27,12 +28,12 @@ import { colors, spacing, radii } from "./src/theme";
 const HUBS = {
   standings: {
     label: "Clasificación",
-    icon: "🏆",
+    icon: "emoji-events",
     screens: [{ id: "pyramid", label: "Liga" }],
   },
   roster: {
     label: "Plantilla",
-    icon: "👥",
+    icon: "groups",
     screens: [
       { id: "roster", label: "Plantilla" },
       { id: "academy", label: "Cantera" },
@@ -41,7 +42,7 @@ const HUBS = {
   },
   management: {
     label: "Gestiones",
-    icon: "🛠️",
+    icon: "build",
     screens: [
       { id: "market", label: "Mercado" },
       { id: "stadium", label: "Estadio" },
@@ -50,7 +51,7 @@ const HUBS = {
   },
   finance: {
     label: "Finanzas",
-    icon: "💰",
+    icon: "payments",
     screens: [
       { id: "finance", label: "Finanzas" },
       { id: "sponsor", label: "Publicidad" },
@@ -61,7 +62,7 @@ const HUBS = {
 const BOTTOM_TABS = [
   { id: "standings", label: HUBS.standings.label, icon: HUBS.standings.icon },
   { id: "roster", label: HUBS.roster.label, icon: HUBS.roster.icon },
-  { id: "home", label: "Home", icon: "🏠" },
+  { id: "home", label: "Home", icon: "home" },
   { id: "management", label: HUBS.management.label, icon: HUBS.management.icon },
   { id: "finance", label: HUBS.finance.label, icon: HUBS.finance.icon },
 ];
@@ -71,7 +72,6 @@ const LEAF_TO_HUB = Object.fromEntries(
 );
 
 const SCREEN_COMPONENTS = {
-  roster: RosterScreen,
   market: TransferMarket,
   academy: AcademyScreen,
   stadium: StadiumScreen,
@@ -104,7 +104,12 @@ function HubTabs({ hub, activeId, onSelect }) {
 function GameShell() {
   const { state } = useGame();
   const [screen, setScreen] = useState("home");
+  const [selectedPlayerId, setSelectedPlayerId] = useState(null);
   const fade = useRef(new Animated.Value(1)).current;
+  const openPlayer = (playerId) => {
+    setSelectedPlayerId(playerId);
+    setScreen("player");
+  };
 
   useEffect(() => {
     fade.setValue(0);
@@ -119,8 +124,9 @@ function GameShell() {
 
   const hubId = LEAF_TO_HUB[screen];
   const hub = hubId ? HUBS[hubId] : null;
-  const showBack = screen === "menu" || screen === "result" || screen === "seasonSummary";
+  const showBack = screen === "menu" || screen === "result" || screen === "seasonSummary" || screen === "player";
   const activeTab = hubId || (screen === "home" ? "home" : null);
+  const selectedPlayer = screen === "player" ? state.playersById[selectedPlayerId] : null;
 
   const title =
     screen === "menu"
@@ -129,6 +135,8 @@ function GameShell() {
       ? "RESULTADO"
       : screen === "seasonSummary"
       ? "TEMPORADA"
+      : screen === "player"
+      ? selectedPlayer?.name.toUpperCase() || "FICHA"
       : hub
       ? hub.label.toUpperCase()
       : null;
@@ -172,6 +180,8 @@ function GameShell() {
           {screen === "menu" && <MainMenu onDone={goHome} />}
           {screen === "result" && <MatchResult onContinue={goHome} />}
           {screen === "seasonSummary" && <SeasonSummaryScreen onContinue={goHome} />}
+          {screen === "roster" && <RosterScreen onOpenPlayer={openPlayer} />}
+          {screen === "player" && <PlayerDetailScreen player={selectedPlayer} />}
           {ActiveScreen && <ActiveScreen />}
           {screen === "home" && (
             <Text style={styles.footer}>

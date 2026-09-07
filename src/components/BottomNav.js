@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import Icon from "./Icon";
 import { colors, spacing, radii } from "../theme";
 
 export default function BottomNav({ tabs, activeId, onSelect }) {
@@ -10,7 +11,12 @@ export default function BottomNav({ tabs, activeId, onSelect }) {
           <Pressable key={tab.id} onPress={() => onSelect(tab.id)} style={styles.item}>
             <View style={styles.indicator}>{active && <View style={styles.indicatorDot} />}</View>
             <View style={[styles.iconWrap, active && styles.iconWrapActive]}>
-              <Text style={[styles.icon, active && styles.iconActive]}>{tab.icon}</Text>
+              <Icon
+                name={tab.icon}
+                size={18}
+                color={active ? colors.accent : colors.textDim}
+                style={{ opacity: active ? 1 : 0.75 }}
+              />
             </View>
             <Text style={[styles.label, active && styles.labelActive]} numberOfLines={1}>
               {tab.label}
@@ -51,8 +57,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 149, 0, 0.28)",
     borderColor: colors.accent,
   },
-  icon: { fontSize: 18, opacity: 0.55 },
-  iconActive: { opacity: 1 },
   label: { fontSize: 10, fontWeight: "700", color: colors.textDim, letterSpacing: 0.3 },
   labelActive: { color: colors.accent, fontWeight: "800" },
 });

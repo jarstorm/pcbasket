@@ -90,7 +90,7 @@ export default function PyramidScreen() {
               width: 170,
               render: (t) => (
                 <View style={styles.teamCell}>
-                  <TeamLogo team={t} size={22} />
+                  <TeamLogo team={t} size={28} />
                   <Text style={styles.cellText} numberOfLines={1}>{t.name}</Text>
                 </View>
               ),

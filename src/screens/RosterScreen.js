@@ -1,27 +1,26 @@
-import { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import OvrBadge from "../components/OvrBadge";
 import Pill from "../components/Pill";
 import Select from "../components/Select";
-import RatingBar from "../components/RatingBar";
-import Button from "../components/Button";
+import Icon from "../components/Icon";
 import { POSITION_ORDER, POSITION_ABBR } from "../data/positions";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 import { positionMismatchFactor, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
-import StatBar from "../components/StatBar";
 import Plaque from "../components/Plaque";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
 const POSITION_HUE = { PG: 205, SG: 165, SF: 130, PF: 35, C: 5 };
+// Rough "1-3-1" spread across the full-court diagram (left hoop / right
+// hoop), matched to the design mockup — not real tactical positioning.
+const COURT_SPOT = { PG: [22, 76], SG: [20, 24], SF: [48, 56], PF: [70, 22], C: [72, 76] };
 
-export default function RosterScreen() {
+export default function RosterScreen({ onOpenPlayer }) {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const roster = team.roster.map((id) => state.playersById[id]).sort((a, b) => b.overall - a.overall);
-  const [expandedId, setExpandedId] = useState(null);
 
   const starterIds = new Set(Object.values(team.lineup).filter(Boolean));
   const bench = roster.filter((p) => !starterIds.has(p.id));
@@ -69,65 +68,87 @@ export default function RosterScreen() {
       )
     : null;
 
+  const warnings = filledSlots.filter((s) => s.starter.injured || s.outOfPosition);
+
   return (
     <View>
       <Card>
         <SectionHeader>QUINTETO INICIAL</SectionHeader>
-        <Text style={styles.dim}>
-          Media del quinteto: {lineupAverage !== null ? lineupAverage : "-"} ({filledSlots.length}/5)
-        </Text>
-        <Text style={styles.dim}>
-          Extracomunitarios en el quinteto: {foreignStarterCount}/{FOREIGN_PLAYER_QUOTA}
-        </Text>
-        <View style={{ gap: spacing.sm }}>
-          {lineupSlots.map((slot) => (
-            <Select
-              key={slot.pos}
-              value={slot.starterId || ""}
-              options={slot.options}
-              onChange={(playerId) =>
-                dispatch({
-                  type: "SET_LINEUP",
-                  teamId: team.id,
-                  position: slot.pos,
-                  playerId: playerId || null,
-                })
-              }
-              renderTrigger={() => (
-                <View style={styles.lineupRow}>
-                  <View style={[styles.avatar, { backgroundColor: `hsl(${POSITION_HUE[slot.pos]}, 45%, 26%)` }]}>
-                    <Text style={styles.avatarText}>{POSITION_ABBR[slot.pos]}</Text>
-                  </View>
-                  {slot.starter ? (
-                    <View style={{ flex: 1 }}>
-                      <View style={styles.lineupTopRow}>
-                        <Text style={styles.lineupName} numberOfLines={1}>{slot.starter.name}</Text>
-                        <OvrBadge value={slot.outOfPosition ? slot.effectiveOverall : slot.starter.overall} />
-                      </View>
-                      <View style={styles.plaqueRow}>
-                        <Plaque>{slot.starter.age} años</Plaque>
-                        {isForeign(slot.starter) && <Plaque>EXT</Plaque>}
-                        {slot.starter.injured && <Plaque>LESIONADO</Plaque>}
-                        {slot.outOfPosition && (
-                          <Plaque>FUERA DE POSICIÓN {slot.starter.overall}→{slot.effectiveOverall}</Plaque>
+        <View style={styles.summaryRow}>
+          <Text style={styles.dim}>
+            Media: <Text style={styles.summaryValue}>{lineupAverage !== null ? lineupAverage : "-"}</Text> ({filledSlots.length}/5)
+          </Text>
+          <Text style={styles.dim}>
+            EXT: <Text style={styles.summaryValue}>{foreignStarterCount}/{FOREIGN_PLAYER_QUOTA}</Text>
+          </Text>
+        </View>
+
+        <View style={styles.court}>
+          <Image source={require("../../assets/court-texture.png")} style={styles.courtTexture} resizeMode="repeat" />
+          <View style={styles.courtBorder} />
+          <View style={styles.centerLine} />
+          <View style={styles.centerCircle} />
+          <View style={[styles.paint, styles.paintLeft]} />
+          <View style={[styles.paint, styles.paintRight]} />
+          {lineupSlots.map((slot) => {
+            const [x, y] = COURT_SPOT[slot.pos];
+            return (
+              <View key={slot.pos} style={[styles.dotWrap, { left: `${x}%`, top: `${y}%` }]}>
+                <Select
+                  value={slot.starterId || ""}
+                  options={slot.options}
+                  onChange={(playerId) =>
+                    dispatch({
+                      type: "SET_LINEUP",
+                      teamId: team.id,
+                      position: slot.pos,
+                      playerId: playerId || null,
+                    })
+                  }
+                  renderTrigger={() => (
+                    <View style={styles.dot}>
+                      <View
+                        style={[
+                          styles.dotAvatar,
+                          { backgroundColor: `hsl(${POSITION_HUE[slot.pos]}, 45%, 26%)` },
+                          slot.starter?.injured && styles.dotAvatarInjured,
+                        ]}
+                      >
+                        <Text style={styles.dotAvatarText}>{POSITION_ABBR[slot.pos]}</Text>
+                        {slot.starter && (
+                          <View style={styles.dotOvr}>
+                            <Text style={styles.dotOvrText}>
+                              {slot.outOfPosition ? slot.effectiveOverall : slot.starter.overall}
+                            </Text>
+                          </View>
                         )}
                       </View>
-                      <View style={{ marginTop: 6 }}>
-                        <StatBar label="TIRO" value={slot.starter.ratings.shooting} />
-                        <StatBar label="DEF" value={slot.starter.ratings.defense} />
-                        <StatBar label="PASE" value={slot.starter.ratings.passing} />
-                        <StatBar label="REB" value={slot.starter.ratings.rebounding} />
-                        <StatBar label="FÍS." value={slot.starter.ratings.physical} />
-                      </View>
+                      <Text style={styles.dotLabel} numberOfLines={1}>
+                        {slot.starter ? slot.starter.name.split(" ").slice(-1)[0] : "VACÍO"}
+                      </Text>
+                      {slot.starter?.injured && <Icon name="healing" size={13} color={colors.loss} />}
                     </View>
-                  ) : (
-                    <Text style={styles.lineupEmpty}>VACÍO — toca para asignar</Text>
                   )}
-                </View>
-              )}
-            />
-          ))}
+                />
+              </View>
+            );
+          })}
+          <Text style={styles.courtHint}>TOCA PARA CAMBIAR</Text>
         </View>
+
+        {warnings.length > 0 && (
+          <View style={{ marginTop: spacing.sm, gap: 6 }}>
+            {warnings.map((s) => (
+              <View key={s.pos} style={styles.warningRow}>
+                <Icon name={s.starter.injured ? "healing" : "warning"} size={15} color={colors.loss} />
+                <Text style={styles.warningText}>
+                  {s.starter.name}
+                  {s.starter.injured ? " está lesionado en el quinteto" : ` fuera de posición (${s.starter.overall}→${s.effectiveOverall})`}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
       </Card>
 
       <Card>
@@ -162,14 +183,7 @@ export default function RosterScreen() {
         <SectionHeader>SUPLENTES ({bench.length})</SectionHeader>
         {bench.length === 0 && <Text style={styles.dim}>No hay suplentes en la plantilla.</Text>}
         {bench.map((p, i) => (
-          <PlayerRow
-            key={p.id}
-            player={p}
-            odd={i % 2 === 1}
-            expanded={expandedId === p.id}
-            onToggle={() => setExpandedId(expandedId === p.id ? null : p.id)}
-            onToggleListed={() => dispatch({ type: "LIST_PLAYER", playerId: p.id, listed: !p.listed })}
-          />
+          <PlayerRow key={p.id} player={p} odd={i % 2 === 1} onPress={() => onOpenPlayer(p.id)} />
         ))}
       </Card>
     </View>
@@ -182,10 +196,10 @@ function formColor(form) {
   return colors.loss;
 }
 
-function PlayerRow({ player, odd, expanded, onToggle, onToggleListed }) {
+function PlayerRow({ player, odd, onPress }) {
   const form = player.form ?? 99;
   return (
-    <Pressable onPress={onToggle} style={[styles.playerRow, odd && styles.playerRowOdd]}>
+    <Pressable onPress={onPress} style={[styles.playerRow, odd && styles.playerRowOdd]}>
       <View style={styles.playerMain}>
         <View style={styles.playerLeft}>
           <Pill>{POSITION_ABBR[player.position] || player.position}</Pill>
@@ -204,51 +218,115 @@ function PlayerRow({ player, odd, expanded, onToggle, onToggleListed }) {
           {player.injured && <Text style={styles.injured}>LESIONADO</Text>}
           {player.listed && <Text style={styles.listed}>EN VENTA</Text>}
         </View>
+        <Icon name="chevron-right" size={18} color={colors.border} />
       </View>
-      {expanded && (
-        <View style={styles.ratings}>
-          <RatingBar label="TIRO" value={player.ratings.shooting} />
-          <RatingBar label="DEF" value={player.ratings.defense} />
-          <RatingBar label="PASE" value={player.ratings.passing} />
-          <RatingBar label="REB" value={player.ratings.rebounding} />
-          <RatingBar label="FÍSICO" value={player.ratings.physical} />
-          <Text style={styles.value}>Valor: ${player.value.toLocaleString()}</Text>
-          <Button onPress={onToggleListed} style={{ marginTop: spacing.sm }}>
-            {player.listed ? "Quitar de venta" : "Poner en venta"}
-          </Button>
-        </View>
-      )}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  dim: { color: colors.textDim, fontSize: 13 },
-  lineupRow: {
-    flexDirection: "row",
-    gap: spacing.md,
+  dim: { color: colors.textDim, fontSize: 12, fontWeight: "700" },
+  summaryValue: { color: colors.text, fontWeight: "800" },
+  summaryRow: { flexDirection: "row", gap: spacing.lg, marginBottom: spacing.sm },
+  court: {
+    height: 210,
+    borderRadius: radii.md,
     borderWidth: 2,
     borderColor: colors.border,
-    borderRadius: radii.sm,
     backgroundColor: colors.panelAlt,
-    padding: spacing.sm,
-    alignItems: "center",
+    overflow: "hidden",
   },
-  avatar: {
-    width: 44,
-    height: 44,
+  courtTexture: { ...StyleSheet.absoluteFillObject, opacity: 0.5 },
+  courtBorder: {
+    position: "absolute",
+    left: 10,
+    right: 10,
+    top: 8,
+    bottom: 8,
+    borderWidth: 2,
+    borderColor: "rgba(147,163,201,0.3)",
+    borderRadius: 2,
+  },
+  centerLine: {
+    position: "absolute",
+    left: "50%",
+    top: 8,
+    bottom: 8,
+    width: 2,
+    backgroundColor: "rgba(147,163,201,0.16)",
+  },
+  centerCircle: {
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    width: 48,
+    height: 48,
+    marginLeft: -24,
+    marginTop: -24,
+    borderWidth: 2,
+    borderColor: "rgba(147,163,201,0.22)",
+    borderRadius: 24,
+  },
+  paint: {
+    position: "absolute",
+    top: "50%",
+    width: 78,
+    height: 128,
+    marginTop: -64,
+    borderWidth: 2,
+    borderColor: "rgba(147,163,201,0.22)",
+  },
+  paintLeft: { left: 10, borderLeftWidth: 0, borderTopRightRadius: 99, borderBottomRightRadius: 99 },
+  paintRight: { right: 10, borderRightWidth: 0, borderTopLeftRadius: 99, borderBottomLeftRadius: 99 },
+  dotWrap: { position: "absolute", transform: [{ translateX: -37 }, { translateY: -30 }], width: 74 },
+  dot: { alignItems: "center", gap: 3 },
+  dotAvatar: {
+    width: 40,
+    height: 40,
     borderRadius: radii.pill,
     borderWidth: 2,
     borderColor: colors.border,
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
   },
-  avatarText: { color: colors.text, fontWeight: "800", fontSize: 13 },
-  lineupTopRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm },
-  lineupName: { flex: 1, color: colors.text, fontSize: 14, fontWeight: "800" },
-  plaqueRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginTop: 4, marginBottom: 2 },
-  lineupEmpty: { flex: 1, color: colors.textDim, fontSize: 12, fontWeight: "700" },
+  dotAvatarInjured: { borderColor: colors.loss },
+  dotAvatarText: { color: colors.text, fontWeight: "800", fontSize: 12 },
+  dotOvr: {
+    position: "absolute",
+    bottom: -5,
+    right: -6,
+    minWidth: 19,
+    height: 15,
+    paddingHorizontal: 3,
+    borderRadius: 4,
+    backgroundColor: colors.panelAlt,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dotOvrText: { color: colors.accent, fontWeight: "800", fontSize: 9 },
+  dotLabel: {
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 4,
+    backgroundColor: "rgba(10,14,31,0.75)",
+    color: colors.text,
+    fontWeight: "700",
+    fontSize: 9,
+    maxWidth: 74,
+  },
+  courtHint: {
+    position: "absolute",
+    top: 8,
+    right: 12,
+    color: "rgba(147,163,201,0.5)",
+    fontSize: 8.5,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  warningRow: { flexDirection: "row", alignItems: "center", gap: 7 },
+  warningText: { flex: 1, color: colors.loss, fontSize: 11, fontWeight: "700" },
   playerRow: {
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xs,
@@ -257,22 +335,16 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   playerRowOdd: { backgroundColor: "rgba(255,255,255,0.03)" },
-  playerMain: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  playerMain: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 6 },
   playerLeft: { flexDirection: "row", alignItems: "center", flexShrink: 1, flex: 1 },
   playerName: { color: colors.text, fontSize: 14, fontWeight: "700" },
+  plaqueRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginTop: 4, marginBottom: 2 },
   formaText: { fontSize: 10, fontWeight: "800", alignSelf: "center" },
-  playerRight: { alignItems: "flex-end", marginLeft: 8 },
+  playerRight: { alignItems: "flex-end" },
   injured: { color: colors.loss, fontSize: 9, fontWeight: "800", marginTop: 2 },
   tacticRow: { flexDirection: "row", gap: spacing.md },
   tacticLabel: { color: colors.textDim, fontSize: 11, fontWeight: "700", marginBottom: 4, letterSpacing: 0.4 },
   tacticDesc: { color: colors.textDim, fontSize: 11, marginTop: 4 },
   foreign: { color: colors.textDim, fontSize: 9, fontWeight: "800", marginTop: 2 },
   listed: { color: colors.accent, fontSize: 9, fontWeight: "800", marginTop: 2 },
-  ratings: {
-    marginTop: spacing.sm,
-    paddingTop: spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  value: { color: colors.textDim, fontSize: 11, marginTop: 2 },
 });

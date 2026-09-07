@@ -4,6 +4,7 @@ import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import TeamLogo from "../components/TeamLogo";
+import Icon from "../components/Icon";
 import { leaguePosition } from "../engine/standings";
 import { colors, spacing } from "../theme";
 import SectionHeader from "../components/SectionHeader";
@@ -91,12 +92,12 @@ export default function Dashboard({ onNavigate }) {
             {myNextGame ? (
               <View style={[styles.nextGameRow, { marginBottom: spacing.sm }]}>
                 <Text style={styles.small}>Próximo partido:</Text>
-                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[0])} size={18} />
+                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[0])} size={28} />
                 <Text style={[styles.small, styles.bold]} numberOfLines={1}>
                   {state.teams.find((t) => t.id === myNextGame[0]).name} vs{" "}
                   {state.teams.find((t) => t.id === myNextGame[1]).name}
                 </Text>
-                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[1])} size={18} />
+                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[1])} size={28} />
               </View>
             ) : (
               <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>Temporada finalizada.</Text>
@@ -108,10 +109,14 @@ export default function Dashboard({ onNavigate }) {
       {state.pendingContracts.length > 0 && (
         <Pressable onPress={() => onNavigate("contracts")}>
           <Card style={styles.warningCard}>
-            <Text style={styles.warningText}>
-              ⚠ {state.pendingContracts.length} renovación(es) de contrato pendiente(s) — toca para
-              resolverlas
-            </Text>
+            <View style={styles.alertRow}>
+              <Icon name="gavel" size={18} color={colors.accent} />
+              <Text style={styles.warningText}>
+                {state.pendingContracts.length} renovación(es) de contrato pendiente(s) — toca para
+                resolverlas
+              </Text>
+              <Icon name="chevron-right" size={16} color={colors.accent} />
+            </View>
           </Card>
         </Pressable>
       )}
@@ -119,9 +124,13 @@ export default function Dashboard({ onNavigate }) {
       {!isPreseason && injuredStarter && (
         <Pressable onPress={() => onNavigate("roster")}>
           <Card style={styles.dangerCard}>
-            <Text style={styles.dangerText}>
-              ⚠ {injuredStarter.name} está lesionado en el quinteto inicial — toca para cambiarlo
-            </Text>
+            <View style={styles.alertRow}>
+              <Icon name="healing" size={18} color={colors.loss} />
+              <Text style={styles.dangerText}>
+                {injuredStarter.name} está lesionado en el quinteto inicial — toca para cambiarlo
+              </Text>
+              <Icon name="chevron-right" size={16} color={colors.loss} />
+            </View>
           </Card>
         </Pressable>
       )}
@@ -129,9 +138,13 @@ export default function Dashboard({ onNavigate }) {
       {inRedNumbers && (
         <Pressable onPress={() => onNavigate("finance")}>
           <Card style={styles.dangerCard}>
-            <Text style={styles.dangerText}>
-              ⚠ Presupuesto en números rojos (${team.budget.toLocaleString()}) — toca para revisar finanzas
-            </Text>
+            <View style={styles.alertRow}>
+              <Icon name="warning" size={18} color={colors.loss} />
+              <Text style={styles.dangerText}>
+                Presupuesto en números rojos (${team.budget.toLocaleString()}) — toca para revisar finanzas
+              </Text>
+              <Icon name="chevron-right" size={16} color={colors.loss} />
+            </View>
           </Card>
         </Pressable>
       )}
@@ -260,9 +273,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
+  alertRow: { flexDirection: "row", alignItems: "center", gap: 9 },
   warningCard: { borderColor: colors.accent, backgroundColor: colors.panelAlt },
-  warningText: { color: colors.accent, fontWeight: "700", fontSize: 13 },
+  warningText: { flex: 1, color: colors.accent, fontWeight: "700", fontSize: 13 },
   dangerCard: { borderColor: colors.loss, backgroundColor: colors.panelAlt },
-  dangerText: { color: colors.loss, fontWeight: "700", fontSize: 13 },
+  dangerText: { flex: 1, color: colors.loss, fontWeight: "700", fontSize: 13 },
   playBtn: { marginTop: spacing.sm, marginBottom: spacing.md, paddingVertical: spacing.md },
 });
