@@ -10,6 +10,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.jarstorm.pcbasket",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -33,6 +34,12 @@
           }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "24ad5acd-2c91-4710-9a17-f33df07b230e"
+      }
+    },
+    "owner": "jarstorm"
   }
 }
