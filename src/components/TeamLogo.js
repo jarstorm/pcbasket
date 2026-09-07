@@ -5,10 +5,12 @@ import { colors } from "../theme";
 // Real teams (Primera/Segunda/Tercera FEB) keep the FEB numeric id embedded
 // in their generated id ("feb979989" / "sfeb979989" / "tfeb979989" — see
 // scripts/transform_*.py), which doubles as the team's escudo id on FEB's
-// image host. ACB is a fictional division with no such id, so it always
-// falls back to the badge.
-function realLogoUrl(teamId) {
-  const match = /^([ts]?feb)(\d+)$/.exec(teamId);
+// image host. ACB teams carry their real static.acb.com crest URL directly
+// on the team object instead (see generate.js's generateAcbDivision) — its
+// image host doesn't derive from the team id the way FEB's does.
+function realLogoUrl(team) {
+  if (team.logoUrl) return team.logoUrl;
+  const match = /^([ts]?feb)(\d+)$/.exec(team.id);
   if (!match) return null;
   return `https://imagenes.feb.es/Imagen.aspx?i=${match[2]}&ti=1`;
 }
@@ -27,7 +29,7 @@ function initials(name) {
 
 export default function TeamLogo({ team, size = 32 }) {
   const [failed, setFailed] = useState(false);
-  const url = realLogoUrl(team.id);
+  const url = realLogoUrl(team);
   const dim = { width: size, height: size, borderRadius: size / 2 };
 
   if (url && !failed) {

@@ -1,7 +1,8 @@
-import { randomName, CITIES, TEAM_NICKNAMES } from "./names";
+import { randomName } from "./names";
 import febData from "./feb_league_data.json";
 import segundaFebData from "./segunda_feb_league_data.json";
 import terceraFebData from "./tercera_feb_league_data.json";
+import acbData from "./acb_league_data.json";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
@@ -93,6 +94,37 @@ function buildRealPlayer(rp) {
     overall,
     potential,
     value: valueOf(overall, rp.age, potential),
+    wage: wageOf(overall, rp.age),
+    contractYears: randInt(1, 4),
+    seasonMinutes: 0,
+    listed: false,
+    morale: randInt(60, 95),
+    form: 99,
+    injured: false,
+    teamId: rp.teamId,
+    isProspect: false,
+  };
+}
+
+// Builds a game-model player from a real identity (name/position/age/
+// nationality/height, e.g. ACB) that has no accessible performance stats to
+// derive a rating from — the rating itself is procedurally generated, same
+// as makePlayer(), just attached to a real person instead of an invented
+// one.
+function buildRealIdentityRatedPlayer(rp, { base, spread }) {
+  const ratings = makeRatings(base, spread);
+  const overall = overallOf(ratings);
+  return {
+    id: rp.id,
+    name: rp.name,
+    position: rp.position,
+    age: rp.age,
+    nationality: rp.nationality,
+    heightCm: rp.heightCm,
+    ratings,
+    overall,
+    potential: overall,
+    value: valueOf(overall, rp.age, null),
     wage: wageOf(overall, rp.age),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
@@ -253,37 +285,38 @@ export function generateTerceraFebDivision() {
   return buildRealGroupedDivision(terceraFebData, { budgetRange: [60000, 200000], stadiumCapacity: 1500, ticketPrice: 8 });
 }
 
-// Fictional top-tier division (ACB) — no real scraper exists for acb.com yet
-// (it's a client-rendered Next.js app with no simple HTML/API), unlike FEB's
-// classic server-rendered pages, so this uses generated rosters with a
-// higher rating base, matching a top category's higher average and budget.
-export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
-  const shuffledCities = [...CITIES, ...CITIES].sort(() => Math.random() - 0.5);
-  const shuffledNicks = [...TEAM_NICKNAMES, ...TEAM_NICKNAMES].sort(() => Math.random() - 0.5);
-
+// Top-tier division (ACB / Liga Endesa). Real clubs and current rosters,
+// scraped from acb.com (see scripts/acb_scraper.py) — team names, and each
+// player's real name/position/age/nationality/height. acb.com has no
+// accessible performance stats for any season though (confirmed directly
+// against the raw responses — genuinely client-fetched, not just missing
+// from a summary), so skill ratings are still procedurally generated, with
+// a higher base than the divisions below it, matching a top category's
+// bigger average and budget.
+export function generateAcbDivision() {
   const teams = [];
   const players = [];
 
-  for (let i = 0; i < numTeams; i++) {
-    const teamId = `acb${i + 1}`;
-    const city = shuffledCities[i];
-    const nick = shuffledNicks[i];
-    const team = buildBaseTeam(teamId, `${city} ${nick}`, { budgetRange: [1500000, 4000000], stadiumCapacity: 10000, ticketPrice: 35 });
-    team.city = city;
-    team.stadium.name = `${city} Arena`;
+  for (const t of acbData.teams) {
+    const team = buildBaseTeam(t.id, t.name, { budgetRange: [1500000, 4000000], stadiumCapacity: 10000, ticketPrice: 35 });
     team.stadium.level = 2;
+    team.logoUrl = t.logo || null;
+    teams.push(team);
+  }
 
-    for (let j = 0; j < rosterSize; j++) {
-      const player = makePlayer({ base: randInt(65, 90), spread: 20, teamId });
-      players.push(player);
-      team.roster.push(player.id);
-    }
+  const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
 
-    const rosterPlayers = players.filter((p) => p.teamId === teamId);
+  for (const rp of acbData.players) {
+    const player = buildRealIdentityRatedPlayer(rp, { base: randInt(65, 90), spread: 20 });
+    players.push(player);
+    const team = teamById[rp.teamId];
+    if (team) team.roster.push(player.id);
+  }
+
+  for (const team of teams) {
+    const rosterPlayers = players.filter((p) => p.teamId === team.id);
     pickStartingLineup(team, rosterPlayers);
     addAcademyProspects(team, players);
-
-    teams.push(team);
   }
 
   return { teams, players };

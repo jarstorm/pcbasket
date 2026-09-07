@@ -1,0 +1,2222 @@
+{
+  "season": "2026/2027",
+  "competition": "Liga Endesa (ACB)",
+  "teams": [
+    {
+      "id": "acb8",
+      "name": "Asisa Joventut",
+      "logo": "https://static.acb.com/img/www/clubes2026/202526AsisaJoventutLogoPosisitvo.png"
+    },
+    {
+      "id": "acb2",
+      "name": "Barça",
+      "logo": "https://static.acb.com/img/www/clubes2024/2324BarcaLogoweb.png"
+    },
+    {
+      "id": "acb16",
+      "name": "Casademont Zaragoza",
+      "logo": "https://static.acb.com/img/www/clubes2024/2425CasademontZaragoza.png"
+    },
+    {
+      "id": "acb591",
+      "name": "FIATC Girona",
+      "logo": "https://static.acb.com/img/www/clubes2026/202627FIATCGironaLogoPositivo.png"
+    },
+    {
+      "id": "acb658",
+      "name": "iLERNA Lleida",
+      "logo": "https://static.acb.com/img/www/clubes2026/202526IlernaLleidaLogoPositivo.png"
+    },
+    {
+      "id": "acb10",
+      "name": "Kids&Us Manresa",
+      "logo": "https://static.acb.com/img/www/clubes2026/202526KidsUsManresa.png"
+    },
+    {
+      "id": "acb3",
+      "name": "Kosner Baskonia",
+      "logo": "https://static.acb.com/img/www/clubes2025/2526KosnerBaskoniaLogo.png"
+    },
+    {
+      "id": "acb28",
+      "name": "La Laguna Tenerife",
+      "logo": "https://static.acb.com/img/www/clubes2024/2425LaLagunaTenerifeLogo.png"
+    },
+    {
+      "id": "acb657",
+      "name": "Leyma Coruña",
+      "logo": "https://static.acb.com/img/www/clubes2026/202627LeymaCorunaLogoPositivoOK.png"
+    },
+    {
+      "id": "acb57",
+      "name": "Monbus Obradoiro",
+      "logo": "https://static.acb.com/img/www/clubes2026/202627MonbusObradoiroLogoPositivoOK.png"
+    },
+    {
+      "id": "acb22",
+      "name": "MoraBanc Andorra",
+      "logo": "https://static.acb.com/img/www/clubes2026/20252026MorabancAndorraLogoPositivoOK.png"
+    },
+    {
+      "id": "acb9",
+      "name": "Real Madrid",
+      "logo": "https://static.acb.com/img/www/clubes2024/2324RealMadrid_Logoweb.png"
+    },
+    {
+      "id": "acb549",
+      "name": "Recoletas Salud San Pablo Burgos",
+      "logo": "https://static.acb.com/img/www/clubes2025/2526SanPabloLogo.png"
+    },
+    {
+      "id": "acb25",
+      "name": "Río Breogán",
+      "logo": "https://static.acb.com/logos/1718/breogan_00.png"
+    },
+    {
+      "id": "acb4",
+      "name": "Surne Bilbao",
+      "logo": "https://static.acb.com/img/www/clubes2022/logo_surnebb_pos.png"
+    },
+    {
+      "id": "acb12",
+      "name": "UCAM Murcia",
+      "logo": "https://static.acb.com/img/www/clubes2024/2425UCAMMurciapositivo.png"
+    },
+    {
+      "id": "acb14",
+      "name": "Unicaja",
+      "logo": "https://static.acb.com/img/www/clubes2024/2324UnicajaLogo.png"
+    },
+    {
+      "id": "acb13",
+      "name": "Valencia Basket",
+      "logo": "https://static.acb.com/img/www/clubes2026/202627ValenciaBasket40Anys.png"
+    }
+  ],
+  "players": [
+    {
+      "id": "acbp30000095",
+      "teamId": "acb8",
+      "name": "Yannick Kraag",
+      "position": "SF",
+      "age": 23,
+      "nationality": "Países Bajos",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp30005413",
+      "teamId": "acb8",
+      "name": "Rejean Ellis",
+      "position": "SG",
+      "age": 25,
+      "nationality": "EE.UU.",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp20201871",
+      "teamId": "acb8",
+      "name": "Ricard Rubio",
+      "position": "PG",
+      "age": 35,
+      "nationality": "España",
+      "heightCm": 189
+    },
+    {
+      "id": "acbp20211947",
+      "teamId": "acb8",
+      "name": "Nicolas Laprovittola",
+      "position": "PG",
+      "age": 36,
+      "nationality": "Italia",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp20210498",
+      "teamId": "acb8",
+      "name": "Ludvig Hakanson",
+      "position": "PG",
+      "age": 30,
+      "nationality": "Suecia",
+      "heightCm": 189
+    },
+    {
+      "id": "acbp20204133",
+      "teamId": "acb8",
+      "name": "Alejandro Reyes",
+      "position": "SF",
+      "age": 32,
+      "nationality": "España",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp20210828",
+      "teamId": "acb8",
+      "name": "Emir Sulejmanovic",
+      "position": "PF",
+      "age": 31,
+      "nationality": "Finlandia",
+      "heightCm": 205
+    },
+    {
+      "id": "acbp30004053",
+      "teamId": "acb8",
+      "name": "Isaac Nogués",
+      "position": "SG",
+      "age": 22,
+      "nationality": "España",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp20212423",
+      "teamId": "acb8",
+      "name": "Simon Birgander",
+      "position": "C",
+      "age": 28,
+      "nationality": "Suecia",
+      "heightCm": 209
+    },
+    {
+      "id": "acbp20202172",
+      "teamId": "acb8",
+      "name": "Ante Tomic",
+      "position": "C",
+      "age": 39,
+      "nationality": "Croacia",
+      "heightCm": 217
+    },
+    {
+      "id": "acbp30000927",
+      "teamId": "acb8",
+      "name": "Kwan Cheatham",
+      "position": "PF",
+      "age": 31,
+      "nationality": "EE.UU.",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30005476",
+      "teamId": "acb2",
+      "name": "Justin Minaya",
+      "position": "SF",
+      "age": 27,
+      "nationality": "República Dominicana",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp30005361",
+      "teamId": "acb2",
+      "name": "Stanley Umude",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Nigeria",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005357",
+      "teamId": "acb2",
+      "name": "Olivier Nkamhoua",
+      "position": "PF",
+      "age": 26,
+      "nationality": "Finlandia",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30005356",
+      "teamId": "acb2",
+      "name": "Joshua Nebo",
+      "position": "C",
+      "age": 29,
+      "nationality": "Eslovenia",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30005378",
+      "teamId": "acb2",
+      "name": "Tyrese Martin",
+      "position": "SF",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005447",
+      "teamId": "acb2",
+      "name": "Yoan Makoundou",
+      "position": "C",
+      "age": 26,
+      "nationality": "Francia",
+      "heightCm": 207
+    },
+    {
+      "id": "acbp30005377",
+      "teamId": "acb2",
+      "name": "Torisesan Evbuomwan",
+      "position": "PF",
+      "age": 25,
+      "nationality": "Reino Unido",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30003340",
+      "teamId": "acb2",
+      "name": "Justin Robinson",
+      "position": "PG",
+      "age": 28,
+      "nationality": "EE.UU.",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp20212243",
+      "teamId": "acb2",
+      "name": "Aleksander Balcerowski",
+      "position": "C",
+      "age": 25,
+      "nationality": "Polonia",
+      "heightCm": 216
+    },
+    {
+      "id": "acbp20212265",
+      "teamId": "acb2",
+      "name": "Joel Parra",
+      "position": "SF",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp30001332",
+      "teamId": "acb2",
+      "name": "Agustín Ubal",
+      "position": "SF",
+      "age": 23,
+      "nationality": "Italia",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp20209919",
+      "teamId": "acb2",
+      "name": "Darío Brizuela",
+      "position": "SG",
+      "age": 31,
+      "nationality": "España",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30003361",
+      "teamId": "acb2",
+      "name": "Kevin Punter",
+      "position": "SG",
+      "age": 33,
+      "nationality": "Serbia",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp30005355",
+      "teamId": "acb2",
+      "name": "Umoja Gibson",
+      "position": "PG",
+      "age": 28,
+      "nationality": "Bulgaria",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp30000093",
+      "teamId": "acb2",
+      "name": "Juan Núñez",
+      "position": "PG",
+      "age": 22,
+      "nationality": "España",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp20212451",
+      "teamId": "acb16",
+      "name": "Abodunrin Olaseni",
+      "position": "C",
+      "age": 34,
+      "nationality": "Reino Unido",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30001171",
+      "teamId": "acb16",
+      "name": "Trae Bell-Haynes",
+      "position": "PG",
+      "age": 31,
+      "nationality": "Jamaica",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30005373",
+      "teamId": "acb16",
+      "name": "Roberts Blumbergs",
+      "position": "PF",
+      "age": 28,
+      "nationality": "Letonia",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp30003377",
+      "teamId": "acb16",
+      "name": "Caleb Homesley",
+      "position": "SG",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp20212476",
+      "teamId": "acb16",
+      "name": "Miguel González",
+      "position": "SG",
+      "age": 27,
+      "nationality": "España",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp20212648",
+      "teamId": "acb16",
+      "name": "Nicolás Brussino",
+      "position": "SF",
+      "age": 33,
+      "nationality": "Italia",
+      "heightCm": 205
+    },
+    {
+      "id": "acbp20212348",
+      "teamId": "acb16",
+      "name": "Jaime Fernández",
+      "position": "PF",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30003944",
+      "teamId": "acb16",
+      "name": "Justin Jaworski",
+      "position": "SG",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30000289",
+      "teamId": "acb16",
+      "name": "Laurynas Birutis",
+      "position": "C",
+      "age": 29,
+      "nationality": "Lituania",
+      "heightCm": 213
+    },
+    {
+      "id": "acbp20204158",
+      "teamId": "acb16",
+      "name": "Guillem Vives",
+      "position": "PG",
+      "age": 33,
+      "nationality": "España",
+      "heightCm": 192
+    },
+    {
+      "id": "acbp20210685",
+      "teamId": "acb16",
+      "name": "Sergi García",
+      "position": "PG",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20212279",
+      "teamId": "acb591",
+      "name": "Andrzej Pluta",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Polonia",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30005388",
+      "teamId": "acb591",
+      "name": "David N'Guessan",
+      "position": "PF",
+      "age": 26,
+      "nationality": "Países Bajos",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30005405",
+      "teamId": "acb591",
+      "name": "Matthew Mc clung",
+      "position": "PG",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 189
+    },
+    {
+      "id": "acbp30005392",
+      "teamId": "acb591",
+      "name": "Stanley Whittaker jr",
+      "position": "PG",
+      "age": 31,
+      "nationality": "EE.UU.",
+      "heightCm": 183
+    },
+    {
+      "id": "acbp30005389",
+      "teamId": "acb591",
+      "name": "Aljaz Kunc",
+      "position": "C",
+      "age": 27,
+      "nationality": "Eslovenia",
+      "heightCm": 207
+    },
+    {
+      "id": "acbp30005391",
+      "teamId": "acb591",
+      "name": "Isaac Vazquez",
+      "position": "PG",
+      "age": 21,
+      "nationality": "España",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20211466",
+      "teamId": "acb591",
+      "name": "Nikola Maric",
+      "position": "PF",
+      "age": 27,
+      "nationality": "Bosnia y Herzegovina",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30005191",
+      "teamId": "acb591",
+      "name": "Jassel Perez",
+      "position": "SF",
+      "age": 24,
+      "nationality": "República Dominicana",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp20210335",
+      "teamId": "acb591",
+      "name": "Sergi Martínez",
+      "position": "SF",
+      "age": 27,
+      "nationality": "España",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp30001997",
+      "teamId": "acb591",
+      "name": "Máximo Fjellerup",
+      "position": "SG",
+      "age": 28,
+      "nationality": "Argentina",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp20211754",
+      "teamId": "acb591",
+      "name": "Josep Busquets",
+      "position": "SG",
+      "age": 27,
+      "nationality": "España",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30002443",
+      "teamId": "acb591",
+      "name": "Martinas Geben",
+      "position": "C",
+      "age": 31,
+      "nationality": "Lituania",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30003914",
+      "teamId": "acb658",
+      "name": "James Batemon",
+      "position": "SG",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp30000049",
+      "teamId": "acb658",
+      "name": "Melvin Ejim",
+      "position": "PF",
+      "age": 35,
+      "nationality": "Nigeria",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20209098",
+      "teamId": "acb658",
+      "name": "Oriol Paulí",
+      "position": "SF",
+      "age": 32,
+      "nationality": "España",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30000015",
+      "teamId": "acb658",
+      "name": "Daniel García",
+      "position": "PG",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp30004008",
+      "teamId": "acb658",
+      "name": "Mark Hughes",
+      "position": "SG",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 199
+    },
+    {
+      "id": "acbp20211460",
+      "teamId": "acb658",
+      "name": "Atoumane Diagne",
+      "position": "C",
+      "age": 27,
+      "nationality": "Senegal",
+      "heightCm": 215
+    },
+    {
+      "id": "acbp30005324",
+      "teamId": "acb658",
+      "name": "Adrià Rodriguez i",
+      "position": "PG",
+      "age": 23,
+      "nationality": "España",
+      "heightCm": 194
+    },
+    {
+      "id": "acbp20212478",
+      "teamId": "acb658",
+      "name": "Mikel Sanz",
+      "position": "SF",
+      "age": 27,
+      "nationality": "España",
+      "heightCm": 199
+    },
+    {
+      "id": "acbp20210670",
+      "teamId": "acb658",
+      "name": "John Shurna",
+      "position": "PF",
+      "age": 36,
+      "nationality": "Lituania",
+      "heightCm": 204
+    },
+    {
+      "id": "acbp30003949",
+      "teamId": "acb658",
+      "name": "Kur Kuath",
+      "position": "C",
+      "age": 28,
+      "nationality": "EE.UU.",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30005418",
+      "teamId": "acb658",
+      "name": "Zacharie Perrin",
+      "position": "C",
+      "age": 22,
+      "nationality": "Francia",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30005457",
+      "teamId": "acb658",
+      "name": "Aurimas Majauskas",
+      "position": "PF",
+      "age": 33,
+      "nationality": "Lituania",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30005444",
+      "teamId": "acb10",
+      "name": "Janaud Notae",
+      "position": "PG",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30005387",
+      "teamId": "acb10",
+      "name": "Timothy Allen",
+      "position": "PF",
+      "age": 26,
+      "nationality": "EE.UU.",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005342",
+      "teamId": "acb10",
+      "name": "Lukasz Kolenda",
+      "position": "SG",
+      "age": 27,
+      "nationality": "Polonia",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp30003943",
+      "teamId": "acb10",
+      "name": "Hugo Benitez",
+      "position": "PG",
+      "age": 25,
+      "nationality": "Francia",
+      "heightCm": 192
+    },
+    {
+      "id": "acbp20211456",
+      "teamId": "acb10",
+      "name": "Eric Vila",
+      "position": "PF",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": 209
+    },
+    {
+      "id": "acbp30005341",
+      "teamId": "acb10",
+      "name": "Lucas Beaufort",
+      "position": "PG",
+      "age": 24,
+      "nationality": "Francia",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20200243",
+      "teamId": "acb10",
+      "name": "Ferran Bassas",
+      "position": "PG",
+      "age": 34,
+      "nationality": "España",
+      "heightCm": 181
+    },
+    {
+      "id": "acbp30001001",
+      "teamId": "acb10",
+      "name": "Pablo Tamba",
+      "position": "SF",
+      "age": 23,
+      "nationality": "España",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005344",
+      "teamId": "acb10",
+      "name": "Chibuzo Agbo",
+      "position": "SF",
+      "age": 24,
+      "nationality": "Nigeria",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30005343",
+      "teamId": "acb10",
+      "name": "Lononga Manwangi Ongendangenda",
+      "position": "C",
+      "age": 25,
+      "nationality": "Sudáfrica",
+      "heightCm": 211
+    },
+    {
+      "id": "acbp20202164",
+      "teamId": "acb10",
+      "name": "Pierre  Oriola",
+      "position": "C",
+      "age": 33,
+      "nationality": "España",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30001243",
+      "teamId": "acb10",
+      "name": "Rafael Villar",
+      "position": "PG",
+      "age": 22,
+      "nationality": "España",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp30005354",
+      "teamId": "acb10",
+      "name": "Yordan Minchev",
+      "position": "PF",
+      "age": 27,
+      "nationality": "Bulgaria",
+      "heightCm": 205
+    },
+    {
+      "id": "acbp30001957",
+      "teamId": "acb3",
+      "name": "Markus Howard",
+      "position": "SG",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 179
+    },
+    {
+      "id": "acbp30004878",
+      "teamId": "acb3",
+      "name": "Kobi Simmons",
+      "position": "PG",
+      "age": 29,
+      "nationality": "Costa de Marfil",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp30005346",
+      "teamId": "acb3",
+      "name": "Devvajne Stevvart Jr",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Macedonia del Norte",
+      "heightCm": 197
+    },
+    {
+      "id": "acbp30003966",
+      "teamId": "acb3",
+      "name": "Christopher Theoret",
+      "position": "SG",
+      "age": 29,
+      "nationality": "República Dominicana",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp20211797",
+      "teamId": "acb3",
+      "name": "Rodions Kurucs",
+      "position": "PF",
+      "age": 28,
+      "nationality": "Letonia",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp20210830",
+      "teamId": "acb3",
+      "name": "Tadas Sedekerskis",
+      "position": "PF",
+      "age": 28,
+      "nationality": "Lituania",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30000202",
+      "teamId": "acb3",
+      "name": "Matteo Spagnolo",
+      "position": "SG",
+      "age": 23,
+      "nationality": "Italia",
+      "heightCm": 192
+    },
+    {
+      "id": "acbp30005384",
+      "teamId": "acb3",
+      "name": "Damion Baugh",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Rep. Democrática del Congo",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp30003941",
+      "teamId": "acb3",
+      "name": "Clement Frisch",
+      "position": "PF",
+      "age": 24,
+      "nationality": "Francia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30004071",
+      "teamId": "acb3",
+      "name": "Stefan Joksimovic",
+      "position": "SG",
+      "age": 17,
+      "nationality": "Eslovenia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30005375",
+      "teamId": "acb3",
+      "name": "Anthony Lawson",
+      "position": "SG",
+      "age": 26,
+      "nationality": null,
+      "heightCm": 200
+    },
+    {
+      "id": "acbp30005464",
+      "teamId": "acb3",
+      "name": "Kenneth Faried",
+      "position": "C",
+      "age": 36,
+      "nationality": "EE.UU.",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30005408",
+      "teamId": "acb28",
+      "name": "AHMED Bamba",
+      "position": "SF",
+      "age": 25,
+      "nationality": "Senegal",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30002027",
+      "teamId": "acb28",
+      "name": "Kyle  Guy",
+      "position": "SG",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp20204124",
+      "teamId": "acb28",
+      "name": "Jaime Fernández",
+      "position": "SG",
+      "age": 33,
+      "nationality": "España",
+      "heightCm": 186
+    },
+    {
+      "id": "acbp30003999",
+      "teamId": "acb28",
+      "name": "Wesley Van Beck",
+      "position": "SG",
+      "age": 30,
+      "nationality": "Azerbaiyán",
+      "heightCm": 192
+    },
+    {
+      "id": "acbp20212972",
+      "teamId": "acb28",
+      "name": "Bruno Fitipaldo",
+      "position": "PG",
+      "age": 35,
+      "nationality": "Italia",
+      "heightCm": 183
+    },
+    {
+      "id": "acbp20211660",
+      "teamId": "acb28",
+      "name": "Xabier López-Arostegui",
+      "position": "SF",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 200
+    },
+    {
+      "id": "acbp20201760",
+      "teamId": "acb28",
+      "name": "Marcelo Tieppo",
+      "position": "PG",
+      "age": 43,
+      "nationality": "Italia",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp20210659",
+      "teamId": "acb28",
+      "name": "Giorgi Shermadini",
+      "position": "C",
+      "age": 37,
+      "nationality": "Georgia",
+      "heightCm": 217
+    },
+    {
+      "id": "acbp20211625",
+      "teamId": "acb28",
+      "name": "Timothy Abromaitis",
+      "position": "PF",
+      "age": 36,
+      "nationality": "EE.UU.",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30001954",
+      "teamId": "acb28",
+      "name": "Itan Hap",
+      "position": "C",
+      "age": 30,
+      "nationality": "Macedonia del Norte",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30005445",
+      "teamId": "acb28",
+      "name": "Vincent Hunter",
+      "position": "C",
+      "age": 32,
+      "nationality": "EE.UU.",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp20212488",
+      "teamId": "acb28",
+      "name": "Héctor Alderete",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp20212189",
+      "teamId": "acb28",
+      "name": "Aaron Doornekamp",
+      "position": "PF",
+      "age": 40,
+      "nationality": "Países Bajos",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20211887",
+      "teamId": "acb28",
+      "name": "Arturs Kurucs",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Letonia",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20212266",
+      "teamId": "acb657",
+      "name": "Dídac Cuevas",
+      "position": "PG",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 178
+    },
+    {
+      "id": "acbp30003935",
+      "teamId": "acb657",
+      "name": "Alonzo Verge Jr",
+      "position": "PG",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp30005396",
+      "teamId": "acb657",
+      "name": "Paul Jorgensen",
+      "position": "SG",
+      "age": 30,
+      "nationality": "Italia",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp20210815",
+      "teamId": "acb657",
+      "name": "Guillem Jou",
+      "position": "SF",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 195
+    },
+    {
+      "id": "acbp20211609",
+      "teamId": "acb657",
+      "name": "Dino Radoncic",
+      "position": "PF",
+      "age": 27,
+      "nationality": "Montenegro",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp30000967",
+      "teamId": "acb657",
+      "name": "Caio De Souza",
+      "position": "PG",
+      "age": 27,
+      "nationality": "Brasil",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30005395",
+      "teamId": "acb657",
+      "name": "Lukas Uleckas",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Lituania",
+      "heightCm": 199
+    },
+    {
+      "id": "acbp30003388",
+      "teamId": "acb657",
+      "name": "George Conditt IV",
+      "position": "C",
+      "age": 26,
+      "nationality": "EE.UU.",
+      "heightCm": 211
+    },
+    {
+      "id": "acbp30003918",
+      "teamId": "acb657",
+      "name": "Karlis Silins",
+      "position": "C",
+      "age": 29,
+      "nationality": "Letonia",
+      "heightCm": 211
+    },
+    {
+      "id": "acbp30000748",
+      "teamId": "acb657",
+      "name": "Tomas Dimsa",
+      "position": "SG",
+      "age": 32,
+      "nationality": "Lituania",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp30005393",
+      "teamId": "acb657",
+      "name": "Dmytro Skapintsev",
+      "position": "C",
+      "age": 28,
+      "nationality": "Ucrania",
+      "heightCm": 216
+    },
+    {
+      "id": "acbp20210493",
+      "teamId": "acb657",
+      "name": "Jacobo Díaz",
+      "position": "SF",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30005407",
+      "teamId": "acb57",
+      "name": "Brandon Childress",
+      "position": "PG",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 183
+    },
+    {
+      "id": "acbp30005429",
+      "teamId": "acb57",
+      "name": "Efemena Abogidi",
+      "position": "PF",
+      "age": 24,
+      "nationality": "Nigeria",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30003988",
+      "teamId": "acb57",
+      "name": "Caleb Apochi Agada",
+      "position": "SG",
+      "age": 32,
+      "nationality": "Nigeria",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20210122",
+      "teamId": "acb57",
+      "name": "Felipe Dos Anjos",
+      "position": "C",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": 218
+    },
+    {
+      "id": "acbp30000294",
+      "teamId": "acb57",
+      "name": "Leonardo Simoes",
+      "position": "SF",
+      "age": 33,
+      "nationality": "Italia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30003449",
+      "teamId": "acb57",
+      "name": "Karl Lundqvist",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Suecia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30003936",
+      "teamId": "acb57",
+      "name": "Joel Soriano",
+      "position": "C",
+      "age": 26,
+      "nationality": "República Dominicana",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30003435",
+      "teamId": "acb57",
+      "name": "Yunio Barrueta",
+      "position": "SF",
+      "age": 33,
+      "nationality": "EE.UU.",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp30005426",
+      "teamId": "acb57",
+      "name": "Diogo De Sousa",
+      "position": "SF",
+      "age": 29,
+      "nationality": "Portugal",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30000013",
+      "teamId": "acb57",
+      "name": "Sergi Quintela",
+      "position": "SG",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp30005425",
+      "teamId": "acb57",
+      "name": "Alexander Barcello",
+      "position": "SG",
+      "age": 28,
+      "nationality": "EE.UU.",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30000170",
+      "teamId": "acb57",
+      "name": "Alonso Faure",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp20211756",
+      "teamId": "acb57",
+      "name": "Alejandro Galan",
+      "position": "PF",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 207
+    },
+    {
+      "id": "acbp30005359",
+      "teamId": "acb22",
+      "name": "James Olusiji Akinjo",
+      "position": "PG",
+      "age": 25,
+      "nationality": "EE.UU.",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp30005363",
+      "teamId": "acb22",
+      "name": "Cameron McGriff",
+      "position": "PF",
+      "age": 28,
+      "nationality": "EE.UU.",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30005358",
+      "teamId": "acb22",
+      "name": "Wesley De-Shaun Iwundu",
+      "position": "SF",
+      "age": 31,
+      "nationality": "Nigeria",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005350",
+      "teamId": "acb22",
+      "name": "Owen Aquino",
+      "position": "PF",
+      "age": 23,
+      "nationality": "España",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30001559",
+      "teamId": "acb22",
+      "name": "Luka Bottiroli",
+      "position": "PG",
+      "age": 17,
+      "nationality": "España",
+      "heightCm": 168
+    },
+    {
+      "id": "acbp30005367",
+      "teamId": "acb22",
+      "name": "Leon Radosevic",
+      "position": "C",
+      "age": 36,
+      "nationality": "Croacia",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp20212454",
+      "teamId": "acb22",
+      "name": "Lazar Mutic",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Bosnia y Herzegovina",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20211643",
+      "teamId": "acb22",
+      "name": "Artem Pustovyi",
+      "position": "C",
+      "age": 34,
+      "nationality": "Ucrania",
+      "heightCm": 219
+    },
+    {
+      "id": "acbp20210232",
+      "teamId": "acb22",
+      "name": "Kyle Kuric",
+      "position": "SG",
+      "age": 37,
+      "nationality": "Eslovaquia",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp30000287",
+      "teamId": "acb22",
+      "name": "Kassius Robertson",
+      "position": "SG",
+      "age": 32,
+      "nationality": "Jamaica",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp20210959",
+      "teamId": "acb22",
+      "name": "José Ortega",
+      "position": "SG",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30003968",
+      "teamId": "acb22",
+      "name": "Aaron Best",
+      "position": "SG",
+      "age": 34,
+      "nationality": "Barbados",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20200274",
+      "teamId": "acb22",
+      "name": "Rafael Luz",
+      "position": "PG",
+      "age": 34,
+      "nationality": "España",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30005439",
+      "teamId": "acb9",
+      "name": "Maksym Shulga",
+      "position": "SG",
+      "age": 24,
+      "nationality": "Ucrania",
+      "heightCm": 196
+    },
+    {
+      "id": "acbp30003351",
+      "teamId": "acb9",
+      "name": "Timothe Luwawu",
+      "position": "SF",
+      "age": 31,
+      "nationality": "Francia",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp20211129",
+      "teamId": "acb9",
+      "name": "Jaime Pradilla",
+      "position": "PF",
+      "age": 25,
+      "nationality": "España",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp20210088",
+      "teamId": "acb9",
+      "name": "Alberto Abalde",
+      "position": "SF",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp20211331",
+      "teamId": "acb9",
+      "name": "Facundo Campazzo",
+      "position": "PG",
+      "age": 35,
+      "nationality": "España",
+      "heightCm": 181
+    },
+    {
+      "id": "acbp30003981",
+      "teamId": "acb9",
+      "name": "Chukwuma Okeke",
+      "position": "PF",
+      "age": 28,
+      "nationality": "EE.UU.",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30003980",
+      "teamId": "acb9",
+      "name": "Gabriele Procida",
+      "position": "SF",
+      "age": 24,
+      "nationality": "Italia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30003979",
+      "teamId": "acb9",
+      "name": "Theo Maledon",
+      "position": "PG",
+      "age": 25,
+      "nationality": "Francia",
+      "heightCm": 195
+    },
+    {
+      "id": "acbp20212952",
+      "teamId": "acb9",
+      "name": "Gabriel Deck",
+      "position": "SF",
+      "age": 31,
+      "nationality": "España",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005365",
+      "teamId": "acb9",
+      "name": "Mikael Olli Axel Jantunen",
+      "position": "PF",
+      "age": 26,
+      "nationality": "Finlandia",
+      "heightCm": 204
+    },
+    {
+      "id": "acbp20209407",
+      "teamId": "acb9",
+      "name": "Walter Tavares",
+      "position": "C",
+      "age": 34,
+      "nationality": "Cabo Verde",
+      "heightCm": 220
+    },
+    {
+      "id": "acbp20201774",
+      "teamId": "acb9",
+      "name": "Sergio Llull",
+      "position": "SG",
+      "age": 38,
+      "nationality": "España",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30001114",
+      "teamId": "acb9",
+      "name": "Andres Feliz",
+      "position": "PG",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30005475",
+      "teamId": "acb9",
+      "name": "Damian Jones",
+      "position": "C",
+      "age": 31,
+      "nationality": "EE.UU.",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30005438",
+      "teamId": "acb9",
+      "name": "Olivier Sarr",
+      "position": "C",
+      "age": 27,
+      "nationality": "Francia",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30001229",
+      "teamId": "acb9",
+      "name": "Eli Ndiaye",
+      "position": "PF",
+      "age": 22,
+      "nationality": "España",
+      "heightCm": 204
+    },
+    {
+      "id": "acbp30005424",
+      "teamId": "acb549",
+      "name": "Danny Steward",
+      "position": "PG",
+      "age": 24,
+      "nationality": "EE.UU.",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30005370",
+      "teamId": "acb549",
+      "name": "Christian Sengfelder",
+      "position": "PF",
+      "age": 31,
+      "nationality": "Alemania",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30005371",
+      "teamId": "acb549",
+      "name": "Dusan Radosavljevic",
+      "position": "SF",
+      "age": 24,
+      "nationality": "Serbia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30005369",
+      "teamId": "acb549",
+      "name": "Balsa Koprivica",
+      "position": "C",
+      "age": 26,
+      "nationality": "Serbia",
+      "heightCm": 216
+    },
+    {
+      "id": "acbp20212939",
+      "teamId": "acb549",
+      "name": "Vlatko Cancar",
+      "position": "SF",
+      "age": 29,
+      "nationality": "Eslovenia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20211125",
+      "teamId": "acb549",
+      "name": "Raúl Lobaco",
+      "position": "SG",
+      "age": 25,
+      "nationality": "España",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp20210707",
+      "teamId": "acb549",
+      "name": "Rubén Guerrero",
+      "position": "C",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 213
+    },
+    {
+      "id": "acbp20204156",
+      "teamId": "acb549",
+      "name": "Daniel Díez",
+      "position": "PF",
+      "age": 33,
+      "nationality": "España",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20204078",
+      "teamId": "acb549",
+      "name": "Pablo Almazán",
+      "position": "SF",
+      "age": 37,
+      "nationality": "España",
+      "heightCm": 200
+    },
+    {
+      "id": "acbp30005183",
+      "teamId": "acb549",
+      "name": "Chase Audige",
+      "position": "SG",
+      "age": 27,
+      "nationality": "Jamaica",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp30003414",
+      "teamId": "acb549",
+      "name": "Retin Obasohan",
+      "position": "PG",
+      "age": 33,
+      "nationality": "Bélgica",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp30000291",
+      "teamId": "acb549",
+      "name": "Ziga Samar",
+      "position": "PG",
+      "age": 25,
+      "nationality": "Eslovenia",
+      "heightCm": 197
+    },
+    {
+      "id": "acbp20209139",
+      "teamId": "acb25",
+      "name": "Edgar Vicedo",
+      "position": "PF",
+      "age": 32,
+      "nationality": "España",
+      "heightCm": 204
+    },
+    {
+      "id": "acbp30005411",
+      "teamId": "acb25",
+      "name": "Tevin Brown",
+      "position": "SF",
+      "age": 27,
+      "nationality": "EE.UU.",
+      "heightCm": 195
+    },
+    {
+      "id": "acbp20212312",
+      "teamId": "acb25",
+      "name": "Josep Peris",
+      "position": "SG",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 192
+    },
+    {
+      "id": "acbp20210585",
+      "teamId": "acb25",
+      "name": "Francisco Alonso",
+      "position": "SG",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp30003394",
+      "teamId": "acb25",
+      "name": "Aleksandar Aranitovic",
+      "position": "SF",
+      "age": 28,
+      "nationality": "Croacia",
+      "heightCm": 195
+    },
+    {
+      "id": "acbp20212431",
+      "teamId": "acb25",
+      "name": "Dominik Mavra",
+      "position": "PG",
+      "age": 32,
+      "nationality": "Croacia",
+      "heightCm": 195
+    },
+    {
+      "id": "acbp30004004",
+      "teamId": "acb25",
+      "name": "Danko Brankovic",
+      "position": "C",
+      "age": 25,
+      "nationality": "Croacia",
+      "heightCm": 217
+    },
+    {
+      "id": "acbp30001182",
+      "teamId": "acb25",
+      "name": "Erik Quintela",
+      "position": "PG",
+      "age": 35,
+      "nationality": "España",
+      "heightCm": 186
+    },
+    {
+      "id": "acbp30002695",
+      "teamId": "acb25",
+      "name": "Mihajlo Andrić",
+      "position": "PF",
+      "age": 32,
+      "nationality": "Serbia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30005412",
+      "teamId": "acb25",
+      "name": "Rasir Bolton",
+      "position": "PG",
+      "age": 26,
+      "nationality": "EE.UU.",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30005394",
+      "teamId": "acb25",
+      "name": "Anderson Mejia",
+      "position": "PF",
+      "age": 26,
+      "nationality": "República Dominicana",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20210571",
+      "teamId": "acb25",
+      "name": "Jonathan Kasibabu Martín",
+      "position": "C",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 204
+    },
+    {
+      "id": "acbp30005410",
+      "teamId": "acb25",
+      "name": "Aleksa Ilic",
+      "position": "C",
+      "age": 29,
+      "nationality": "Serbia",
+      "heightCm": 204
+    },
+    {
+      "id": "acbp30004013",
+      "teamId": "acb4",
+      "name": "Margiris Normantas",
+      "position": "SG",
+      "age": 29,
+      "nationality": "Lituania",
+      "heightCm": 194
+    },
+    {
+      "id": "acbp30003398",
+      "teamId": "acb4",
+      "name": "Harald Frey",
+      "position": "PG",
+      "age": 29,
+      "nationality": "Noruega",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30000094",
+      "teamId": "acb4",
+      "name": "Dan Duscak",
+      "position": "PG",
+      "age": 24,
+      "nationality": "Eslovenia",
+      "heightCm": 185
+    },
+    {
+      "id": "acbp30005347",
+      "teamId": "acb4",
+      "name": "Nathan Darling",
+      "position": "SG",
+      "age": 28,
+      "nationality": "Canadá",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp20212056",
+      "teamId": "acb4",
+      "name": "Manex Ansorregi",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 200
+    },
+    {
+      "id": "acbp30000192",
+      "teamId": "acb4",
+      "name": "Martin Krampelj",
+      "position": "PF",
+      "age": 31,
+      "nationality": "Eslovenia",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp20212984",
+      "teamId": "acb4",
+      "name": "Darrun Hilliard II",
+      "position": "SG",
+      "age": 33,
+      "nationality": "EE.UU.",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30000109",
+      "teamId": "acb4",
+      "name": "Ondrej Hustak",
+      "position": "C",
+      "age": 23,
+      "nationality": "Chequia",
+      "heightCm": 212
+    },
+    {
+      "id": "acbp30003947",
+      "teamId": "acb4",
+      "name": "Luke Petrasek",
+      "position": "PF",
+      "age": 31,
+      "nationality": "Polonia",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp20210147",
+      "teamId": "acb4",
+      "name": "Aleix Font",
+      "position": "SG",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": 194
+    },
+    {
+      "id": "acbp30001091",
+      "teamId": "acb4",
+      "name": "Adam Somogyi",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Hungría",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20212461",
+      "teamId": "acb4",
+      "name": "Tryggvi Hlinason",
+      "position": "C",
+      "age": 28,
+      "nationality": "Islandia",
+      "heightCm": 215
+    },
+    {
+      "id": "acbp30005348",
+      "teamId": "acb4",
+      "name": "Bastien Vautier",
+      "position": "C",
+      "age": 27,
+      "nationality": "Francia",
+      "heightCm": 210
+    },
+    {
+      "id": "acbp30005349",
+      "teamId": "acb12",
+      "name": "Souleymane Boum",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Guinea",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30003919",
+      "teamId": "acb12",
+      "name": "Michael Forrest",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Jamaica",
+      "heightCm": 183
+    },
+    {
+      "id": "acbp20212239",
+      "teamId": "acb12",
+      "name": "Sander Raieste",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Estonia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30003422",
+      "teamId": "acb12",
+      "name": "Kaiser Bray-Gates",
+      "position": "PF",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30000108",
+      "teamId": "acb12",
+      "name": "Juan Marcos",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Italia",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30002036",
+      "teamId": "acb12",
+      "name": "Howard Sant-roos",
+      "position": "SF",
+      "age": 35,
+      "nationality": "Cuba",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30001917",
+      "teamId": "acb12",
+      "name": "Jonah Radebaugh",
+      "position": "PG",
+      "age": 29,
+      "nationality": "Montenegro",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp30000649",
+      "teamId": "acb12",
+      "name": "Wilhelm Falk",
+      "position": "SG",
+      "age": 23,
+      "nationality": "Suecia",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp20210914",
+      "teamId": "acb12",
+      "name": "Emanuel-Ion Cate",
+      "position": "C",
+      "age": 29,
+      "nationality": "Rumanía",
+      "heightCm": 207
+    },
+    {
+      "id": "acbp30000132",
+      "teamId": "acb12",
+      "name": "Rubén López de la Torre",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30005345",
+      "teamId": "acb12",
+      "name": "Jean-Marc Pansa",
+      "position": "C",
+      "age": 29,
+      "nationality": "Francia",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp20210278",
+      "teamId": "acb12",
+      "name": "Cheikh Diagné",
+      "position": "C",
+      "age": 32,
+      "nationality": "España",
+      "heightCm": 211
+    },
+    {
+      "id": "acbp30000133",
+      "teamId": "acb12",
+      "name": "Marcis Steinbergs",
+      "position": "PF",
+      "age": 25,
+      "nationality": "Letonia",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp20212941",
+      "teamId": "acb12",
+      "name": "Dylan Howell",
+      "position": "SG",
+      "age": 34,
+      "nationality": "Serbia",
+      "heightCm": 188
+    },
+    {
+      "id": "acbp30001899",
+      "teamId": "acb12",
+      "name": "Toni Nakic",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Croacia",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp30000053",
+      "teamId": "acb14",
+      "name": "José Pérez",
+      "position": "PF",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp30000479",
+      "teamId": "acb14",
+      "name": "Yannick Nzosa",
+      "position": "C",
+      "age": 22,
+      "nationality": "Rep. Democrática del Congo",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30001169",
+      "teamId": "acb14",
+      "name": "Tyler Kalinoski",
+      "position": "SG",
+      "age": 33,
+      "nationality": "EE.UU.",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20200191",
+      "teamId": "acb14",
+      "name": "Jhonatan Barreiro",
+      "position": "SF",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 203
+    },
+    {
+      "id": "acbp30005397",
+      "teamId": "acb14",
+      "name": "Ignas Brazdeikis",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Lituania",
+      "heightCm": 201
+    },
+    {
+      "id": "acbp20209226",
+      "teamId": "acb14",
+      "name": "Alberto Díaz",
+      "position": "PG",
+      "age": 32,
+      "nationality": "España",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30005432",
+      "teamId": "acb14",
+      "name": "Simonas Lukosius",
+      "position": "SF",
+      "age": 24,
+      "nationality": "Lituania",
+      "heightCm": 200
+    },
+    {
+      "id": "acbp20202039",
+      "teamId": "acb14",
+      "name": "Nihad Dedovic",
+      "position": "SG",
+      "age": 36,
+      "nationality": "Alemania",
+      "heightCm": 197
+    },
+    {
+      "id": "acbp30001137",
+      "teamId": "acb14",
+      "name": "Amine Noua",
+      "position": "PF",
+      "age": 29,
+      "nationality": "Francia",
+      "heightCm": 202
+    },
+    {
+      "id": "acbp20212357",
+      "teamId": "acb14",
+      "name": "Jan Pantzar",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Suecia",
+      "heightCm": 190
+    },
+    {
+      "id": "acbp30003415",
+      "teamId": "acb14",
+      "name": "Cameron Hunt",
+      "position": "SG",
+      "age": 29,
+      "nationality": "EE.UU.",
+      "heightCm": 191
+    },
+    {
+      "id": "acbp20209187",
+      "teamId": "acb14",
+      "name": "Guillermo Hernangómez",
+      "position": "C",
+      "age": 32,
+      "nationality": "España",
+      "heightCm": 210
+    },
+    {
+      "id": "acbp30000023",
+      "teamId": "acb14",
+      "name": "David Kravish",
+      "position": "C",
+      "age": 33,
+      "nationality": "Bulgaria",
+      "heightCm": 208
+    },
+    {
+      "id": "acbp30001977",
+      "teamId": "acb14",
+      "name": "Kendrick Perry",
+      "position": "PG",
+      "age": 33,
+      "nationality": "Montenegro",
+      "heightCm": 183
+    },
+    {
+      "id": "acbp30005376",
+      "teamId": "acb13",
+      "name": "Timoti Shorts",
+      "position": "PG",
+      "age": 28,
+      "nationality": "Macedonia del Norte",
+      "heightCm": 175
+    },
+    {
+      "id": "acbp30001981",
+      "teamId": "acb13",
+      "name": "Kameron Taylor",
+      "position": "SF",
+      "age": 31,
+      "nationality": "EE.UU.",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp20210392",
+      "teamId": "acb13",
+      "name": "Josep Puerto",
+      "position": "SG",
+      "age": 27,
+      "nationality": "España",
+      "heightCm": 199
+    },
+    {
+      "id": "acbp30002724",
+      "teamId": "acb13",
+      "name": "Nathan Reuvers",
+      "position": "PF",
+      "age": 27,
+      "nationality": "Hungría",
+      "heightCm": 211
+    },
+    {
+      "id": "acbp20213210",
+      "teamId": "acb13",
+      "name": "Mario Saint-Supery",
+      "position": "PG",
+      "age": 20,
+      "nationality": "España",
+      "heightCm": 194
+    },
+    {
+      "id": "acbp30005335",
+      "teamId": "acb13",
+      "name": "Álvaro Cárdenas",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 187
+    },
+    {
+      "id": "acbp30001979",
+      "teamId": "acb13",
+      "name": "Dylan Osetkowski",
+      "position": "PF",
+      "age": 30,
+      "nationality": "Alemania",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30003991",
+      "teamId": "acb13",
+      "name": "Omari Moore",
+      "position": "SG",
+      "age": 25,
+      "nationality": "Macedonia del Norte",
+      "heightCm": 198
+    },
+    {
+      "id": "acbp30005406",
+      "teamId": "acb13",
+      "name": "Armoni Brooks",
+      "position": "SG",
+      "age": 28,
+      "nationality": "EE.UU.",
+      "heightCm": 194
+    },
+    {
+      "id": "acbp30003973",
+      "teamId": "acb13",
+      "name": "Neal Sako",
+      "position": "C",
+      "age": 28,
+      "nationality": "Francia",
+      "heightCm": 210
+    },
+    {
+      "id": "acbp30005374",
+      "teamId": "acb13",
+      "name": "Mouhamadou Gueye",
+      "position": "PF",
+      "age": 28,
+      "nationality": "Senegal",
+      "heightCm": 206
+    },
+    {
+      "id": "acbp30001214",
+      "teamId": "acb13",
+      "name": "Elias Valtonen",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Finlandia",
+      "heightCm": 200
+    },
+    {
+      "id": "acbp30001331",
+      "teamId": "acb13",
+      "name": "Gonzalo Corbalán",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 193
+    },
+    {
+      "id": "acbp20213202",
+      "teamId": "acb13",
+      "name": "Lucas Marí",
+      "position": "SG",
+      "age": 20,
+      "nationality": "España",
+      "heightCm": 197
+    },
+    {
+      "id": "acbp20213230",
+      "teamId": "acb13",
+      "name": "Yankuba Sima",
+      "position": "C",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 211
+    }
+  ]
+}
