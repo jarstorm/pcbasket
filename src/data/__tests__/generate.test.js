@@ -1,4 +1,8 @@
-import { generateRealLeague, generateAcbDivision, generateSegundaFebDivision } from "../generate";
+import { generateRealLeague, generateAcbDivision, generateSegundaFebDivision, generateTerceraFebDivision } from "../generate";
+
+function teamsOf({ groups }) {
+  return groups.flatMap((g) => g.teams);
+}
 
 describe("generateAcbDivision", () => {
   it("produces 18 teams with full rosters and a bigger budget than lower tiers", () => {
@@ -21,9 +25,24 @@ describe("generateAcbDivision", () => {
 });
 
 describe("generateSegundaFebDivision", () => {
-  it("loads real scraped teams, skipping any with an empty roster", () => {
-    const { teams } = generateSegundaFebDivision();
-    expect(teams.length).toBeGreaterThan(0);
+  it("loads real scraped teams split into its 2 real groups, skipping any with an empty roster", () => {
+    const { groups } = generateSegundaFebDivision();
+    expect(groups).toHaveLength(2);
+    expect(groups.map((g) => g.id).sort()).toEqual(["este", "oeste"]);
+    const teams = teamsOf({ groups });
+    expect(teams.length).toBeGreaterThan(20); // ~28 total (14/group), minus any empty rosters
+    for (const t of teams) {
+      expect(t.roster.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("generateTerceraFebDivision", () => {
+  it("loads real scraped teams split into its 10 real groups, skipping any with an empty roster", () => {
+    const { groups } = generateTerceraFebDivision();
+    expect(groups).toHaveLength(10);
+    const teams = teamsOf({ groups });
+    expect(teams.length).toBeGreaterThan(120); // ~139 total, minus any empty rosters
     for (const t of teams) {
       expect(t.roster.length).toBeGreaterThan(0);
     }
@@ -31,13 +50,14 @@ describe("generateSegundaFebDivision", () => {
 });
 
 describe("division ids never collide", () => {
-  it("Primera FEB, Segunda FEB and ACB player/team ids are all unique together", () => {
+  it("Primera FEB, Segunda FEB, Tercera FEB and ACB player/team ids are all unique together", () => {
     const primera = generateRealLeague();
     const segunda = generateSegundaFebDivision();
+    const tercera = generateTerceraFebDivision();
     const acb = generateAcbDivision();
-    const allPlayerIds = [...primera.players, ...segunda.players, ...acb.players].map((p) => p.id);
+    const allPlayerIds = [...primera.players, ...segunda.players, ...tercera.players, ...acb.players].map((p) => p.id);
     expect(new Set(allPlayerIds).size).toBe(allPlayerIds.length);
-    const allTeamIds = [...primera.teams, ...segunda.teams, ...acb.teams].map((t) => t.id);
+    const allTeamIds = [...primera.teams, ...teamsOf(segunda), ...teamsOf(tercera), ...acb.teams].map((t) => t.id);
     expect(new Set(allTeamIds).size).toBe(allTeamIds.length);
   });
 });

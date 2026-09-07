@@ -70,28 +70,49 @@ function baseState() {
     currentDate: "2025-09-01",
     preseasonWeeksLeft: 0,
     activeDivisionId: "primerafeb",
+    activeGroupId: "main",
     otherDivisions: {
       acb: {
         name: "ACB",
-        teams: [
-          { id: "acb1", name: "acb1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
-          { id: "acb2", name: "acb2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+        groups: [
+          {
+            id: "main",
+            teams: [
+              { id: "acb1", name: "acb1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+              { id: "acb2", name: "acb2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+            ],
+            schedule: [[["acb1", "acb2"]], [["acb2", "acb1"]]],
+            round: 0,
+            results: [],
+            lastRoundResults: [],
+          },
         ],
-        schedule: [[["acb1", "acb2"]], [["acb2", "acb1"]]],
-        round: 0,
-        results: [],
-        lastRoundResults: [],
       },
       segundafeb: {
         name: "Segunda FEB",
-        teams: [
-          { id: "sf1", name: "sf1", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
-          { id: "sf2", name: "sf2", stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
-        ],
-        schedule: [[["sf1", "sf2"]], [["sf2", "sf1"]]],
-        round: 0,
-        results: [],
-        lastRoundResults: [],
+        groups: ["este", "oeste"].map((gid) => ({
+          id: gid,
+          teams: [
+            { id: `sf-${gid}`, name: `sf-${gid}`, stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+          ],
+          schedule: [],
+          round: 0,
+          results: [],
+          lastRoundResults: [],
+        })),
+      },
+      tercerafeb: {
+        name: "Tercera FEB",
+        groups: Array.from({ length: 10 }, (_, i) => ({
+          id: `g${i + 1}`,
+          teams: [
+            { id: `tf-g${i + 1}`, name: `tf-g${i + 1}`, stadium: { level: 1 }, staff: {}, roster: [], lineup: {}, record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 } },
+          ],
+          schedule: [],
+          round: 0,
+          results: [],
+          lastRoundResults: [],
+        })),
       },
     },
   };
@@ -109,21 +130,28 @@ function dummyTeam(id) {
   };
 }
 
-// resolvePyramid's promotion playoff pool is positions 2-5 and relegation is
-// the bottom 2 — pad every division up to 10 teams (real divisions are
-// 14-18) so those two zones never overlap the way they would in a tiny
-// fixture, which would relegate and promote the same filler team.
+// resolvePyramid's promotion pools/relegation zones need real minimums to
+// not degenerate (Primera FEB: 1 direct + 8-team pool + 3 relegated = 12;
+// each Segunda FEB group: 1 direct + 4-team pool + 3 relegated = 8, padded
+// to 10) — pad every division so those zones don't overlap or run short.
+// Tercera FEB's groups are left at 1 team each: only each group's champion
+// (its sole team) matters for its promotion, and it has no relegation zone.
 function withPlayoffSizedDivisions(state) {
-  const fillerIds = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"];
+  const primeraFillerIds = Array.from({ length: 10 }, (_, i) => `c${i + 1}`);
+  const segundaFillerIds = Array.from({ length: 9 }, (_, i) => `f${i + 1}`);
   return {
     ...state,
-    teams: [...state.teams, ...fillerIds.map(dummyTeam)],
-    otherDivisions: Object.fromEntries(
-      Object.entries(state.otherDivisions).map(([id, div]) => [
-        id,
-        { ...div, teams: [...div.teams, ...fillerIds.map((s) => dummyTeam(`${id}${s}`))] },
-      ])
-    ),
+    teams: [...state.teams, ...primeraFillerIds.map(dummyTeam)],
+    otherDivisions: {
+      ...state.otherDivisions,
+      segundafeb: {
+        ...state.otherDivisions.segundafeb,
+        groups: state.otherDivisions.segundafeb.groups.map((g) => ({
+          ...g,
+          teams: [...g.teams, ...segundaFillerIds.map((s) => dummyTeam(`${g.id}${s}`))],
+        })),
+      },
+    },
   };
 }
 
@@ -325,33 +353,41 @@ describe("reducer", () => {
   it("SIM_ROUND resolves promotion/relegation at season end, keeping the pyramid's team count constant", () => {
     const state = { ...withPlayoffSizedDivisions(baseState()), round: 1 };
     const countTeams = (s) =>
-      s.teams.length + Object.values(s.otherDivisions).reduce((sum, d) => sum + d.teams.length, 0);
+      s.teams.length +
+      Object.values(s.otherDivisions).reduce(
+        (sum, d) => sum + d.groups.reduce((s2, g) => s2 + g.teams.length, 0),
+        0
+      );
     const before = countTeams(state);
     const next = reducer(state, { type: "SIM_ROUND" });
     expect(countTeams(next)).toBe(before);
-    expect(["acb", "primerafeb", "segundafeb"]).toContain(next.activeDivisionId);
-    expect(Object.keys(next.otherDivisions).sort()).toEqual(
-      ["acb", "primerafeb", "segundafeb"].filter((id) => id !== next.activeDivisionId).sort()
-    );
+    expect(["acb", "primerafeb", "segundafeb", "tercerafeb"]).toContain(next.activeDivisionId);
+    // every division not currently active is fully present in otherDivisions
+    for (const id of ["acb", "primerafeb", "segundafeb", "tercerafeb"]) {
+      if (id === next.activeDivisionId) continue;
+      expect(next.otherDivisions[id]).toBeTruthy();
+    }
     // wherever the user's team ended up, it must be findable in state.teams
     expect(next.teams.some((t) => t.id === "a")).toBe(true);
-    // every division starts its new season at round 0 with reset records
+    // every group starts its new season at round 0 with reset records
     for (const div of Object.values(next.otherDivisions)) {
-      expect(div.round).toBe(0);
-      for (const t of div.teams) expect(t.record.wins).toBe(0);
+      for (const g of div.groups) {
+        expect(g.round).toBe(0);
+        for (const t of g.teams) expect(t.record.wins).toBe(0);
+      }
     }
 
-    // season summary: one entry per division, each with a champion and
-    // exactly 2 promoted/relegated names (this fixture's playoff sizing)
+    // season summary: one entry per division, each with at least one
+    // champion (Segunda/Tercera FEB crown one per group)
     expect(next.lastSeasonSummary.seasonYear).toBe(2025);
-    expect(next.lastSeasonSummary.divisions).toHaveLength(3);
+    expect(next.lastSeasonSummary.divisions).toHaveLength(4);
     for (const div of next.lastSeasonSummary.divisions) {
-      expect(typeof div.championName).toBe("string");
+      expect(div.champions.length).toBeGreaterThan(0);
     }
     const acbSummary = next.lastSeasonSummary.divisions.find((d) => d.id === "acb");
     expect(acbSummary.relegated).toHaveLength(2);
     const segundaSummary = next.lastSeasonSummary.divisions.find((d) => d.id === "segundafeb");
-    expect(segundaSummary.promoted).toHaveLength(2);
+    expect(segundaSummary.promoted).toHaveLength(3);
   });
 
   it("SIM_ROUND flags the user's team's expired contracts for renewal, but auto-renews AI teams", () => {

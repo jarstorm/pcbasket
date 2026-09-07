@@ -44,7 +44,7 @@ export default function SeasonSummaryScreen({ onContinue }) {
       {summary.divisions.map((div) => (
         <Card key={div.id}>
           <SectionHeader>{div.name}</SectionHeader>
-          <Row label="🏆 Campeón" value={div.championName || "—"} highlight />
+          <Row label="🏆 Campeón" value={div.champions.length ? div.champions.join(", ") : "—"} highlight />
           <Row label="⬆ Ascienden" value={div.promoted.length ? div.promoted.join(", ") : "—"} color={colors.win} />
           <Row label="⬇ Descienden" value={div.relegated.length ? div.relegated.join(", ") : "—"} color={colors.loss} />
         </Card>

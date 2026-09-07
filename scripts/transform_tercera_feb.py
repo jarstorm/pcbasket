@@ -1,6 +1,6 @@
-"""Same transform as transform_ratings.py, for segunda_feb_2025_26_raw.json.
-Uses an "sfeb"/"sfebp" id prefix (instead of "feb"/"febp") so this division's
-teams/players never collide with Primera FEB's ids when merged in the app."""
+"""Same transform as transform_ratings.py, for tercerafeb_2025_raw.json.
+Uses a "tfeb"/"tfebp" id prefix so this division's teams/players never
+collide with Primera/Segunda FEB ids when merged in the app."""
 import json
 import re
 
@@ -38,12 +38,12 @@ def percentile_ranks(values):
     return ranks
 
 
-def clamp(v, lo=30, hi=99):
+def clamp(v, lo=25, hi=99):
     return max(lo, min(hi, round(v)))
 
 
 def main():
-    with open("segundafeb_2025_raw.json", encoding="utf-8") as f:
+    with open("tercerafeb_2025_raw.json", encoding="utf-8") as f:
         raw = json.load(f)
 
     flat_players = []
@@ -79,20 +79,20 @@ def main():
     out_players = []
     out_teams = []
 
-    # Group is only tagged per-player in the raw data (Liga Regular "ESTE" /
-    # "OESTE") — every team's roster is internally consistent on it, so lift
+    # Group is only tagged per-player in the raw data (Liga Regular "A-A" ..
+    # "E-B") — every team's roster is internally consistent on it, so lift
     # the first player's tag up to the team level.
     for team in raw["teams"]:
         subgroup = next((p.get("subgroup") for p in team["roster"] if p.get("subgroup")), None)
         m = re.search(r'"([^"]+)"', subgroup or "")
         group = m.group(1).lower() if m else "main"
-        out_teams.append({"id": f"sfeb{team['id']}", "name": team["name"], "group": group})
+        out_teams.append({"id": f"tfeb{team['id']}", "name": team["name"], "group": group})
 
-    # Segunda FEB overalls skew a bit lower than Primera FEB (35-95 vs
-    # 35-95 base but centered lower) so it reads as a genuine lower tier.
+    # Tercera FEB is the 4th tier (below Segunda FEB), so overalls skew
+    # lower still: 25-70 base range vs Segunda FEB's 30-80.
     for i, p in enumerate(has_stats):
-        overall = clamp(30 + va_pct[i] * 50)
-        spread = 50
+        overall = clamp(25 + va_pct[i] * 45)
+        spread = 45
         shooting = clamp(overall + (shooting_pct[i] - va_pct[i]) * spread)
         defense = clamp(overall + (defense_pct[i] - va_pct[i]) * spread)
         passing = clamp(overall + (passing_pct[i] - va_pct[i]) * spread)
@@ -101,13 +101,13 @@ def main():
 
         age = p["age"] or 24
         potential_bonus = max(0, (24 - age)) * 1.5 if age < 24 else 0
-        potential = clamp(overall + potential_bonus, 30, 99)
+        potential = clamp(overall + potential_bonus, 25, 99)
 
         position = POSITION_MAP.get(p["position_raw"], None) or infer_position(p["height_cm"])
 
         out_players.append({
-            "id": f"sfebp{p['player_id'] or p['name'].replace(' ', '')}",
-            "teamId": f"sfeb{p['team_ref']}",
+            "id": f"tfebp{p['player_id'] or p['name'].replace(' ', '')}",
+            "teamId": f"tfeb{p['team_ref']}",
             "name": p["name"],
             "position": position,
             "age": age,
@@ -125,12 +125,12 @@ def main():
         })
 
     for j, p in enumerate(no_stats):
-        overall = 40 + (j % 7)
+        overall = 33 + (j % 7)
         age = p["age"] or 22
         position = POSITION_MAP.get(p["position_raw"], None) or infer_position(p["height_cm"])
         out_players.append({
-            "id": f"sfebp{p['player_id'] or p['name'].replace(' ', '')}",
-            "teamId": f"sfeb{p['team_ref']}",
+            "id": f"tfebp{p['player_id'] or p['name'].replace(' ', '')}",
+            "teamId": f"tfeb{p['team_ref']}",
             "name": p["name"],
             "position": position,
             "age": age,
@@ -144,7 +144,7 @@ def main():
                 "physical": overall,
             },
             "overall": overall,
-            "potential": clamp(overall + max(0, 24 - age), 30, 99),
+            "potential": clamp(overall + max(0, 24 - age), 25, 99),
         })
 
     result = {
@@ -154,10 +154,10 @@ def main():
         "players": out_players,
     }
 
-    with open("segunda_feb_league_data.json", "w", encoding="utf-8") as f:
+    with open("tercera_feb_league_data.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    print(f"{len(out_teams)} teams, {len(out_players)} players -> segunda_feb_league_data.json")
+    print(f"{len(out_teams)} teams, {len(out_players)} players -> tercera_feb_league_data.json")
     print(f"  with real stats: {len(has_stats)}, without: {len(no_stats)}")
     overalls = sorted(p["overall"] for p in out_players)
     print(f"  overall range: {overalls[0]}-{overalls[-1]}, median: {overalls[len(overalls)//2]}")

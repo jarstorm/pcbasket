@@ -1,8 +1,21 @@
 import { createContext, useContext, useReducer, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { generateRealLeague, generateAcbDivision, generateSegundaFebDivision, makePlayer } from "../data/generate";
-import { generateSchedule } from "../engine/schedule";
-import { simulateBackgroundRound, resolvePyramid, findDivisionOf, DIVISION_META, DIVISION_ORDER } from "../engine/pyramid";
+import {
+  generateRealLeague,
+  generateAcbDivision,
+  generateSegundaFebDivision,
+  generateTerceraFebDivision,
+  makePlayer,
+} from "../data/generate";
+import {
+  simulateBackgroundDivision,
+  resolvePyramid,
+  findGroupOf,
+  makeGroup,
+  makeDivision,
+  DIVISION_META,
+  DIVISION_ORDER,
+} from "../engine/pyramid";
 import { simulateMatch, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
 import { getUpgradeTiers } from "../engine/stadium";
 import {
@@ -100,38 +113,58 @@ function seasonTicketRate(stadium) {
   return clamp(base * priceFactor, 0.1, 0.75);
 }
 
+const BACKGROUND_GENERATORS = {
+  acb: { generate: generateAcbDivision, singleGroup: true },
+  primerafeb: { generate: generateRealLeague, singleGroup: true },
+  segundafeb: { generate: generateSegundaFebDivision, singleGroup: false },
+  tercerafeb: { generate: generateTerceraFebDivision, singleGroup: false },
+};
+
+// Migrates one background division to the current {name, groups: [...]}
+// shape. A division already in that shape is left untouched. Anything else
+// (missing entirely, or the old single-group-per-division shape from
+// before Segunda FEB/Tercera FEB grew real geographic groups) has no
+// meaningful history to reconstruct — the AI-only background tiers just
+// start fresh. If this division happens to be the one the save's user is
+// CURRENTLY playing in, the live top-level state (teams/schedule/round)
+// already covers one of its groups, so the freshly generated first group
+// is dropped (kept teams' players filtered accordingly) rather than
+// duplicating/colliding with it — everything else becomes its siblings.
+function migrateBackgroundDivision(divisionId, existing, activeDivisionId) {
+  if (existing?.groups) return { division: existing, extraPlayers: [] };
+
+  const { generate, singleGroup } = BACKGROUND_GENERATORS[divisionId];
+  const fresh = generate();
+  const isActive = divisionId === activeDivisionId;
+
+  if (singleGroup) {
+    if (isActive) return { division: null, extraPlayers: [] };
+    return {
+      division: makeDivision(DIVISION_META[divisionId].name, [{ id: "main", teams: fresh.teams }]),
+      extraPlayers: fresh.players,
+    };
+  }
+
+  const groupSpecs = isActive ? fresh.groups.slice(1) : fresh.groups;
+  const keptTeamIds = new Set(groupSpecs.flatMap((g) => g.teams.map((t) => t.id)));
+  return {
+    division: groupSpecs.length ? makeDivision(DIVISION_META[divisionId].name, groupSpecs) : null,
+    extraPlayers: fresh.players.filter((p) => keptTeamIds.has(p.teamId)),
+  };
+}
+
 // Backfills fields added after a save/snapshot was written, so old saves
 // (missing team.staff or player.form) don't crash newer game logic.
 function normalizeState(loaded) {
   if (!loaded) return loaded;
 
-  // Old saves (from before the league pyramid existed) get freshly
-  // generated background divisions — there's no historical data to
-  // reconstruct — and those divisions' players must join the shared pool.
-  let otherDivisions = loaded.otherDivisions;
+  const activeDivisionId = loaded.activeDivisionId ?? "primerafeb";
+  const otherDivisions = {};
   let extraPlayers = [];
-  if (!otherDivisions) {
-    const acb = generateAcbDivision();
-    const segunda = generateSegundaFebDivision();
-    extraPlayers = [...acb.players, ...segunda.players];
-    otherDivisions = {
-      acb: {
-        name: "ACB",
-        teams: acb.teams,
-        schedule: generateSchedule(acb.teams.map((t) => t.id), true),
-        round: 0,
-        results: [],
-        lastRoundResults: [],
-      },
-      segundafeb: {
-        name: "Segunda FEB",
-        teams: segunda.teams,
-        schedule: generateSchedule(segunda.teams.map((t) => t.id), true),
-        round: 0,
-        results: [],
-        lastRoundResults: [],
-      },
-    };
+  for (const divisionId of DIVISION_ORDER) {
+    const migrated = migrateBackgroundDivision(divisionId, loaded.otherDivisions?.[divisionId], activeDivisionId);
+    if (migrated.division) otherDivisions[divisionId] = migrated.division;
+    extraPlayers.push(...migrated.extraPlayers);
   }
 
   const playersById = Object.fromEntries(
@@ -183,7 +216,10 @@ function normalizeState(loaded) {
     })),
     playersById,
     pendingContracts: loaded.pendingContracts ?? [],
-    activeDivisionId: loaded.activeDivisionId ?? "primerafeb",
+    activeDivisionId,
+    // No save from before groups existed could have had the user resident
+    // in anything but a division's sole/first group.
+    activeGroupId: loaded.activeGroupId ?? "main",
     otherDivisions,
     log,
     seasonYear: loaded.seasonYear ?? FIRST_SEASON_YEAR,
@@ -197,19 +233,22 @@ function freshGame() {
   const primera = generateRealLeague();
   const acb = generateAcbDivision();
   const segunda = generateSegundaFebDivision();
+  const tercera = generateTerceraFebDivision();
 
-  // One shared player pool across all three divisions (ids are guaranteed
+  // One shared player pool across all four divisions (ids are guaranteed
   // unique per division prefix) — a team moving between divisions on
   // promotion/relegation just needs its team object moved, its roster ids
   // already resolve against this same map either way.
   const playersById = Object.fromEntries(
-    [...primera.players, ...acb.players, ...segunda.players].map((p) => [p.id, p])
+    [...primera.players, ...acb.players, ...segunda.players, ...tercera.players].map((p) => [p.id, p])
   );
+
+  const primeraGroup = makeGroup("main", primera.teams);
 
   return {
     teams: primera.teams,
     playersById,
-    schedule: generateSchedule(primera.teams.map((t) => t.id), true),
+    schedule: primeraGroup.schedule,
     round: 0,
     userTeamId: null,
     teamChosen: false,
@@ -222,23 +261,11 @@ function freshGame() {
     preseasonWeeksLeft: PRESEASON_WEEKS,
     lastSeasonSummary: null,
     activeDivisionId: "primerafeb",
+    activeGroupId: "main",
     otherDivisions: {
-      acb: {
-        name: "ACB",
-        teams: acb.teams,
-        schedule: generateSchedule(acb.teams.map((t) => t.id), true),
-        round: 0,
-        results: [],
-        lastRoundResults: [],
-      },
-      segundafeb: {
-        name: "Segunda FEB",
-        teams: segunda.teams,
-        schedule: generateSchedule(segunda.teams.map((t) => t.id), true),
-        round: 0,
-        results: [],
-        lastRoundResults: [],
-      },
+      acb: makeDivision("ACB", [{ id: "main", teams: acb.teams }]),
+      segundafeb: makeDivision("Segunda FEB", segunda.groups),
+      tercerafeb: makeDivision("Tercera FEB", tercera.groups),
     },
   };
 }
@@ -862,14 +889,14 @@ export function reducer(state, action) {
         };
       });
 
-      // Background divisions (the tiers the user isn't currently playing
-      // in) advance one round in lockstep, using the same match engine but
-      // tracking only wins/losses/points — no boxscore, finance or injury
-      // bookkeeping for teams the user doesn't manage.
+      // Background divisions (the tiers/groups the user isn't currently
+      // playing in) advance one round in lockstep, using the same match
+      // engine but tracking only wins/losses/points — no boxscore, finance
+      // or injury bookkeeping for teams the user doesn't manage.
       const otherDivisions = Object.fromEntries(
         Object.entries(state.otherDivisions).map(([id, div]) => [
           id,
-          simulateBackgroundRound(div, playersById),
+          simulateBackgroundDivision(div, playersById),
         ])
       );
 
@@ -950,18 +977,33 @@ export function reducer(state, action) {
 
       // Resolve promotion/relegation across the whole pyramid from this
       // season's final standings (using the pre-reset records captured in
-      // finalTeams/otherDivisions), then start every division fresh.
+      // finalTeams/otherDivisions), then start every division fresh. The
+      // active division's live group (finalTeams) is reassembled alongside
+      // its stored sibling groups, if it has any (multi-group tier).
+      const activeSiblingGroups = otherDivisions[state.activeDivisionId]?.groups || [];
       const preDivisions = {
         ...otherDivisions,
         [state.activeDivisionId]: {
           name: DIVISION_META[state.activeDivisionId].name,
-          ...otherDivisions[state.activeDivisionId],
-          teams: finalTeams,
+          groups: [
+            {
+              id: state.activeGroupId,
+              teams: finalTeams,
+              schedule: state.schedule,
+              round: state.round,
+              results: state.results,
+              lastRoundResults: state.lastRoundResults,
+            },
+            ...activeSiblingGroups,
+          ],
         },
       };
       const resolved = resolvePyramid(preDivisions);
-      const newActiveDivisionId = findDivisionOf(resolved, state.userTeamId) || state.activeDivisionId;
-      const newActive = resolved[newActiveDivisionId];
+      const foundGroup = findGroupOf(resolved, state.userTeamId);
+      const newActiveDivisionId = foundGroup?.divisionId || state.activeDivisionId;
+      const newActiveGroupId = foundGroup?.groupId || state.activeGroupId;
+      const newActiveDivision = resolved[newActiveDivisionId];
+      const newActive = newActiveDivision.groups.find((g) => g.id === newActiveGroupId);
 
       // Champions come straight from this season's final (pre-reset)
       // standings; who moved is read off the id-set difference between the
@@ -974,13 +1016,17 @@ export function reducer(state, action) {
       // "some other team just relegated in".
       const divisionOfId = {};
       for (const divId of DIVISION_ORDER) {
-        for (const t of preDivisions[divId].teams) divisionOfId[t.id] = divId;
+        for (const g of preDivisions[divId].groups) {
+          for (const t of g.teams) divisionOfId[t.id] = divId;
+        }
       }
       const moves = [];
       for (const divId of DIVISION_ORDER) {
-        for (const t of resolved[divId].teams) {
-          const from = divisionOfId[t.id];
-          if (from && from !== divId) moves.push({ name: t.name, from, to: divId });
+        for (const g of resolved[divId].groups) {
+          for (const t of g.teams) {
+            const from = divisionOfId[t.id];
+            if (from && from !== divId) moves.push({ name: t.name, from, to: divId });
+          }
         }
       }
 
@@ -990,21 +1036,31 @@ export function reducer(state, action) {
         userMoved: null,
         divisions: DIVISION_ORDER.map((divId) => {
           const pre = preDivisions[divId];
-          const champion = sortStandings(pre.teams)[0];
+          const champions = pre.groups.map((g) => sortStandings(g.teams)[0]?.name).filter(Boolean);
           const tier = DIVISION_META[divId].tier;
           const outgoing = moves.filter((m) => m.from === divId);
           return {
             id: divId,
             name: DIVISION_META[divId].name,
-            championName: champion?.name || null,
+            champions,
             promoted: outgoing.filter((m) => DIVISION_META[m.to].tier < tier).map((m) => m.name),
             relegated: outgoing.filter((m) => DIVISION_META[m.to].tier > tier).map((m) => m.name),
           };
         }),
       };
-      const newOtherDivisions = Object.fromEntries(
-        Object.entries(resolved).filter(([id]) => id !== newActiveDivisionId)
-      );
+
+      // Every division goes into otherDivisions wholesale, except the new
+      // active one — only ITS non-active sibling groups do (its active
+      // group is what the top-level state mirrors from here on).
+      const newOtherDivisions = {};
+      for (const divId of DIVISION_ORDER) {
+        if (divId === newActiveDivisionId) {
+          const siblings = resolved[divId].groups.filter((g) => g.id !== newActiveGroupId);
+          if (siblings.length) newOtherDivisions[divId] = { name: resolved[divId].name, groups: siblings };
+        } else {
+          newOtherDivisions[divId] = resolved[divId];
+        }
+      }
 
       const movedDivision = newActiveDivisionId !== state.activeDivisionId;
       const nextSeasonYear = (state.seasonYear || FIRST_SEASON_YEAR) + 1;
@@ -1017,7 +1073,7 @@ export function reducer(state, action) {
           : "Nueva temporada.",
       ];
       if (movedDivision) {
-        const divisionName = newActive.name || newActiveDivisionId;
+        const divisionName = newActiveDivision.name || newActiveDivisionId;
         messages.unshift(`¡Tu equipo cambia de categoría! Ahora juegas en ${divisionName}.`);
         seasonSummary.userMoved = {
           from: DIVISION_META[state.activeDivisionId].name,
@@ -1035,6 +1091,7 @@ export function reducer(state, action) {
         lastRoundResults: roundResults,
         pendingContracts,
         activeDivisionId: newActiveDivisionId,
+        activeGroupId: newActiveGroupId,
         otherDivisions: newOtherDivisions,
         log: pushLog(nextSeasonDate, state.log, messages),
         seasonYear: nextSeasonYear,

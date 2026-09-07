@@ -1,6 +1,7 @@
 import { randomName, CITIES, TEAM_NICKNAMES } from "./names";
 import febData from "./feb_league_data.json";
 import segundaFebData from "./segunda_feb_league_data.json";
+import terceraFebData from "./tercera_feb_league_data.json";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
@@ -76,6 +77,66 @@ export function makePlayer({ age, base, spread, isProspect = false, teamId = nul
   };
 }
 
+// Builds a game-model player from a scraped/transformed real player record
+// (rp): shared by every real-data division (Primera/Segunda/Tercera FEB).
+function buildRealPlayer(rp) {
+  const overall = rp.overall;
+  const potential = rp.potential;
+  return {
+    id: rp.id,
+    name: rp.name,
+    position: rp.position,
+    age: rp.age,
+    nationality: rp.nationality,
+    heightCm: rp.heightCm,
+    ratings: rp.ratings,
+    overall,
+    potential,
+    value: valueOf(overall, rp.age, potential),
+    wage: wageOf(overall, rp.age),
+    contractYears: randInt(1, 4),
+    seasonMinutes: 0,
+    listed: false,
+    morale: randInt(60, 95),
+    form: 99,
+    injured: false,
+    teamId: rp.teamId,
+    isProspect: false,
+  };
+}
+
+// Builds the shared team-object shape (budget/stadium/roster/lineup/staff/
+// ...) used by every division — real or fictional. seasonTicketPrice is
+// always 15x the base ticket price (matches every division's existing
+// numbers: 25->375, 15->225, 35->525).
+function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice }) {
+  return {
+    id,
+    name,
+    city: name,
+    budget: randInt(budgetRange[0], budgetRange[1]),
+    stadium: {
+      name: `Pabellón ${name}`,
+      level: 1,
+      capacity: stadiumCapacity,
+      ticketPrice,
+      amenities: {},
+      seasonTicketPrice: ticketPrice * 15,
+      seasonTicketHolders: 0,
+    },
+    roster: [],
+    academy: [],
+    record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
+    lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
+    staff: {},
+    sponsors: { jersey: null, stadium: null },
+    financeHistory: [],
+    tactics: { offense: "balanced", defense: "man" },
+    scoutCooldown: null,
+    scoutSearchTotal: null,
+  };
+}
+
 // Mirrors the FOREIGN_PLAYER_QUOTA rule enforced later in RosterScreen/
 // SET_LINEUP, so auto-generated lineups don't start already in violation of
 // their own quota (a foreign candidate is only picked once room is left).
@@ -120,60 +181,13 @@ export function generateRealLeague() {
   const players = [];
 
   for (const t of febData.teams) {
-    const team = {
-      id: t.id,
-      name: t.name,
-      city: t.name,
-      budget: randInt(300000, 900000),
-      stadium: {
-        name: `Pabellón ${t.name}`,
-        level: 1,
-        capacity: 8000,
-        ticketPrice: 25,
-        amenities: {},
-        seasonTicketPrice: 375,
-        seasonTicketHolders: 0,
-      },
-      roster: [],
-      academy: [],
-      record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
-      lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
-      staff: {},
-      sponsors: { jersey: null, stadium: null },
-      financeHistory: [],
-      tactics: { offense: "balanced", defense: "man" },
-      scoutCooldown: null,
-      scoutSearchTotal: null,
-    };
-    teams.push(team);
+    teams.push(buildBaseTeam(t.id, t.name, { budgetRange: [300000, 900000], stadiumCapacity: 8000, ticketPrice: 25 }));
   }
 
   const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
 
   for (const rp of febData.players) {
-    const overall = rp.overall;
-    const potential = rp.potential;
-    const player = {
-      id: rp.id,
-      name: rp.name,
-      position: rp.position,
-      age: rp.age,
-      nationality: rp.nationality,
-      heightCm: rp.heightCm,
-      ratings: rp.ratings,
-      overall,
-      potential,
-      value: valueOf(overall, rp.age, potential),
-      wage: wageOf(overall, rp.age),
-      contractYears: randInt(1, 4),
-      seasonMinutes: 0,
-      listed: false,
-      morale: randInt(60, 95),
-      form: 99,
-      injured: false,
-      teamId: rp.teamId,
-      isProspect: false,
-    };
+    const player = buildRealPlayer(rp);
     players.push(player);
     const team = teamById[rp.teamId];
     if (team) team.roster.push(player.id);
@@ -188,68 +202,21 @@ export function generateRealLeague() {
   return { teams, players };
 }
 
-// Loads the real, scraped Segunda FEB division (third tier). Same shape as
-// generateRealLeague(), just a different data file and a lower budget range
-// (a lower category should have a smaller budget than Primera FEB).
-export function generateSegundaFebDivision() {
+// Builds a multi-group real division (Segunda FEB, Tercera FEB) from a
+// transformed league-data file whose teams each carry a `group` field —
+// shared by generateSegundaFebDivision/generateTerceraFebDivision below.
+function buildRealGroupedDivision(data, { budgetRange, stadiumCapacity, ticketPrice }) {
   const teams = [];
   const players = [];
 
-  for (const t of segundaFebData.teams) {
-    const team = {
-      id: t.id,
-      name: t.name,
-      city: t.name,
-      budget: randInt(150000, 450000),
-      stadium: {
-        name: `Pabellón ${t.name}`,
-        level: 1,
-        capacity: 4000,
-        ticketPrice: 15,
-        amenities: {},
-        seasonTicketPrice: 225,
-        seasonTicketHolders: 0,
-      },
-      roster: [],
-      academy: [],
-      record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
-      lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
-      staff: {},
-      sponsors: { jersey: null, stadium: null },
-      financeHistory: [],
-      tactics: { offense: "balanced", defense: "man" },
-      scoutCooldown: null,
-      scoutSearchTotal: null,
-    };
-    teams.push(team);
+  for (const t of data.teams) {
+    teams.push(buildBaseTeam(t.id, t.name, { budgetRange, stadiumCapacity, ticketPrice }));
   }
 
   const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
 
-  for (const rp of segundaFebData.players) {
-    const overall = rp.overall;
-    const potential = rp.potential;
-    const player = {
-      id: rp.id,
-      name: rp.name,
-      position: rp.position,
-      age: rp.age,
-      nationality: rp.nationality,
-      heightCm: rp.heightCm,
-      ratings: rp.ratings,
-      overall,
-      potential,
-      value: valueOf(overall, rp.age, potential),
-      wage: wageOf(overall, rp.age),
-      contractYears: randInt(1, 4),
-      seasonMinutes: 0,
-      listed: false,
-      morale: randInt(60, 95),
-      form: 99,
-      injured: false,
-      teamId: rp.teamId,
-      isProspect: false,
-    };
+  for (const rp of data.players) {
+    const player = buildRealPlayer(rp);
     players.push(player);
     const team = teamById[rp.teamId];
     if (team) team.roster.push(player.id);
@@ -262,13 +229,34 @@ export function generateSegundaFebDivision() {
     addAcademyProspects(team, players);
   }
 
-  return { teams: nonEmptyTeams, players };
+  const groupIdByTeamId = Object.fromEntries(data.teams.map((t) => [t.id, t.group]));
+  const groupIds = [...new Set(data.teams.map((t) => t.group))].sort();
+  const groups = groupIds.map((id) => ({
+    id,
+    teams: nonEmptyTeams.filter((t) => groupIdByTeamId[t.id] === id),
+  }));
+
+  return { groups, players };
+}
+
+// Loads the real, scraped Segunda FEB division (third tier): 2 geographic
+// groups (Este/Oeste), 14 teams each. Lower budget/capacity than Primera
+// FEB — a lower category should have a smaller budget than the one above.
+export function generateSegundaFebDivision() {
+  return buildRealGroupedDivision(segundaFebData, { budgetRange: [150000, 450000], stadiumCapacity: 4000, ticketPrice: 15 });
+}
+
+// Loads the real, scraped Tercera FEB division (fourth tier, the floor of
+// the modeled pyramid): 10 real regional groups (~14 teams each). Budget/
+// capacity scaled down again from Segunda FEB.
+export function generateTerceraFebDivision() {
+  return buildRealGroupedDivision(terceraFebData, { budgetRange: [60000, 200000], stadiumCapacity: 1500, ticketPrice: 8 });
 }
 
 // Fictional top-tier division (ACB) — no real scraper exists for acb.com yet
-// (it's a client-rendered site, unlike FEB's classic server-rendered pages),
-// so this uses generated rosters with a higher rating base, matching a top
-// category's higher average and bigger budget.
+// (it's a client-rendered Next.js app with no simple HTML/API), unlike FEB's
+// classic server-rendered pages, so this uses generated rosters with a
+// higher rating base, matching a top category's higher average and budget.
 export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
   const shuffledCities = [...CITIES, ...CITIES].sort(() => Math.random() - 0.5);
   const shuffledNicks = [...TEAM_NICKNAMES, ...TEAM_NICKNAMES].sort(() => Math.random() - 0.5);
@@ -280,31 +268,10 @@ export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
     const teamId = `acb${i + 1}`;
     const city = shuffledCities[i];
     const nick = shuffledNicks[i];
-    const team = {
-      id: teamId,
-      name: `${city} ${nick}`,
-      city,
-      budget: randInt(1500000, 4000000),
-      stadium: {
-        name: `${city} Arena`,
-        level: 2,
-        capacity: 10000,
-        ticketPrice: 35,
-        amenities: {},
-        seasonTicketPrice: 525,
-        seasonTicketHolders: 0,
-      },
-      roster: [],
-      academy: [],
-      record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
-      lineup: { PG: null, SG: null, SF: null, PF: null, C: null },
-      staff: {},
-      sponsors: { jersey: null, stadium: null },
-      financeHistory: [],
-      tactics: { offense: "balanced", defense: "man" },
-      scoutCooldown: null,
-      scoutSearchTotal: null,
-    };
+    const team = buildBaseTeam(teamId, `${city} ${nick}`, { budgetRange: [1500000, 4000000], stadiumCapacity: 10000, ticketPrice: 35 });
+    team.city = city;
+    team.stadium.name = `${city} Arena`;
+    team.stadium.level = 2;
 
     for (let j = 0; j < rosterSize; j++) {
       const player = makePlayer({ base: randInt(65, 90), spread: 20, teamId });
@@ -321,4 +288,3 @@ export function generateAcbDivision(numTeams = 18, rosterSize = 12) {
 
   return { teams, players };
 }
-

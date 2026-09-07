@@ -63,10 +63,10 @@ export function getStadiumSponsorOffers(team, teams) {
 // TV rights: automatic, not a deal you pick — higher divisions and a better
 // league position both draw more broadcast money, same shape as ticket
 // attendance's position factor.
-const DIVISION_TV_BASE = { acb: 15000, primerafeb: 6000, segundafeb: 2000 };
+const DIVISION_TV_BASE = { acb: 15000, primerafeb: 6000, segundafeb: 2000, tercerafeb: 800 };
 
 export function tvRightsIncome(divisionId, team, teams) {
-  const base = DIVISION_TV_BASE[divisionId] ?? DIVISION_TV_BASE.primerafeb;
+  const base = DIVISION_TV_BASE[divisionId] ?? DIVISION_TV_BASE.segundafeb;
   const position = leaguePosition(team, teams);
   const positionFactor = teams.length > 1 ? 1 - (position - 1) / (teams.length - 1) : 1;
   return Math.round(base * (0.4 + positionFactor * 0.6));

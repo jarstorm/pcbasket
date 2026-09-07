@@ -2,12 +2,13 @@ import { useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { colors } from "../theme";
 
-// Real teams (Primera FEB / Segunda FEB) keep the FEB numeric id embedded in
-// their generated id ("feb979989" / "sfeb979989" — see scripts/transform_*.py),
-// which doubles as the team's escudo id on FEB's image host. ACB is a
-// fictional division with no such id, so it always falls back to the badge.
+// Real teams (Primera/Segunda/Tercera FEB) keep the FEB numeric id embedded
+// in their generated id ("feb979989" / "sfeb979989" / "tfeb979989" — see
+// scripts/transform_*.py), which doubles as the team's escudo id on FEB's
+// image host. ACB is a fictional division with no such id, so it always
+// falls back to the badge.
 function realLogoUrl(teamId) {
-  const match = /^(s?feb)(\d+)$/.exec(teamId);
+  const match = /^([ts]?feb)(\d+)$/.exec(teamId);
   if (!match) return null;
   return `https://imagenes.feb.es/Imagen.aspx?i=${match[2]}&ti=1`;
 }

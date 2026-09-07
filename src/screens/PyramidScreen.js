@@ -6,23 +6,47 @@ import Card from "../components/Card";
 import Table from "../components/Table";
 import TeamLogo from "../components/TeamLogo";
 import { sortStandings } from "../engine/standings";
-import { DIVISION_META, DIVISION_ORDER } from "../engine/pyramid";
+import {
+  DIVISION_META,
+  DIVISION_ORDER,
+  assembleActiveDivision,
+  previewPromotionZones,
+  previewRelegationZones,
+  formatGroupLabel,
+} from "../engine/pyramid";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
+
+// Plain-language promotion/relegation rule per division, shown above its
+// standings table — matches the exact mechanics resolvePyramid runs.
+const DIVISION_BLURB = {
+  acb: "Bajan los 2 últimos a Primera FEB.",
+  primerafeb: "1º asciende directo a ACB. 2º-9º juegan playoff (cuartos, semis y final) por la 2ª plaza. Bajan los 3 últimos a Segunda FEB.",
+  segundafeb: "El campeón de cada grupo asciende directo a Primera FEB (2 plazas). La 3ª plaza sale de un playoff entre el 2º-5º de cada grupo. Bajan los 3 últimos de cada grupo a Tercera FEB.",
+  tercerafeb: "Los 2 mejores campeones de grupo ascienden directos a Segunda FEB. Los otros 8 campeones juegan un playoff por las 4 plazas restantes. No desciende nadie.",
+};
 
 export default function PyramidScreen() {
   const { state } = useGame();
 
   const divisionsById = {
-    [state.activeDivisionId]: { name: DIVISION_META[state.activeDivisionId].name, teams: state.teams },
     ...state.otherDivisions,
+    [state.activeDivisionId]: assembleActiveDivision(state),
   };
 
   const [tab, setTab] = useState(state.activeDivisionId);
+  const [groupTab, setGroupTab] = useState(null);
+  const selectTab = (id) => {
+    setTab(id);
+    setGroupTab(null);
+  };
+
   const division = divisionsById[tab] || divisionsById[state.activeDivisionId];
   const viewingOwn = tab === state.activeDivisionId;
+  const defaultGroupId = viewingOwn ? state.activeGroupId : division.groups[0].id;
+  const group = division.groups.find((g) => g.id === (groupTab ?? defaultGroupId)) || division.groups[0];
 
-  const standings = sortStandings(division.teams);
+  const standings = sortStandings(group.teams);
   const rows = standings.map((t, i) => ({
     ...t,
     pos: i + 1,
@@ -30,17 +54,16 @@ export default function PyramidScreen() {
     diff: t.record.pointsFor - t.record.pointsAgainst,
   }));
 
-  // Matches resolvePyramid: 1st promotes directly, 2nd-5th contest the
-  // second promotion spot in a playoff, and the bottom 2 relegate directly.
-  const divisionIndex = DIVISION_ORDER.indexOf(tab);
-  const canPromote = divisionIndex > 0;
-  const canRelegate = divisionIndex < DIVISION_ORDER.length - 1;
+  const { direct: promoteDirect, pool: promotePool } = previewPromotionZones(division.groups, tab);
+  const relegateZone = previewRelegationZones(division.groups, tab);
+  const canPromote = promoteDirect.size + promotePool.size > 0;
+  const canRelegate = relegateZone.size > 0;
 
   const rowStyle = (t) => {
     const s = [];
-    if (canPromote && t.pos === 1) s.push(styles.promotionRow);
-    else if (canPromote && t.pos >= 2 && t.pos <= 5) s.push(styles.playoffRow);
-    if (canRelegate && t.pos > rows.length - 2) s.push(styles.relegationRow);
+    if (promoteDirect.has(t.id)) s.push(styles.promotionRow);
+    else if (promotePool.has(t.id)) s.push(styles.playoffRow);
+    if (relegateZone.has(t.id)) s.push(styles.relegationRow);
     if (t.id === state.userTeamId) s.push(styles.meRow);
     return s;
   };
@@ -50,13 +73,11 @@ export default function PyramidScreen() {
       <Card>
         <SectionHeader>OTRAS LIGAS</SectionHeader>
         <Text style={styles.dim}>
-          Tu equipo juega en {DIVISION_META[state.activeDivisionId].name}. Al final de cada
-          temporada suben 2 equipos por categoría (1º directo + 1 por playoff entre el 2º-5º) y
-          bajan los 2 últimos de la de arriba.
+          Tu equipo juega en {DIVISION_META[state.activeDivisionId].name}. {DIVISION_BLURB[state.activeDivisionId]}
         </Text>
         <View style={styles.tabRow}>
           {DIVISION_ORDER.map((id) => (
-            <Pressable key={id} onPress={() => setTab(id)} style={styles.tabBtn}>
+            <Pressable key={id} onPress={() => selectTab(id)} style={styles.tabBtn}>
               {tab === id && (
                 <LinearGradient
                   colors={["#ffb14d", colors.accent]}
@@ -72,11 +93,23 @@ export default function PyramidScreen() {
             </Pressable>
           ))}
         </View>
+        {division.groups.length > 1 && (
+          <View style={styles.groupRow}>
+            {division.groups.map((g) => (
+              <Pressable key={g.id} onPress={() => setGroupTab(g.id)} style={[styles.groupChip, g.id === group.id && styles.groupChipActive]}>
+                <Text style={[styles.groupChipText, g.id === group.id && styles.groupChipTextActive]}>
+                  {formatGroupLabel(g.id)}
+                  {viewingOwn && g.id === state.activeGroupId ? " (tú)" : ""}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
       </Card>
 
       <Card>
-        <SectionHeader>{division.name.toUpperCase()}</SectionHeader>
-        {viewingOwn && (
+        <SectionHeader>{division.name.toUpperCase()}{division.groups.length > 1 ? ` — ${formatGroupLabel(group.id)}` : ""}</SectionHeader>
+        {viewingOwn && group.id === state.activeGroupId && (
           <Text style={styles.dim}>
             Jornada {state.round} de {state.schedule.length}
           </Text>
@@ -165,4 +198,16 @@ const styles = StyleSheet.create({
   },
   tabText: { color: colors.textDim, fontSize: 11, fontWeight: "700" },
   tabTextActive: { color: colors.accentText },
+  groupRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.sm },
+  groupChip: {
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.panelAlt,
+    borderRadius: radii.pill,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+  },
+  groupChipActive: { borderColor: colors.accent, backgroundColor: "rgba(255,149,0,0.14)" },
+  groupChipText: { color: colors.textDim, fontSize: 10.5, fontWeight: "700" },
+  groupChipTextActive: { color: colors.accent },
 });
