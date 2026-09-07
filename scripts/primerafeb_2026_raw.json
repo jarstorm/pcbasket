@@ -1,0 +1,371 @@
+{
+  "season": "2026/2027",
+  "competition": "Primera FEB",
+  "teams": [
+    {
+      "id": "1009716",
+      "name": "Bueno Arenas Albacete Basket",
+      "roster": [
+        {
+          "team_id": "1009716",
+          "player_id": "1371559",
+          "name": "Victor Aguilar Hernandez",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "09/06/1998 Palmas de Gran Canaria, Las (Las Palmas)",
+          "age": null,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 185,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "1603635",
+          "name": "Jose Luis Gonzalez Albadalejo",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "20/08/1994",
+          "age": 32,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 192,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "2432412",
+          "name": "Juan Santiago Hierrezuelo Serer",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "07/11/2000",
+          "age": 25,
+          "nationality": "España",
+          "homegrown": false,
+          "height_cm": 207,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "2880232",
+          "name": "Alen Malovcic",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "16/08/2002",
+          "age": 24,
+          "nationality": "Eslovenia",
+          "homegrown": false,
+          "height_cm": null,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "2432962",
+          "name": "Silvano Merlo",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "19/08/2002",
+          "age": 24,
+          "nationality": "Italia",
+          "homegrown": false,
+          "height_cm": 193,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "2813013",
+          "name": "Nicklaus William Reid",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "20/03/2002",
+          "age": 24,
+          "nationality": "Estados Unidos",
+          "homegrown": false,
+          "height_cm": 201,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "1981843",
+          "name": "Bernat Vanaclocha Sanchez",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "16/04/1998 Mieres (Asturias)",
+          "age": null,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 212,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "2500822",
+          "name": "Makar Voronin",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "16/04/2005 Madrid",
+          "age": null,
+          "nationality": "Rusia",
+          "homegrown": true,
+          "height_cm": 198,
+          "stats": null
+        },
+        {
+          "team_id": "1009716",
+          "player_id": "2880241",
+          "name": "Jan Zemljic",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "14/10/2004",
+          "age": 21,
+          "nationality": "Eslovenia",
+          "homegrown": false,
+          "height_cm": null,
+          "stats": null
+        }
+      ]
+    },
+    {
+      "id": "1010207",
+      "name": "Iberolea Palencia",
+      "roster": []
+    },
+    {
+      "id": "1008687",
+      "name": "Hla Alicante",
+      "roster": []
+    },
+    {
+      "id": "1010494",
+      "name": "Flexicar Fuenlabrada",
+      "roster": []
+    },
+    {
+      "id": "1009713",
+      "name": "Palmer Basket Mallorca Palma",
+      "roster": []
+    },
+    {
+      "id": "1009072",
+      "name": "Fibwi Mallorca Basquet Palma",
+      "roster": []
+    },
+    {
+      "id": "1009110",
+      "name": "Cajasol Coto Córdoba",
+      "roster": [
+        {
+          "team_id": "1009110",
+          "player_id": "2818672",
+          "name": "Mladen Armus",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "26/03/1997",
+          "age": 29,
+          "nationality": "Serbia",
+          "homegrown": false,
+          "height_cm": 205,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "1998389",
+          "name": "Fernando Bello Moure",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "25/06/2003 Santiago de Compostela (A Coruña)",
+          "age": null,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 200,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2785180",
+          "name": "Jalen Christopher Cone",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "14/12/2000",
+          "age": 25,
+          "nationality": "Estados Unidos",
+          "homegrown": false,
+          "height_cm": 180,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2797850",
+          "name": "Leslie Nyong Nkereuwem",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "08/12/2000",
+          "age": 25,
+          "nationality": "Nigeria",
+          "homegrown": false,
+          "height_cm": null,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2869253",
+          "name": "Michael Abiodun Nugu",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "27/12/1997",
+          "age": 28,
+          "nationality": "Nigeria",
+          "homegrown": false,
+          "height_cm": null,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "1885638",
+          "name": "Gonzalo Orozco Dominguez",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "07/05/2002",
+          "age": 24,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 196,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2653343",
+          "name": "Alejandro Rodriguez Aguilar",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "19/01/1998 Cádiz",
+          "age": null,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 202,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "1535344",
+          "name": "Ignacio Rosa Pompido",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "01/07/1999",
+          "age": 27,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 207,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2819701",
+          "name": "Nuha Sagnia",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "01/08/2000",
+          "age": 26,
+          "nationality": "Gambia",
+          "homegrown": true,
+          "height_cm": 208,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2880413",
+          "name": "Tyler Nicholas Stephenson-Moore",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "19/08/2001",
+          "age": 25,
+          "nationality": "Jamaica",
+          "homegrown": false,
+          "height_cm": null,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2061399",
+          "name": "Pau Treviño Quintillá",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "27/03/2002",
+          "age": 24,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 202,
+          "stats": null
+        },
+        {
+          "team_id": "1009110",
+          "player_id": "2116603",
+          "name": "Manuel Trujillo Bravo",
+          "position_raw": "",
+          "dorsal": null,
+          "birthdate": "20/03/2007 Málaga",
+          "age": null,
+          "nationality": "España",
+          "homegrown": true,
+          "height_cm": 194,
+          "stats": null
+        }
+      ]
+    },
+    {
+      "id": "1008900",
+      "name": "Caja Rural Cb Zamora",
+      "roster": []
+    },
+    {
+      "id": "1009109",
+      "name": "Coviran Granada",
+      "roster": []
+    },
+    {
+      "id": "1008378",
+      "name": "Inveready Askatuak Gipuzkoa",
+      "roster": []
+    },
+    {
+      "id": "1010493",
+      "name": "Movistar Estudiantes",
+      "roster": []
+    },
+    {
+      "id": "1010324",
+      "name": "Insolac Caja 87",
+      "roster": []
+    },
+    {
+      "id": "1009095",
+      "name": "Club Ourense Baloncesto",
+      "roster": []
+    },
+    {
+      "id": "1008400",
+      "name": "Grupo Ureta Tizona Burgos",
+      "roster": []
+    },
+    {
+      "id": "1008797",
+      "name": "Gran Canaria",
+      "roster": []
+    },
+    {
+      "id": "1009837",
+      "name": "Alimerka Oviedo Baloncesto",
+      "roster": []
+    },
+    {
+      "id": "1009584",
+      "name": "Grupo Alega Cantabria",
+      "roster": []
+    },
+    {
+      "id": "1009929",
+      "name": "Bàsquet Menorca",
+      "roster": []
+    }
+  ]
+}

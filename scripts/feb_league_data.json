@@ -1,0 +1,3802 @@
+{
+  "season": "2025/2026",
+  "competition": "Primera FEB",
+  "teams": [
+    {
+      "id": "feb979989",
+      "name": "Hla Alicante"
+    },
+    {
+      "id": "feb981493",
+      "name": "Cloud.Gal Ourense Baloncesto"
+    },
+    {
+      "id": "feb981300",
+      "name": "Hestia Menorca"
+    },
+    {
+      "id": "feb981421",
+      "name": "Monbus Obradoiro"
+    },
+    {
+      "id": "feb981215",
+      "name": "Palmer Basket Mallorca Palma"
+    },
+    {
+      "id": "feb981343",
+      "name": "Súper Agropal Palencia"
+    },
+    {
+      "id": "feb979920",
+      "name": "Grupo Ureta Tizona Burgos"
+    },
+    {
+      "id": "feb979769",
+      "name": "Melilla Ciudad Del Deporte"
+    },
+    {
+      "id": "feb981203",
+      "name": "Inveready Gipuzkoa"
+    },
+    {
+      "id": "feb980004",
+      "name": "Leyma Coruña"
+    },
+    {
+      "id": "feb981251",
+      "name": "Grupo Caesa Seguros Fc Cartagena Cb"
+    },
+    {
+      "id": "feb981214",
+      "name": "Fibwi Mallorca Basquet Palma"
+    },
+    {
+      "id": "feb981124",
+      "name": "Alimerka Oviedo Baloncesto"
+    },
+    {
+      "id": "feb981431",
+      "name": "Movistar Estudiantes"
+    },
+    {
+      "id": "feb979907",
+      "name": "Grupo Alega Cantabria"
+    },
+    {
+      "id": "feb981125",
+      "name": "Caja Rural Cb Zamora"
+    },
+    {
+      "id": "feb981525",
+      "name": "Flexicar Fuenlabrada"
+    }
+  ],
+  "players": [
+    {
+      "id": "febp2868623",
+      "teamId": "feb979989",
+      "name": "Jordan Latham Bone",
+      "position": "SF",
+      "age": 28,
+      "nationality": "Estados Unidos",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 82,
+        "defense": 44,
+        "passing": 69,
+        "rebounding": 52,
+        "physical": 63
+      },
+      "overall": 52,
+      "potential": 52
+    },
+    {
+      "id": "febp2818653",
+      "teamId": "feb979989",
+      "name": "Boubacar Coulibaly",
+      "position": "C",
+      "age": 26,
+      "nationality": "Mali",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 39,
+        "defense": 74,
+        "passing": 40,
+        "rebounding": 76,
+        "physical": 82
+      },
+      "overall": 52,
+      "potential": 52
+    },
+    {
+      "id": "febp2817123",
+      "teamId": "feb979989",
+      "name": "Deng John Geu",
+      "position": "PF",
+      "age": 29,
+      "nationality": "Uganda",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 61,
+        "defense": 61,
+        "passing": 46,
+        "rebounding": 72,
+        "physical": 73
+      },
+      "overall": 55,
+      "potential": 55
+    },
+    {
+      "id": "febp1676991",
+      "teamId": "feb979989",
+      "name": "Alejandro Jorda Rodriguez",
+      "position": "SF",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 73,
+        "defense": 42,
+        "passing": 65,
+        "rebounding": 42,
+        "physical": 56
+      },
+      "overall": 46,
+      "potential": 46
+    },
+    {
+      "id": "febp2868750",
+      "teamId": "feb979989",
+      "name": "Yasiin Yousef Joseph",
+      "position": "SF",
+      "age": 30,
+      "nationality": "Canada",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 68,
+        "defense": 55,
+        "passing": 81,
+        "rebounding": 59,
+        "physical": 68
+      },
+      "overall": 59,
+      "potential": 59
+    },
+    {
+      "id": "febp2433482",
+      "teamId": "feb979989",
+      "name": "Kevin Ricki Larsen",
+      "position": "C",
+      "age": 33,
+      "nationality": "Dinamarca",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 92,
+        "defense": 91,
+        "passing": 89,
+        "rebounding": 94,
+        "physical": 87
+      },
+      "overall": 95,
+      "potential": 95
+    },
+    {
+      "id": "febp1381662",
+      "teamId": "feb979989",
+      "name": "Sergio Antonio Llorente Paz",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 185,
+      "ratings": {
+        "shooting": 48,
+        "defense": 37,
+        "passing": 47,
+        "rebounding": 36,
+        "physical": 39
+      },
+      "overall": 36,
+      "potential": 36
+    },
+    {
+      "id": "febp1869378",
+      "teamId": "feb979989",
+      "name": "Unai Mendicote Rubio",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 67,
+        "defense": 63,
+        "passing": 58,
+        "rebounding": 73,
+        "physical": 64
+      },
+      "overall": 72,
+      "potential": 72
+    },
+    {
+      "id": "febp2734619",
+      "teamId": "feb979989",
+      "name": "Jean Marc Mwema",
+      "position": "SF",
+      "age": 36,
+      "nationality": "Belgica",
+      "heightCm": 195,
+      "ratings": {
+        "shooting": 56,
+        "defense": 73,
+        "passing": 59,
+        "rebounding": 71,
+        "physical": 58
+      },
+      "overall": 56,
+      "potential": 56
+    },
+    {
+      "id": "febp2863973",
+      "teamId": "feb979989",
+      "name": "Eddy Rafael Polanco Tavarez",
+      "position": "SF",
+      "age": 32,
+      "nationality": "República Dominicana",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 88,
+        "defense": 59,
+        "passing": 75,
+        "rebounding": 73,
+        "physical": 58
+      },
+      "overall": 84,
+      "potential": 84
+    },
+    {
+      "id": "febp1997161",
+      "teamId": "feb979989",
+      "name": "Ismael Tamba Villen",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 204,
+      "ratings": {
+        "shooting": 51,
+        "defense": 42,
+        "passing": 41,
+        "rebounding": 44,
+        "physical": 71
+      },
+      "overall": 40,
+      "potential": 40
+    },
+    {
+      "id": "febp1285873",
+      "teamId": "feb979989",
+      "name": "Michael Torres Cuevas",
+      "position": "PG",
+      "age": 31,
+      "nationality": "España",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 82,
+        "defense": 60,
+        "passing": 87,
+        "rebounding": 57,
+        "physical": 52
+      },
+      "overall": 80,
+      "potential": 80
+    },
+    {
+      "id": "febp2650871",
+      "teamId": "feb981493",
+      "name": "Rafael Dias Marques Lisboa Santos",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Portugal",
+      "heightCm": 183,
+      "ratings": {
+        "shooting": 86,
+        "defense": 56,
+        "passing": 88,
+        "rebounding": 60,
+        "physical": 46
+      },
+      "overall": 80,
+      "potential": 80
+    },
+    {
+      "id": "febp1886852",
+      "teamId": "feb981493",
+      "name": "Martín Fernandez Carballo",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 194,
+      "ratings": {
+        "shooting": 65,
+        "defense": 48,
+        "passing": 55,
+        "rebounding": 55,
+        "physical": 53
+      },
+      "overall": 65,
+      "potential": 65
+    },
+    {
+      "id": "febp2654188",
+      "teamId": "feb981493",
+      "name": "Romaro Jilorney Gill",
+      "position": "C",
+      "age": 31,
+      "nationality": "Jamaica",
+      "heightCm": 218,
+      "ratings": {
+        "shooting": 43,
+        "defense": 88,
+        "passing": 40,
+        "rebounding": 88,
+        "physical": 89
+      },
+      "overall": 64,
+      "potential": 64
+    },
+    {
+      "id": "febp1765084",
+      "teamId": "feb981493",
+      "name": "Sergi Huguet Carrasco",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 195,
+      "ratings": {
+        "shooting": 44,
+        "defense": 38,
+        "passing": 44,
+        "rebounding": 41,
+        "physical": 50
+      },
+      "overall": 39,
+      "potential": 39
+    },
+    {
+      "id": "febp1863291",
+      "teamId": "feb981493",
+      "name": "Martin Iglesias Fernandez",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 41,
+        "defense": 56,
+        "passing": 55,
+        "rebounding": 73,
+        "physical": 72
+      },
+      "overall": 57,
+      "potential": 57
+    },
+    {
+      "id": "febp2819335",
+      "teamId": "feb981493",
+      "name": "Carlos Jürgens",
+      "position": "PG",
+      "age": 37,
+      "nationality": "Estonia",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 48,
+        "defense": 67,
+        "passing": 73,
+        "rebounding": 53,
+        "physical": 62
+      },
+      "overall": 49,
+      "potential": 49
+    },
+    {
+      "id": "febp2819327",
+      "teamId": "feb981493",
+      "name": "Gabriel Marvin Kalscheur",
+      "position": "SG",
+      "age": 27,
+      "nationality": "Estados Unidos",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 80,
+        "defense": 55,
+        "passing": 74,
+        "rebounding": 59,
+        "physical": 60
+      },
+      "overall": 73,
+      "potential": 73
+    },
+    {
+      "id": "febp2781800",
+      "teamId": "feb981493",
+      "name": "Sean William Mc Donnell",
+      "position": "SF",
+      "age": 30,
+      "nationality": "Estados Unidos",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 77,
+        "defense": 82,
+        "passing": 75,
+        "rebounding": 84,
+        "physical": 79
+      },
+      "overall": 79,
+      "potential": 79
+    },
+    {
+      "id": "febp2819330",
+      "teamId": "feb981493",
+      "name": "Chinedu Kingsley Okanu",
+      "position": "C",
+      "age": 26,
+      "nationality": "Nigeria",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 50,
+        "defense": 73,
+        "passing": 47,
+        "rebounding": 82,
+        "physical": 79
+      },
+      "overall": 77,
+      "potential": 77
+    },
+    {
+      "id": "febp2819332",
+      "teamId": "feb981493",
+      "name": "Diogo Jorge Saraiva Seixas",
+      "position": "PF",
+      "age": 22,
+      "nationality": "Portugal",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 53,
+        "defense": 43,
+        "passing": 53,
+        "rebounding": 47,
+        "physical": 71
+      },
+      "overall": 41,
+      "potential": 44
+    },
+    {
+      "id": "febp1778999",
+      "teamId": "feb981493",
+      "name": "Isaac Vazquez Perez",
+      "position": "PG",
+      "age": 21,
+      "nationality": "España",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 66,
+        "defense": 79,
+        "passing": 88,
+        "rebounding": 73,
+        "physical": 62
+      },
+      "overall": 78,
+      "potential": 82
+    },
+    {
+      "id": "febp2867056",
+      "teamId": "feb981493",
+      "name": "Adin Vrabac",
+      "position": "SF",
+      "age": 32,
+      "nationality": "Bosnia-Herzergovina",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 47,
+        "defense": 50,
+        "passing": 60,
+        "rebounding": 56,
+        "physical": 63
+      },
+      "overall": 39,
+      "potential": 39
+    },
+    {
+      "id": "febp1382456",
+      "teamId": "feb981300",
+      "name": "Victor Jesus Arteaga Gonzalez",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 212,
+      "ratings": {
+        "shooting": 40,
+        "defense": 51,
+        "passing": 39,
+        "rebounding": 60,
+        "physical": 84
+      },
+      "overall": 47,
+      "potential": 47
+    },
+    {
+      "id": "febp2785180",
+      "teamId": "feb981300",
+      "name": "Jalen Christopher Cone",
+      "position": "PG",
+      "age": 25,
+      "nationality": "Estados Unidos",
+      "heightCm": 180,
+      "ratings": {
+        "shooting": 65,
+        "defense": 44,
+        "passing": 64,
+        "rebounding": 45,
+        "physical": 38
+      },
+      "overall": 48,
+      "potential": 48
+    },
+    {
+      "id": "febp1496030",
+      "teamId": "feb981300",
+      "name": "Pol Figueras Lopez",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 186,
+      "ratings": {
+        "shooting": 48,
+        "defense": 45,
+        "passing": 82,
+        "rebounding": 41,
+        "physical": 42
+      },
+      "overall": 47,
+      "potential": 47
+    },
+    {
+      "id": "febp2820270",
+      "teamId": "feb981300",
+      "name": "Nicolas Sebastien  Galette",
+      "position": "PF",
+      "age": 24,
+      "nationality": "Haiti",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 66,
+        "defense": 64,
+        "passing": 53,
+        "rebounding": 65,
+        "physical": 65
+      },
+      "overall": 53,
+      "potential": 53
+    },
+    {
+      "id": "febp2650859",
+      "teamId": "feb981300",
+      "name": "Spencer Phillip Littleson",
+      "position": "SG",
+      "age": 28,
+      "nationality": "Estados Unidos",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 93,
+        "defense": 61,
+        "passing": 85,
+        "rebounding": 57,
+        "physical": 59
+      },
+      "overall": 89,
+      "potential": 89
+    },
+    {
+      "id": "febp1938697",
+      "teamId": "feb981300",
+      "name": "Jaume Lobo Martorell",
+      "position": "SG",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 180,
+      "ratings": {
+        "shooting": 76,
+        "defense": 42,
+        "passing": 64,
+        "rebounding": 40,
+        "physical": 40
+      },
+      "overall": 53,
+      "potential": 53
+    },
+    {
+      "id": "febp1784407",
+      "teamId": "feb981300",
+      "name": "Pol Molins Calderon",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 41,
+        "defense": 38,
+        "passing": 53,
+        "rebounding": 37,
+        "physical": 55
+      },
+      "overall": 37,
+      "potential": 37
+    },
+    {
+      "id": "febp2869790",
+      "teamId": "feb981300",
+      "name": "Tobias Elias Rotegard",
+      "position": "SF",
+      "age": 26,
+      "nationality": "Noruega",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 67,
+        "defense": 37,
+        "passing": 36,
+        "rebounding": 38,
+        "physical": 59
+      },
+      "overall": 36,
+      "potential": 36
+    },
+    {
+      "id": "febp2662856",
+      "teamId": "feb981300",
+      "name": "Fynn Schott",
+      "position": "PF",
+      "age": 24,
+      "nationality": "Austria",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 38,
+        "defense": 62,
+        "passing": 58,
+        "rebounding": 69,
+        "physical": 78
+      },
+      "overall": 44,
+      "potential": 44
+    },
+    {
+      "id": "febp1875914",
+      "teamId": "feb981300",
+      "name": "Adams Sola Iddrisu",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 66,
+        "defense": 81,
+        "passing": 76,
+        "rebounding": 90,
+        "physical": 54
+      },
+      "overall": 81,
+      "potential": 81
+    },
+    {
+      "id": "febp1715117",
+      "teamId": "feb981300",
+      "name": "Edgar Benjamin Vicedo Ayala",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 73,
+        "defense": 84,
+        "passing": 57,
+        "rebounding": 85,
+        "physical": 74
+      },
+      "overall": 71,
+      "potential": 71
+    },
+    {
+      "id": "febp2702840",
+      "teamId": "feb981300",
+      "name": "Emmanuel Tongjo Wembi",
+      "position": "C",
+      "age": 28,
+      "nationality": "Rep. Democrática Del Congo",
+      "heightCm": 205,
+      "ratings": {
+        "shooting": 46,
+        "defense": 75,
+        "passing": 67,
+        "rebounding": 73,
+        "physical": 84
+      },
+      "overall": 65,
+      "potential": 65
+    },
+    {
+      "id": "febp2446720",
+      "teamId": "feb981300",
+      "name": "Fernando Zurbriggen",
+      "position": "PG",
+      "age": 28,
+      "nationality": "Italia",
+      "heightCm": 185,
+      "ratings": {
+        "shooting": 84,
+        "defense": 93,
+        "passing": 94,
+        "rebounding": 87,
+        "physical": 52
+      },
+      "overall": 94,
+      "potential": 94
+    },
+    {
+      "id": "febp2524084",
+      "teamId": "feb981421",
+      "name": "Roland Denzel Andersson",
+      "position": "PF",
+      "age": 24,
+      "nationality": "Suecia",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 57,
+        "defense": 71,
+        "passing": 53,
+        "rebounding": 59,
+        "physical": 77
+      },
+      "overall": 53,
+      "potential": 53
+    },
+    {
+      "id": "febp2640794",
+      "teamId": "feb981421",
+      "name": "Alexander Michael Barcello",
+      "position": "SG",
+      "age": 28,
+      "nationality": "Estados Unidos",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 93,
+        "defense": 80,
+        "passing": 89,
+        "rebounding": 70,
+        "physical": 50
+      },
+      "overall": 93,
+      "potential": 93
+    },
+    {
+      "id": "febp2524267",
+      "teamId": "feb981421",
+      "name": "Yunio Rafael Barrueta",
+      "position": "SF",
+      "age": 24,
+      "nationality": "Estados Unidos",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 89,
+        "defense": 68,
+        "passing": 65,
+        "rebounding": 79,
+        "physical": 65
+      },
+      "overall": 84,
+      "potential": 84
+    },
+    {
+      "id": "febp2528063",
+      "teamId": "feb981421",
+      "name": "Diogo Emanuel De Sousa Anjo Brito",
+      "position": "SF",
+      "age": 29,
+      "nationality": "Portugal",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 72,
+        "defense": 75,
+        "passing": 79,
+        "rebounding": 70,
+        "physical": 66
+      },
+      "overall": 75,
+      "potential": 75
+    },
+    {
+      "id": "febp2219665",
+      "teamId": "feb981421",
+      "name": "Felipe Dos Anjos De Paula",
+      "position": "C",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": 218,
+      "ratings": {
+        "shooting": 53,
+        "defense": 86,
+        "passing": 55,
+        "rebounding": 88,
+        "physical": 93
+      },
+      "overall": 92,
+      "potential": 92
+    },
+    {
+      "id": "febp2082696",
+      "teamId": "feb981421",
+      "name": "Aitor Etxeguren Gonzalez",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 37,
+        "defense": 42,
+        "passing": 47,
+        "rebounding": 40,
+        "physical": 74
+      },
+      "overall": 42,
+      "potential": 42
+    },
+    {
+      "id": "febp1836771",
+      "teamId": "feb981421",
+      "name": "Alejandro Galan Pozo",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 207,
+      "ratings": {
+        "shooting": 67,
+        "defense": 75,
+        "passing": 70,
+        "rebounding": 68,
+        "physical": 85
+      },
+      "overall": 68,
+      "potential": 68
+    },
+    {
+      "id": "febp2870053",
+      "teamId": "feb981421",
+      "name": "Antonio Price  Holder",
+      "position": "SF",
+      "age": 30,
+      "nationality": "Estados Unidos",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 37,
+        "defense": 37,
+        "passing": 68,
+        "rebounding": 36,
+        "physical": 57
+      },
+      "overall": 38,
+      "potential": 38
+    },
+    {
+      "id": "febp2026110",
+      "teamId": "feb981421",
+      "name": "Goran Huskic",
+      "position": "C",
+      "age": 34,
+      "nationality": "Serbia",
+      "heightCm": 210,
+      "ratings": {
+        "shooting": 40,
+        "defense": 51,
+        "passing": 62,
+        "rebounding": 40,
+        "physical": 83
+      },
+      "overall": 49,
+      "potential": 49
+    },
+    {
+      "id": "febp2371461",
+      "teamId": "feb981421",
+      "name": "Dejan Kravic",
+      "position": "C",
+      "age": 35,
+      "nationality": "Serbia",
+      "heightCm": 210,
+      "ratings": {
+        "shooting": 50,
+        "defense": 81,
+        "passing": 79,
+        "rebounding": 84,
+        "physical": 88
+      },
+      "overall": 85,
+      "potential": 85
+    },
+    {
+      "id": "febp2482605",
+      "teamId": "feb981421",
+      "name": "Karl Olle Viktor Lundqvist",
+      "position": "SF",
+      "age": 26,
+      "nationality": "Suecia",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 60,
+        "defense": 68,
+        "passing": 71,
+        "rebounding": 54,
+        "physical": 73
+      },
+      "overall": 72,
+      "potential": 72
+    },
+    {
+      "id": "febp2734244",
+      "teamId": "feb981421",
+      "name": "Travis Trayvon Munnings",
+      "position": "SF",
+      "age": 31,
+      "nationality": "Bahamas",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 73,
+        "defense": 63,
+        "passing": 73,
+        "rebounding": 69,
+        "physical": 63
+      },
+      "overall": 63,
+      "potential": 63
+    },
+    {
+      "id": "febp2220063",
+      "teamId": "feb981421",
+      "name": "Sergio Quintela Salvador",
+      "position": "SG",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 185,
+      "ratings": {
+        "shooting": 59,
+        "defense": 85,
+        "passing": 83,
+        "rebounding": 65,
+        "physical": 46
+      },
+      "overall": 77,
+      "potential": 77
+    },
+    {
+      "id": "febp2433193",
+      "teamId": "feb981421",
+      "name": "Micah Marquis Speight",
+      "position": "PG",
+      "age": 28,
+      "nationality": "Estados Unidos",
+      "heightCm": 178,
+      "ratings": {
+        "shooting": 86,
+        "defense": 75,
+        "passing": 84,
+        "rebounding": 65,
+        "physical": 42
+      },
+      "overall": 76,
+      "potential": 76
+    },
+    {
+      "id": "febp2436780",
+      "teamId": "feb981421",
+      "name": "Leo Joseph Paul Westermann",
+      "position": "PG",
+      "age": 34,
+      "nationality": "Francia",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 90,
+        "defense": 76,
+        "passing": 93,
+        "rebounding": 66,
+        "physical": 71
+      },
+      "overall": 88,
+      "potential": 88
+    },
+    {
+      "id": "febp2533643",
+      "teamId": "feb981215",
+      "name": "Hansel Giovanny Atencia Suarez",
+      "position": "PG",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 179,
+      "ratings": {
+        "shooting": 76,
+        "defense": 64,
+        "passing": 88,
+        "rebounding": 48,
+        "physical": 42
+      },
+      "overall": 74,
+      "potential": 74
+    },
+    {
+      "id": "febp2815273",
+      "teamId": "feb981215",
+      "name": "Nuno Miguel Camacho De Sá",
+      "position": "SF",
+      "age": 29,
+      "nationality": "Portugal",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 54,
+        "defense": 54,
+        "passing": 47,
+        "rebounding": 77,
+        "physical": 68
+      },
+      "overall": 61,
+      "potential": 61
+    },
+    {
+      "id": "febp1591996",
+      "teamId": "feb981215",
+      "name": "Jesus Carralero Martin",
+      "position": "PF",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 58,
+        "defense": 77,
+        "passing": 64,
+        "rebounding": 70,
+        "physical": 75
+      },
+      "overall": 60,
+      "potential": 60
+    },
+    {
+      "id": "febp1197937",
+      "teamId": "feb981215",
+      "name": "Adrian Chapela Lage",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 48,
+        "defense": 57,
+        "passing": 75,
+        "rebounding": 43,
+        "physical": 45
+      },
+      "overall": 44,
+      "potential": 44
+    },
+    {
+      "id": "febp1766217",
+      "teamId": "feb981215",
+      "name": "Angel Comendador Femenias",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 73,
+        "defense": 67,
+        "passing": 49,
+        "rebounding": 68,
+        "physical": 74
+      },
+      "overall": 66,
+      "potential": 66
+    },
+    {
+      "id": "febp1759354",
+      "teamId": "feb981215",
+      "name": "Golden Nnaemeka Dike Egun",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 54,
+        "defense": 63,
+        "passing": 59,
+        "rebounding": 73,
+        "physical": 81
+      },
+      "overall": 46,
+      "potential": 46
+    },
+    {
+      "id": "febp1688669",
+      "teamId": "feb981215",
+      "name": "Joan Feliu Espejo",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 186,
+      "ratings": {
+        "shooting": 66,
+        "defense": 57,
+        "passing": 58,
+        "rebounding": 63,
+        "physical": 43
+      },
+      "overall": 61,
+      "potential": 61
+    },
+    {
+      "id": "febp2812898",
+      "teamId": "feb981215",
+      "name": "Archange Izaw Bolavie",
+      "position": "C",
+      "age": 25,
+      "nationality": "Belgica",
+      "heightCm": 210,
+      "ratings": {
+        "shooting": 45,
+        "defense": 91,
+        "passing": 41,
+        "rebounding": 90,
+        "physical": 90
+      },
+      "overall": 70,
+      "potential": 70
+    },
+    {
+      "id": "febp2860169",
+      "teamId": "feb981215",
+      "name": "Joshua Artee Roberts",
+      "position": "C",
+      "age": 27,
+      "nationality": "Estados Unidos",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 43,
+        "defense": 70,
+        "passing": 52,
+        "rebounding": 77,
+        "physical": 80
+      },
+      "overall": 66,
+      "potential": 66
+    },
+    {
+      "id": "febp2850268",
+      "teamId": "feb981215",
+      "name": "Duda Sanadze",
+      "position": "SG",
+      "age": 34,
+      "nationality": "Georgia",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 75,
+        "defense": 57,
+        "passing": 55,
+        "rebounding": 51,
+        "physical": 55
+      },
+      "overall": 56,
+      "potential": 56
+    },
+    {
+      "id": "febp2863891",
+      "teamId": "feb981215",
+      "name": "Philip Alexander Scrubb",
+      "position": "SG",
+      "age": 33,
+      "nationality": "Canada",
+      "heightCm": 194,
+      "ratings": {
+        "shooting": 94,
+        "defense": 86,
+        "passing": 95,
+        "rebounding": 69,
+        "physical": 64
+      },
+      "overall": 95,
+      "potential": 95
+    },
+    {
+      "id": "febp1593686",
+      "teamId": "feb981215",
+      "name": "Ander Urdiain Labayen",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 58,
+        "defense": 52,
+        "passing": 46,
+        "rebounding": 61,
+        "physical": 71
+      },
+      "overall": 48,
+      "potential": 48
+    },
+    {
+      "id": "febp2818672",
+      "teamId": "feb981343",
+      "name": "Mladen Armus",
+      "position": "C",
+      "age": 29,
+      "nationality": "Serbia",
+      "heightCm": 205,
+      "ratings": {
+        "shooting": 62,
+        "defense": 81,
+        "passing": 52,
+        "rebounding": 89,
+        "physical": 80
+      },
+      "overall": 64,
+      "potential": 64
+    },
+    {
+      "id": "febp2092465",
+      "teamId": "feb981343",
+      "name": "Tobias Carl Peter Borg",
+      "position": "SG",
+      "age": 32,
+      "nationality": "Suecia",
+      "heightCm": 183,
+      "ratings": {
+        "shooting": 83,
+        "defense": 60,
+        "passing": 82,
+        "rebounding": 57,
+        "physical": 44
+      },
+      "overall": 73,
+      "potential": 73
+    },
+    {
+      "id": "febp1382607",
+      "teamId": "feb981343",
+      "name": "Jose Maria Gonzalez Calvo",
+      "position": "C",
+      "age": 35,
+      "nationality": "España",
+      "heightCm": 207,
+      "ratings": {
+        "shooting": 37,
+        "defense": 39,
+        "passing": 44,
+        "rebounding": 46,
+        "physical": 75
+      },
+      "overall": 42,
+      "potential": 42
+    },
+    {
+      "id": "febp2819191",
+      "teamId": "feb981343",
+      "name": "Mustapha Jahhad Heron",
+      "position": "SG",
+      "age": 24,
+      "nationality": "Estados Unidos",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 70,
+        "defense": 47,
+        "passing": 50,
+        "rebounding": 42,
+        "physical": 60
+      },
+      "overall": 47,
+      "potential": 47
+    },
+    {
+      "id": "febp2734950",
+      "teamId": "feb981343",
+      "name": "Mathieu Nkongolo Kamba",
+      "position": "SF",
+      "age": 30,
+      "nationality": "R. Del Congo",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 81,
+        "defense": 87,
+        "passing": 72,
+        "rebounding": 83,
+        "physical": 64
+      },
+      "overall": 84,
+      "potential": 84
+    },
+    {
+      "id": "febp2734949",
+      "teamId": "feb981343",
+      "name": "Adam Terrence Kunkel",
+      "position": "SG",
+      "age": 26,
+      "nationality": "Estados Unidos",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 87,
+        "defense": 53,
+        "passing": 65,
+        "rebounding": 56,
+        "physical": 60
+      },
+      "overall": 70,
+      "potential": 70
+    },
+    {
+      "id": "febp1253254",
+      "teamId": "feb981343",
+      "name": "Alvaro Muñoz Borchers",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 62,
+        "defense": 62,
+        "passing": 62,
+        "rebounding": 60,
+        "physical": 60
+      },
+      "overall": 54,
+      "potential": 54
+    },
+    {
+      "id": "febp1750421",
+      "teamId": "feb981343",
+      "name": "Xabier Oroz Uria",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 194,
+      "ratings": {
+        "shooting": 47,
+        "defense": 64,
+        "passing": 69,
+        "rebounding": 65,
+        "physical": 52
+      },
+      "overall": 51,
+      "potential": 51
+    },
+    {
+      "id": "febp1376540",
+      "teamId": "feb981343",
+      "name": "Manuel Rodriguez Barrientos",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 55,
+        "defense": 40,
+        "passing": 49,
+        "rebounding": 39,
+        "physical": 48
+      },
+      "overall": 39,
+      "potential": 39
+    },
+    {
+      "id": "febp2640789",
+      "teamId": "feb981343",
+      "name": "Josip Vrankic",
+      "position": "PF",
+      "age": 27,
+      "nationality": "Croacia",
+      "heightCm": 205,
+      "ratings": {
+        "shooting": 81,
+        "defense": 90,
+        "passing": 81,
+        "rebounding": 85,
+        "physical": 86
+      },
+      "overall": 91,
+      "potential": 91
+    },
+    {
+      "id": "febp2217440",
+      "teamId": "feb981343",
+      "name": "Vasilije Vucetic",
+      "position": "C",
+      "age": 30,
+      "nationality": "Serbia",
+      "heightCm": 207,
+      "ratings": {
+        "shooting": 75,
+        "defense": 55,
+        "passing": 61,
+        "rebounding": 70,
+        "physical": 83
+      },
+      "overall": 62,
+      "potential": 62
+    },
+    {
+      "id": "febp2276415",
+      "teamId": "feb981343",
+      "name": "Alec Martin  Wintering",
+      "position": "PG",
+      "age": 31,
+      "nationality": "Jamaica",
+      "heightCm": 180,
+      "ratings": {
+        "shooting": 84,
+        "defense": 81,
+        "passing": 87,
+        "rebounding": 75,
+        "physical": 46
+      },
+      "overall": 89,
+      "potential": 89
+    },
+    {
+      "id": "febp2325671",
+      "teamId": "feb979920",
+      "name": "Ayoze Alonso Ruiz",
+      "position": "PG",
+      "age": 35,
+      "nationality": "España",
+      "heightCm": 187,
+      "ratings": {
+        "shooting": 60,
+        "defense": 45,
+        "passing": 69,
+        "rebounding": 43,
+        "physical": 43
+      },
+      "overall": 48,
+      "potential": 48
+    },
+    {
+      "id": "febp2814907",
+      "teamId": "feb979920",
+      "name": "Javonte Éliza Brown-Ferguson",
+      "position": "C",
+      "age": 23,
+      "nationality": "Canada",
+      "heightCm": 213,
+      "ratings": {
+        "shooting": 47,
+        "defense": 85,
+        "passing": 50,
+        "rebounding": 81,
+        "physical": 90
+      },
+      "overall": 74,
+      "potential": 76
+    },
+    {
+      "id": "febp2870010",
+      "teamId": "feb979920",
+      "name": "Christopher Daniel  Czerapowicz",
+      "position": "SF",
+      "age": 34,
+      "nationality": "Suecia",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 46,
+        "defense": 76,
+        "passing": 74,
+        "rebounding": 80,
+        "physical": 63
+      },
+      "overall": 49,
+      "potential": 49
+    },
+    {
+      "id": "febp1808439",
+      "teamId": "feb979920",
+      "name": "Gabriel Gil Garcia",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 51,
+        "defense": 69,
+        "passing": 67,
+        "rebounding": 72,
+        "physical": 69
+      },
+      "overall": 50,
+      "potential": 50
+    },
+    {
+      "id": "febp2814904",
+      "teamId": "feb979920",
+      "name": "Marquis Juwan Jackson",
+      "position": "SG",
+      "age": 31,
+      "nationality": "Estados Unidos",
+      "heightCm": 183,
+      "ratings": {
+        "shooting": 84,
+        "defense": 63,
+        "passing": 85,
+        "rebounding": 53,
+        "physical": 45
+      },
+      "overall": 74,
+      "potential": 74
+    },
+    {
+      "id": "febp1787363",
+      "teamId": "feb979920",
+      "name": "Gerard Jofresa Sarret",
+      "position": "SG",
+      "age": 25,
+      "nationality": "España",
+      "heightCm": 183,
+      "ratings": {
+        "shooting": 74,
+        "defense": 61,
+        "passing": 65,
+        "rebounding": 58,
+        "physical": 42
+      },
+      "overall": 66,
+      "potential": 66
+    },
+    {
+      "id": "febp2869253",
+      "teamId": "feb979920",
+      "name": "Michael Abiodun Nugu",
+      "position": "SF",
+      "age": 28,
+      "nationality": "Nigeria",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 90,
+        "defense": 90,
+        "passing": 80,
+        "rebounding": 67,
+        "physical": 71
+      },
+      "overall": 83,
+      "potential": 83
+    },
+    {
+      "id": "febp1787348",
+      "teamId": "feb979920",
+      "name": "Arnau Parrado Calabria",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 204,
+      "ratings": {
+        "shooting": 67,
+        "defense": 78,
+        "passing": 69,
+        "rebounding": 85,
+        "physical": 81
+      },
+      "overall": 68,
+      "potential": 68
+    },
+    {
+      "id": "febp1625687",
+      "teamId": "feb979920",
+      "name": "Rodrigo Seoane Rodicio",
+      "position": "SF",
+      "age": 27,
+      "nationality": "España",
+      "heightCm": 204,
+      "ratings": {
+        "shooting": 67,
+        "defense": 59,
+        "passing": 58,
+        "rebounding": 69,
+        "physical": 75
+      },
+      "overall": 51,
+      "potential": 51
+    },
+    {
+      "id": "febp2814906",
+      "teamId": "feb979920",
+      "name": "Felix Peter Gabriel Terins",
+      "position": "PG",
+      "age": 28,
+      "nationality": "Suecia",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 80,
+        "defense": 57,
+        "passing": 84,
+        "rebounding": 57,
+        "physical": 50
+      },
+      "overall": 69,
+      "potential": 69
+    },
+    {
+      "id": "febp1572466",
+      "teamId": "feb979920",
+      "name": "Ramon Vila Soley",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 68,
+        "defense": 60,
+        "passing": 68,
+        "rebounding": 69,
+        "physical": 79
+      },
+      "overall": 69,
+      "potential": 69
+    },
+    {
+      "id": "febp2736183",
+      "teamId": "feb979920",
+      "name": "Jan  Zidek",
+      "position": "C",
+      "age": 26,
+      "nationality": "R. Checa",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 87,
+        "defense": 52,
+        "passing": 52,
+        "rebounding": 60,
+        "physical": 79
+      },
+      "overall": 77,
+      "potential": 77
+    },
+    {
+      "id": "febp2866764",
+      "teamId": "feb979769",
+      "name": "Michael  Caicedo Sanchez",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 63,
+        "defense": 91,
+        "passing": 83,
+        "rebounding": 87,
+        "physical": 68
+      },
+      "overall": 81,
+      "potential": 81
+    },
+    {
+      "id": "febp2787126",
+      "teamId": "feb979769",
+      "name": "Sebastian Aris Ceccardi",
+      "position": "PG",
+      "age": 30,
+      "nationality": "Dinamarca",
+      "heightCm": 189,
+      "ratings": {
+        "shooting": 92,
+        "defense": 60,
+        "passing": 82,
+        "rebounding": 68,
+        "physical": 55
+      },
+      "overall": 88,
+      "potential": 88
+    },
+    {
+      "id": "febp1677841",
+      "teamId": "feb979769",
+      "name": "Pablo Cordoba Muro",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 55,
+        "defense": 66,
+        "passing": 68,
+        "rebounding": 70,
+        "physical": 46
+      },
+      "overall": 58,
+      "potential": 58
+    },
+    {
+      "id": "febp2647156",
+      "teamId": "feb979769",
+      "name": "Ludgy Dominique Debaut",
+      "position": "C",
+      "age": 28,
+      "nationality": "Francia",
+      "heightCm": 213,
+      "ratings": {
+        "shooting": 74,
+        "defense": 77,
+        "passing": 48,
+        "rebounding": 91,
+        "physical": 91
+      },
+      "overall": 80,
+      "potential": 80
+    },
+    {
+      "id": "febp1251001",
+      "teamId": "feb979769",
+      "name": "Cristian Diaz Rodriguez",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 184,
+      "ratings": {
+        "shooting": 58,
+        "defense": 51,
+        "passing": 84,
+        "rebounding": 47,
+        "physical": 44
+      },
+      "overall": 67,
+      "potential": 67
+    },
+    {
+      "id": "febp1978541",
+      "teamId": "feb979769",
+      "name": "Javier Garcia Sanchez",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 191,
+      "ratings": {
+        "shooting": 60,
+        "defense": 46,
+        "passing": 82,
+        "rebounding": 49,
+        "physical": 49
+      },
+      "overall": 51,
+      "potential": 51
+    },
+    {
+      "id": "febp2532075",
+      "teamId": "feb979769",
+      "name": "Nathan Wayne  Hoover",
+      "position": "SG",
+      "age": 29,
+      "nationality": "Estados Unidos",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 69,
+        "defense": 48,
+        "passing": 70,
+        "rebounding": 48,
+        "physical": 53
+      },
+      "overall": 60,
+      "potential": 60
+    },
+    {
+      "id": "febp2734873",
+      "teamId": "feb979769",
+      "name": "Pavlo Krutous",
+      "position": "SF",
+      "age": 34,
+      "nationality": "Ucrania",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 52,
+        "defense": 39,
+        "passing": 47,
+        "rebounding": 42,
+        "physical": 63
+      },
+      "overall": 41,
+      "potential": 41
+    },
+    {
+      "id": "febp2869128",
+      "teamId": "feb979769",
+      "name": "Nicholas Khalil  Mc Mullen",
+      "position": "C",
+      "age": 24,
+      "nationality": "Estados Unidos",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 52,
+        "defense": 76,
+        "passing": 52,
+        "rebounding": 89,
+        "physical": 75
+      },
+      "overall": 64,
+      "potential": 64
+    },
+    {
+      "id": "febp1373532",
+      "teamId": "feb979769",
+      "name": "Sergio  Rodriguez Febles",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 72,
+        "defense": 68,
+        "passing": 62,
+        "rebounding": 75,
+        "physical": 77
+      },
+      "overall": 71,
+      "potential": 71
+    },
+    {
+      "id": "febp2734242",
+      "teamId": "feb979769",
+      "name": "Morgan Sietse Stilma",
+      "position": "PF",
+      "age": 26,
+      "nationality": "Países Bajos",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 50,
+        "defense": 47,
+        "passing": 51,
+        "rebounding": 55,
+        "physical": 72
+      },
+      "overall": 43,
+      "potential": 43
+    },
+    {
+      "id": "febp2180409",
+      "teamId": "feb981203",
+      "name": "Aitor Anabitarte Soroa",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 35,
+        "defense": 35,
+        "passing": 37,
+        "rebounding": 35,
+        "physical": 53
+      },
+      "overall": 35,
+      "potential": 35
+    },
+    {
+      "id": "febp2082685",
+      "teamId": "feb981203",
+      "name": "Manex Ansorregui Deba",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 74,
+        "defense": 91,
+        "passing": 74,
+        "rebounding": 90,
+        "physical": 66
+      },
+      "overall": 87,
+      "potential": 87
+    },
+    {
+      "id": "febp2275973",
+      "teamId": "feb981203",
+      "name": "Ignacio Andres  Arroyo Varela",
+      "position": "PG",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 67,
+        "defense": 60,
+        "passing": 88,
+        "rebounding": 57,
+        "physical": 47
+      },
+      "overall": 67,
+      "potential": 67
+    },
+    {
+      "id": "febp2678649",
+      "teamId": "feb981203",
+      "name": "Ondrej Hanzlik",
+      "position": "SF",
+      "age": 24,
+      "nationality": "R. Checa",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 67,
+        "defense": 61,
+        "passing": 65,
+        "rebounding": 60,
+        "physical": 69
+      },
+      "overall": 62,
+      "potential": 62
+    },
+    {
+      "id": "febp2813562",
+      "teamId": "feb981203",
+      "name": "Giorgi Korsantia",
+      "position": "PF",
+      "age": 28,
+      "nationality": "Georgia",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 58,
+        "defense": 90,
+        "passing": 70,
+        "rebounding": 93,
+        "physical": 82
+      },
+      "overall": 87,
+      "potential": 87
+    },
+    {
+      "id": "febp1822814",
+      "teamId": "feb981203",
+      "name": "Gaizka  Maiza Apecechea",
+      "position": "PG",
+      "age": 30,
+      "nationality": "España",
+      "heightCm": 191,
+      "ratings": {
+        "shooting": 60,
+        "defense": 44,
+        "passing": 80,
+        "rebounding": 43,
+        "physical": 49
+      },
+      "overall": 54,
+      "potential": 54
+    },
+    {
+      "id": "febp2814207",
+      "teamId": "feb981203",
+      "name": "Tyler Blaine Mcghie",
+      "position": "SF",
+      "age": 23,
+      "nationality": "Estados Unidos",
+      "heightCm": 195,
+      "ratings": {
+        "shooting": 72,
+        "defense": 64,
+        "passing": 56,
+        "rebounding": 58,
+        "physical": 59
+      },
+      "overall": 59,
+      "potential": 60
+    },
+    {
+      "id": "febp1447983",
+      "teamId": "feb981203",
+      "name": "Mikel Motos Cabodevilla",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 194,
+      "ratings": {
+        "shooting": 47,
+        "defense": 49,
+        "passing": 64,
+        "rebounding": 58,
+        "physical": 52
+      },
+      "overall": 43,
+      "potential": 43
+    },
+    {
+      "id": "febp2640663",
+      "teamId": "feb981203",
+      "name": "Abdoulaye Tanor Ngom",
+      "position": "C",
+      "age": 28,
+      "nationality": "Senegal",
+      "heightCm": 218,
+      "ratings": {
+        "shooting": 80,
+        "defense": 95,
+        "passing": 48,
+        "rebounding": 94,
+        "physical": 95
+      },
+      "overall": 93,
+      "potential": 93
+    },
+    {
+      "id": "febp1988355",
+      "teamId": "feb981203",
+      "name": "Javier Nicolau Aledon",
+      "position": "C",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 91,
+        "defense": 87,
+        "passing": 67,
+        "rebounding": 74,
+        "physical": 88
+      },
+      "overall": 75,
+      "potential": 75
+    },
+    {
+      "id": "febp2862573",
+      "teamId": "feb981203",
+      "name": "Jalen Jamal Tate",
+      "position": "SF",
+      "age": 28,
+      "nationality": "Estados Unidos",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 83,
+        "defense": 63,
+        "passing": 91,
+        "rebounding": 60,
+        "physical": 74
+      },
+      "overall": 86,
+      "potential": 86
+    },
+    {
+      "id": "febp1749125",
+      "teamId": "feb981203",
+      "name": "Aitor Zubizarreta Aranbarri",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 191,
+      "ratings": {
+        "shooting": 46,
+        "defense": 42,
+        "passing": 73,
+        "rebounding": 46,
+        "physical": 47
+      },
+      "overall": 44,
+      "potential": 44
+    },
+    {
+      "id": "febp2862313",
+      "teamId": "feb980004",
+      "name": "Serigne M M Sy Dit Diamil Barro",
+      "position": "C",
+      "age": 30,
+      "nationality": "Senegal",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 49,
+        "defense": 70,
+        "passing": 43,
+        "rebounding": 80,
+        "physical": 87
+      },
+      "overall": 79,
+      "potential": 79
+    },
+    {
+      "id": "febp2814191",
+      "teamId": "feb980004",
+      "name": "Macachi Buanga Braz",
+      "position": "PF",
+      "age": 25,
+      "nationality": "Angola",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 47,
+        "defense": 38,
+        "passing": 37,
+        "rebounding": 40,
+        "physical": 66
+      },
+      "overall": 39,
+      "potential": 39
+    },
+    {
+      "id": "febp2814190",
+      "teamId": "feb980004",
+      "name": "Danilo  Brnovic",
+      "position": "SF",
+      "age": 26,
+      "nationality": "Montenegro",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 58,
+        "defense": 40,
+        "passing": 50,
+        "rebounding": 45,
+        "physical": 62
+      },
+      "overall": 45,
+      "potential": 45
+    },
+    {
+      "id": "febp2452677",
+      "teamId": "feb980004",
+      "name": "Joseph Robert Cremo",
+      "position": "SG",
+      "age": 29,
+      "nationality": "Estados Unidos",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 85,
+        "defense": 65,
+        "passing": 81,
+        "rebounding": 68,
+        "physical": 60
+      },
+      "overall": 81,
+      "potential": 81
+    },
+    {
+      "id": "febp2557970",
+      "teamId": "feb980004",
+      "name": "Didac Cuevas Simarro",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 178,
+      "ratings": {
+        "shooting": 66,
+        "defense": 84,
+        "passing": 93,
+        "rebounding": 70,
+        "physical": 44
+      },
+      "overall": 86,
+      "potential": 86
+    },
+    {
+      "id": "febp2644143",
+      "teamId": "feb980004",
+      "name": "Caio De Souza Pacheco",
+      "position": "PG",
+      "age": 27,
+      "nationality": "Portugal",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 87,
+        "defense": 64,
+        "passing": 93,
+        "rebounding": 54,
+        "physical": 53
+      },
+      "overall": 90,
+      "potential": 90
+    },
+    {
+      "id": "febp1541543",
+      "teamId": "feb980004",
+      "name": "Jacobo Diaz Alejano",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 83,
+        "defense": 74,
+        "passing": 61,
+        "rebounding": 77,
+        "physical": 83
+      },
+      "overall": 76,
+      "potential": 76
+    },
+    {
+      "id": "febp1848359",
+      "teamId": "feb980004",
+      "name": "Ilimane Diop Gaye",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 210,
+      "ratings": {
+        "shooting": 55,
+        "defense": 89,
+        "passing": 51,
+        "rebounding": 88,
+        "physical": 90
+      },
+      "overall": 78,
+      "potential": 78
+    },
+    {
+      "id": "febp2371535",
+      "teamId": "feb980004",
+      "name": "Paul Anders Jorgensen",
+      "position": "SG",
+      "age": 30,
+      "nationality": "Italia",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 87,
+        "defense": 77,
+        "passing": 82,
+        "rebounding": 69,
+        "physical": 49
+      },
+      "overall": 86,
+      "potential": 86
+    },
+    {
+      "id": "febp1491674",
+      "teamId": "feb980004",
+      "name": "Guillem Jou Coll",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 197,
+      "ratings": {
+        "shooting": 77,
+        "defense": 69,
+        "passing": 69,
+        "rebounding": 78,
+        "physical": 64
+      },
+      "overall": 71,
+      "potential": 71
+    },
+    {
+      "id": "febp2869453",
+      "teamId": "feb980004",
+      "name": "Strahinja  Micovic",
+      "position": "SF",
+      "age": 33,
+      "nationality": "Serbia",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 55,
+        "defense": 48,
+        "passing": 54,
+        "rebounding": 57,
+        "physical": 62
+      },
+      "overall": 45,
+      "potential": 45
+    },
+    {
+      "id": "febp2843861",
+      "teamId": "feb980004",
+      "name": "Dino Radoncic",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Serbia",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 82,
+        "defense": 77,
+        "passing": 82,
+        "rebounding": 82,
+        "physical": 79
+      },
+      "overall": 90,
+      "potential": 90
+    },
+    {
+      "id": "febp2815798",
+      "teamId": "feb980004",
+      "name": "Abdou Thiam",
+      "position": "C",
+      "age": 28,
+      "nationality": "Senegal",
+      "heightCm": 211,
+      "ratings": {
+        "shooting": 91,
+        "defense": 78,
+        "passing": 47,
+        "rebounding": 86,
+        "physical": 88
+      },
+      "overall": 69,
+      "potential": 69
+    },
+    {
+      "id": "febp2736779",
+      "teamId": "feb981251",
+      "name": "Miguel Ayesa Rodriguez",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 59,
+        "defense": 40,
+        "passing": 40,
+        "rebounding": 38,
+        "physical": 47
+      },
+      "overall": 40,
+      "potential": 40
+    },
+    {
+      "id": "febp1923881",
+      "teamId": "feb981251",
+      "name": "Adria Domenech Fontana",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 205,
+      "ratings": {
+        "shooting": 58,
+        "defense": 79,
+        "passing": 51,
+        "rebounding": 74,
+        "physical": 81
+      },
+      "overall": 60,
+      "potential": 60
+    },
+    {
+      "id": "febp2820135",
+      "teamId": "feb981251",
+      "name": "Vitor Luiz Faverani Tatsch",
+      "position": "C",
+      "age": 38,
+      "nationality": "España",
+      "heightCm": 212,
+      "ratings": {
+        "shooting": 79,
+        "defense": 94,
+        "passing": 54,
+        "rebounding": 94,
+        "physical": 93
+      },
+      "overall": 93,
+      "potential": 93
+    },
+    {
+      "id": "febp2159336",
+      "teamId": "feb981251",
+      "name": "Ab Sediq Garuba Alari",
+      "position": "SG",
+      "age": 22,
+      "nationality": "España",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 65,
+        "defense": 68,
+        "passing": 63,
+        "rebounding": 66,
+        "physical": 57
+      },
+      "overall": 64,
+      "potential": 67
+    },
+    {
+      "id": "febp1997544",
+      "teamId": "feb981251",
+      "name": "Alejandro Harguindey Maneiro",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 51,
+        "defense": 47,
+        "passing": 45,
+        "rebounding": 44,
+        "physical": 65
+      },
+      "overall": 40,
+      "potential": 40
+    },
+    {
+      "id": "febp2525411",
+      "teamId": "feb981251",
+      "name": "Eghosasere Robinson Idehen Idehen",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 60,
+        "defense": 60,
+        "passing": 41,
+        "rebounding": 72,
+        "physical": 82
+      },
+      "overall": 42,
+      "potential": 42
+    },
+    {
+      "id": "febp1525747",
+      "teamId": "feb981251",
+      "name": "Javier Lopez Santana",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 185,
+      "ratings": {
+        "shooting": 70,
+        "defense": 53,
+        "passing": 89,
+        "rebounding": 53,
+        "physical": 44
+      },
+      "overall": 73,
+      "potential": 73
+    },
+    {
+      "id": "febp1384223",
+      "teamId": "feb981251",
+      "name": "Alberto Martin Marin",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 180,
+      "ratings": {
+        "shooting": 51,
+        "defense": 55,
+        "passing": 83,
+        "rebounding": 45,
+        "physical": 39
+      },
+      "overall": 52,
+      "potential": 52
+    },
+    {
+      "id": "febp2862304",
+      "teamId": "feb981251",
+      "name": "Chayce Holden  Polynice",
+      "position": "C",
+      "age": 26,
+      "nationality": "Estados Unidos",
+      "heightCm": 210,
+      "ratings": {
+        "shooting": 52,
+        "defense": 82,
+        "passing": 55,
+        "rebounding": 73,
+        "physical": 84
+      },
+      "overall": 54,
+      "potential": 54
+    },
+    {
+      "id": "febp2816796",
+      "teamId": "feb981251",
+      "name": "Isaiah Stone Rivera Carroll",
+      "position": "SF",
+      "age": 24,
+      "nationality": "República Dominicana",
+      "heightCm": 196,
+      "ratings": {
+        "shooting": 76,
+        "defense": 63,
+        "passing": 58,
+        "rebounding": 60,
+        "physical": 62
+      },
+      "overall": 63,
+      "potential": 63
+    },
+    {
+      "id": "febp2816849",
+      "teamId": "feb981251",
+      "name": "Spencer John Svejcar",
+      "position": "SG",
+      "age": 31,
+      "nationality": "R. Checa",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 74,
+        "defense": 50,
+        "passing": 66,
+        "rebounding": 53,
+        "physical": 48
+      },
+      "overall": 59,
+      "potential": 59
+    },
+    {
+      "id": "febp2862296",
+      "teamId": "feb981251",
+      "name": "Kobe Thomas Webster",
+      "position": "PG",
+      "age": 27,
+      "nationality": "Estados Unidos",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 84,
+        "defense": 82,
+        "passing": 88,
+        "rebounding": 60,
+        "physical": 60
+      },
+      "overall": 85,
+      "potential": 85
+    },
+    {
+      "id": "febp1509876",
+      "teamId": "feb981214",
+      "name": "Jon Ander Aramburu Lamy",
+      "position": "PF",
+      "age": 34,
+      "nationality": "España",
+      "heightCm": 204,
+      "ratings": {
+        "shooting": 64,
+        "defense": 93,
+        "passing": 78,
+        "rebounding": 90,
+        "physical": 84
+      },
+      "overall": 85,
+      "potential": 85
+    },
+    {
+      "id": "febp2819257",
+      "teamId": "feb981214",
+      "name": "Pedro Antonio Bombino Parada",
+      "position": "C",
+      "age": 26,
+      "nationality": "Cuba",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 55,
+        "defense": 91,
+        "passing": 75,
+        "rebounding": 89,
+        "physical": 88
+      },
+      "overall": 91,
+      "potential": 91
+    },
+    {
+      "id": "febp1597927",
+      "teamId": "feb981214",
+      "name": "Albert Bosch Domingo",
+      "position": "SF",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 36,
+        "defense": 35,
+        "passing": 38,
+        "rebounding": 36,
+        "physical": 52
+      },
+      "overall": 36,
+      "potential": 36
+    },
+    {
+      "id": "febp2583212",
+      "teamId": "feb981214",
+      "name": "Lysander Ameen Bracey",
+      "position": "SG",
+      "age": 29,
+      "nationality": "Estados Unidos",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 71,
+        "defense": 53,
+        "passing": 80,
+        "rebounding": 49,
+        "physical": 57
+      },
+      "overall": 69,
+      "potential": 69
+    },
+    {
+      "id": "febp2818075",
+      "teamId": "feb981214",
+      "name": "Lucas Capalbo",
+      "position": "PG",
+      "age": 26,
+      "nationality": "Italia",
+      "heightCm": 175,
+      "ratings": {
+        "shooting": 81,
+        "defense": 76,
+        "passing": 91,
+        "rebounding": 68,
+        "physical": 44
+      },
+      "overall": 83,
+      "potential": 83
+    },
+    {
+      "id": "febp1241485",
+      "teamId": "feb981214",
+      "name": "Jorge Martinez Cabezudo",
+      "position": "PG",
+      "age": 29,
+      "nationality": "España",
+      "heightCm": 187,
+      "ratings": {
+        "shooting": 39,
+        "defense": 42,
+        "passing": 70,
+        "rebounding": 39,
+        "physical": 40
+      },
+      "overall": 38,
+      "potential": 38
+    },
+    {
+      "id": "febp2027826",
+      "teamId": "feb981214",
+      "name": "Osvaldas Matulionis",
+      "position": "SF",
+      "age": 35,
+      "nationality": "Lituania",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 69,
+        "defense": 69,
+        "passing": 69,
+        "rebounding": 59,
+        "physical": 69
+      },
+      "overall": 61,
+      "potential": 61
+    },
+    {
+      "id": "febp2319991",
+      "teamId": "feb981214",
+      "name": "Serigne Fallou Niang Beye",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 65,
+        "defense": 72,
+        "passing": 63,
+        "rebounding": 83,
+        "physical": 73
+      },
+      "overall": 62,
+      "potential": 62
+    },
+    {
+      "id": "febp1843906",
+      "teamId": "feb981214",
+      "name": "Alessandro Scariolo Ares",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 63,
+        "defense": 46,
+        "passing": 79,
+        "rebounding": 46,
+        "physical": 46
+      },
+      "overall": 58,
+      "potential": 58
+    },
+    {
+      "id": "febp2008018",
+      "teamId": "feb981214",
+      "name": "Oscar Siquier Costa",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 39,
+        "defense": 35,
+        "passing": 48,
+        "rebounding": 36,
+        "physical": 39
+      },
+      "overall": 36,
+      "potential": 36
+    },
+    {
+      "id": "febp2788739",
+      "teamId": "feb981214",
+      "name": "Laron De'Same Smith",
+      "position": "C",
+      "age": 32,
+      "nationality": "San Cristobal Y Nieves",
+      "heightCm": 205,
+      "ratings": {
+        "shooting": 43,
+        "defense": 82,
+        "passing": 46,
+        "rebounding": 81,
+        "physical": 82
+      },
+      "overall": 61,
+      "potential": 61
+    },
+    {
+      "id": "febp2783882",
+      "teamId": "feb981214",
+      "name": "Brian Antonio Vazquez Arraiza",
+      "position": "SG",
+      "age": 31,
+      "nationality": "España",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 88,
+        "defense": 56,
+        "passing": 61,
+        "rebounding": 47,
+        "physical": 53
+      },
+      "overall": 70,
+      "potential": 70
+    },
+    {
+      "id": "febp2822577",
+      "teamId": "feb981124",
+      "name": "Federico Copes",
+      "position": "SF",
+      "age": 24,
+      "nationality": "Italia",
+      "heightCm": 197,
+      "ratings": {
+        "shooting": 52,
+        "defense": 44,
+        "passing": 51,
+        "rebounding": 49,
+        "physical": 58
+      },
+      "overall": 43,
+      "potential": 43
+    },
+    {
+      "id": "febp1662155",
+      "teamId": "feb981124",
+      "name": "Robert Cosialls Borras",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 204,
+      "ratings": {
+        "shooting": 73,
+        "defense": 78,
+        "passing": 76,
+        "rebounding": 89,
+        "physical": 82
+      },
+      "overall": 76,
+      "potential": 76
+    },
+    {
+      "id": "febp2822575",
+      "teamId": "feb981124",
+      "name": "Dan Duscak",
+      "position": "PG",
+      "age": 24,
+      "nationality": "Eslovenia",
+      "heightCm": 185,
+      "ratings": {
+        "shooting": 66,
+        "defense": 72,
+        "passing": 87,
+        "rebounding": 60,
+        "physical": 47
+      },
+      "overall": 72,
+      "potential": 72
+    },
+    {
+      "id": "febp1853585",
+      "teamId": "feb981124",
+      "name": "Alonso Faure Ribes",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 86,
+        "defense": 84,
+        "passing": 46,
+        "rebounding": 89,
+        "physical": 87
+      },
+      "overall": 76,
+      "potential": 76
+    },
+    {
+      "id": "febp1821152",
+      "teamId": "feb981124",
+      "name": "Pablo Gonzalez Longarela",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 188,
+      "ratings": {
+        "shooting": 45,
+        "defense": 40,
+        "passing": 45,
+        "rebounding": 39,
+        "physical": 43
+      },
+      "overall": 38,
+      "potential": 38
+    },
+    {
+      "id": "febp2735658",
+      "teamId": "feb981124",
+      "name": "Calvin Alexander Roden Hermanson",
+      "position": "SF",
+      "age": 31,
+      "nationality": "Estados Unidos",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 66,
+        "defense": 47,
+        "passing": 50,
+        "rebounding": 48,
+        "physical": 61
+      },
+      "overall": 49,
+      "potential": 49
+    },
+    {
+      "id": "febp1978545",
+      "teamId": "feb981124",
+      "name": "Raul Lobaco Muñoz",
+      "position": "SG",
+      "age": 25,
+      "nationality": "España",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 87,
+        "defense": 87,
+        "passing": 72,
+        "rebounding": 82,
+        "physical": 57
+      },
+      "overall": 86,
+      "potential": 86
+    },
+    {
+      "id": "febp2819514",
+      "teamId": "feb981124",
+      "name": "Francis  Nwaokorie",
+      "position": "PF",
+      "age": 23,
+      "nationality": "Nigeria",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 57,
+        "defense": 84,
+        "passing": 47,
+        "rebounding": 78,
+        "physical": 72
+      },
+      "overall": 63,
+      "potential": 64
+    },
+    {
+      "id": "febp2815325",
+      "teamId": "feb981124",
+      "name": "Gregory Alden Parham Ii",
+      "position": "PG",
+      "age": 24,
+      "nationality": "Estados Unidos",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 86,
+        "defense": 63,
+        "passing": 84,
+        "rebounding": 68,
+        "physical": 57
+      },
+      "overall": 81,
+      "potential": 81
+    },
+    {
+      "id": "febp2822578",
+      "teamId": "feb981124",
+      "name": "Daniil Shelist",
+      "position": "C",
+      "age": 23,
+      "nationality": "Ucrania",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 55,
+        "defense": 58,
+        "passing": 54,
+        "rebounding": 68,
+        "physical": 74
+      },
+      "overall": 55,
+      "potential": 56
+    },
+    {
+      "id": "febp2839186",
+      "teamId": "feb981124",
+      "name": "Marques Rashaad Townes Villar",
+      "position": "PG",
+      "age": 24,
+      "nationality": "República Dominicana",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 93,
+        "defense": 94,
+        "passing": 92,
+        "rebounding": 90,
+        "physical": 62
+      },
+      "overall": 94,
+      "potential": 94
+    },
+    {
+      "id": "febp2451497",
+      "teamId": "feb981431",
+      "name": "Charles William Barton",
+      "position": "SG",
+      "age": 34,
+      "nationality": "Suecia",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 48,
+        "defense": 37,
+        "passing": 49,
+        "rebounding": 36,
+        "physical": 43
+      },
+      "overall": 37,
+      "potential": 37
+    },
+    {
+      "id": "febp2275135",
+      "teamId": "feb981431",
+      "name": "Patricio  Garino Gullotta",
+      "position": "SF",
+      "age": 33,
+      "nationality": "Italia",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 84,
+        "defense": 76,
+        "passing": 62,
+        "rebounding": 69,
+        "physical": 76
+      },
+      "overall": 79,
+      "potential": 79
+    },
+    {
+      "id": "febp2433615",
+      "teamId": "feb981431",
+      "name": "Lucas Nicolas Giovannetti",
+      "position": "SF",
+      "age": 21,
+      "nationality": "Italia",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 56,
+        "defense": 57,
+        "passing": 52,
+        "rebounding": 54,
+        "physical": 69
+      },
+      "overall": 46,
+      "potential": 50
+    },
+    {
+      "id": "febp2094445",
+      "teamId": "feb981431",
+      "name": "Asier González Pérez",
+      "position": "PF",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 39,
+        "defense": 50,
+        "passing": 39,
+        "rebounding": 66,
+        "physical": 69
+      },
+      "overall": 50,
+      "potential": 50
+    },
+    {
+      "id": "febp2734234",
+      "teamId": "feb981431",
+      "name": "Jayson Granger",
+      "position": "PG",
+      "age": 36,
+      "nationality": "Italia",
+      "heightCm": 191,
+      "ratings": {
+        "shooting": 88,
+        "defense": 74,
+        "passing": 95,
+        "rebounding": 77,
+        "physical": 54
+      },
+      "overall": 94,
+      "potential": 94
+    },
+    {
+      "id": "febp2032354",
+      "teamId": "feb981431",
+      "name": "Hugo Lopez Barrantes",
+      "position": "C",
+      "age": 23,
+      "nationality": "España",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 38,
+        "defense": 54,
+        "passing": 47,
+        "rebounding": 73,
+        "physical": 81
+      },
+      "overall": 46,
+      "potential": 48
+    },
+    {
+      "id": "febp2818742",
+      "teamId": "feb981431",
+      "name": "Tanner Bryce Mc Grew",
+      "position": "PF",
+      "age": 33,
+      "nationality": "Estados Unidos",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 76,
+        "defense": 86,
+        "passing": 79,
+        "rebounding": 83,
+        "physical": 81
+      },
+      "overall": 83,
+      "potential": 83
+    },
+    {
+      "id": "febp2865685",
+      "teamId": "feb981431",
+      "name": "Mamadou Ndiaye Niang",
+      "position": "C",
+      "age": 32,
+      "nationality": "Senegal",
+      "heightCm": 209,
+      "ratings": {
+        "shooting": 40,
+        "defense": 62,
+        "passing": 37,
+        "rebounding": 57,
+        "physical": 83
+      },
+      "overall": 50,
+      "potential": 50
+    },
+    {
+      "id": "febp2648543",
+      "teamId": "feb981431",
+      "name": "Lotanna Afam Nwogbo",
+      "position": "C",
+      "age": 33,
+      "nationality": "Nigeria",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 51,
+        "defense": 83,
+        "passing": 49,
+        "rebounding": 77,
+        "physical": 84
+      },
+      "overall": 82,
+      "potential": 82
+    },
+    {
+      "id": "febp2815072",
+      "teamId": "feb981431",
+      "name": "Sasu Antreas Salin",
+      "position": "SG",
+      "age": 35,
+      "nationality": "Finlandia",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 78,
+        "defense": 52,
+        "passing": 71,
+        "rebounding": 57,
+        "physical": 49
+      },
+      "overall": 65,
+      "potential": 65
+    },
+    {
+      "id": "febp2790189",
+      "teamId": "feb981431",
+      "name": "Omar Silverio Grullón",
+      "position": "SG",
+      "age": 27,
+      "nationality": "República Dominicana",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 92,
+        "defense": 64,
+        "passing": 78,
+        "rebounding": 57,
+        "physical": 52
+      },
+      "overall": 88,
+      "potential": 88
+    },
+    {
+      "id": "febp2818741",
+      "teamId": "feb981431",
+      "name": "Juan Pablo Vaulet",
+      "position": "PF",
+      "age": 24,
+      "nationality": "Polonia",
+      "heightCm": 199,
+      "ratings": {
+        "shooting": 74,
+        "defense": 85,
+        "passing": 47,
+        "rebounding": 85,
+        "physical": 74
+      },
+      "overall": 87,
+      "potential": 87
+    },
+    {
+      "id": "febp1676845",
+      "teamId": "feb979907",
+      "name": "Diego Alderete Diaz",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 50,
+        "defense": 75,
+        "passing": 61,
+        "rebounding": 78,
+        "physical": 71
+      },
+      "overall": 59,
+      "potential": 59
+    },
+    {
+      "id": "febp1442713",
+      "teamId": "feb979907",
+      "name": "Pablo Hernandez Montenegro",
+      "position": "SF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 77,
+        "defense": 49,
+        "passing": 58,
+        "rebounding": 59,
+        "physical": 70
+      },
+      "overall": 56,
+      "potential": 56
+    },
+    {
+      "id": "febp2274998",
+      "teamId": "feb979907",
+      "name": "Reginald  Johnson Jr",
+      "position": "PG",
+      "age": 32,
+      "nationality": "Estados Unidos",
+      "heightCm": 187,
+      "ratings": {
+        "shooting": 92,
+        "defense": 66,
+        "passing": 89,
+        "rebounding": 57,
+        "physical": 52
+      },
+      "overall": 91,
+      "potential": 91
+    },
+    {
+      "id": "febp2446696",
+      "teamId": "feb979907",
+      "name": "Garmine  Kande Kieli",
+      "position": "C",
+      "age": 24,
+      "nationality": "Rep. Democrática Del Congo",
+      "heightCm": 205,
+      "ratings": {
+        "shooting": 43,
+        "defense": 63,
+        "passing": 43,
+        "rebounding": 73,
+        "physical": 81
+      },
+      "overall": 57,
+      "potential": 57
+    },
+    {
+      "id": "febp2864604",
+      "teamId": "feb979907",
+      "name": "Miha Lapornik",
+      "position": "SG",
+      "age": 32,
+      "nationality": "Eslovenia",
+      "heightCm": 194,
+      "ratings": {
+        "shooting": 89,
+        "defense": 85,
+        "passing": 80,
+        "rebounding": 70,
+        "physical": 63
+      },
+      "overall": 89,
+      "potential": 89
+    },
+    {
+      "id": "febp2869662",
+      "teamId": "feb979907",
+      "name": "Daniel Everett Love",
+      "position": "SF",
+      "age": 27,
+      "nationality": "Suecia",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 51,
+        "defense": 46,
+        "passing": 72,
+        "rebounding": 50,
+        "physical": 62
+      },
+      "overall": 41,
+      "potential": 41
+    },
+    {
+      "id": "febp1821694",
+      "teamId": "feb979907",
+      "name": "German Martinez Diaz",
+      "position": "SG",
+      "age": 28,
+      "nationality": "España",
+      "heightCm": 189,
+      "ratings": {
+        "shooting": 68,
+        "defense": 71,
+        "passing": 80,
+        "rebounding": 71,
+        "physical": 54
+      },
+      "overall": 56,
+      "potential": 56
+    },
+    {
+      "id": "febp2334516",
+      "teamId": "feb979907",
+      "name": "Jahvaughn Everald Powell",
+      "position": "PG",
+      "age": 30,
+      "nationality": "Jamaica",
+      "heightCm": 183,
+      "ratings": {
+        "shooting": 65,
+        "defense": 56,
+        "passing": 76,
+        "rebounding": 48,
+        "physical": 41
+      },
+      "overall": 51,
+      "potential": 51
+    },
+    {
+      "id": "febp841966",
+      "teamId": "feb979907",
+      "name": "Samuel Rodríguez Ramos",
+      "position": "PF",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 77,
+        "defense": 86,
+        "passing": 76,
+        "rebounding": 83,
+        "physical": 77
+      },
+      "overall": 90,
+      "potential": 90
+    },
+    {
+      "id": "febp1899194",
+      "teamId": "feb979907",
+      "name": "Carlos Taboada Heiskanen",
+      "position": "C",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 214,
+      "ratings": {
+        "shooting": 42,
+        "defense": 36,
+        "passing": 38,
+        "rebounding": 36,
+        "physical": 81
+      },
+      "overall": 35,
+      "potential": 35
+    },
+    {
+      "id": "febp2867402",
+      "teamId": "feb979907",
+      "name": "Devon Doekele Van Oostrum",
+      "position": "SF",
+      "age": 33,
+      "nationality": "Países Bajos",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 44,
+        "defense": 40,
+        "passing": 76,
+        "rebounding": 40,
+        "physical": 56
+      },
+      "overall": 41,
+      "potential": 41
+    },
+    {
+      "id": "febp2815820",
+      "teamId": "feb979907",
+      "name": "Jiahao Yu",
+      "position": "C",
+      "age": 23,
+      "nationality": "China",
+      "heightCm": 221,
+      "ratings": {
+        "shooting": 65,
+        "defense": 88,
+        "passing": 62,
+        "rebounding": 90,
+        "physical": 94
+      },
+      "overall": 91,
+      "potential": 92
+    },
+    {
+      "id": "febp2432888",
+      "teamId": "feb981125",
+      "name": "Omar Kabir Lo",
+      "position": "C",
+      "age": 29,
+      "nationality": "Senegal",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 53,
+        "defense": 77,
+        "passing": 48,
+        "rebounding": 81,
+        "physical": 81
+      },
+      "overall": 74,
+      "potential": 74
+    },
+    {
+      "id": "febp1890908",
+      "teamId": "feb981125",
+      "name": "Alvaro Martinez Clariana",
+      "position": "SF",
+      "age": 23,
+      "nationality": "España",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 86,
+        "defense": 86,
+        "passing": 67,
+        "rebounding": 91,
+        "physical": 71
+      },
+      "overall": 92,
+      "potential": 94
+    },
+    {
+      "id": "febp1947677",
+      "teamId": "feb981125",
+      "name": "Toni Naspler Peraire",
+      "position": "PG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 198,
+      "ratings": {
+        "shooting": 60,
+        "defense": 77,
+        "passing": 85,
+        "rebounding": 68,
+        "physical": 67
+      },
+      "overall": 57,
+      "potential": 57
+    },
+    {
+      "id": "febp2334629",
+      "teamId": "feb981125",
+      "name": "Jonas Paukstè",
+      "position": "C",
+      "age": 25,
+      "nationality": "Lituania",
+      "heightCm": 224,
+      "ratings": {
+        "shooting": 45,
+        "defense": 71,
+        "passing": 41,
+        "rebounding": 84,
+        "physical": 90
+      },
+      "overall": 66,
+      "potential": 66
+    },
+    {
+      "id": "febp1702420",
+      "teamId": "feb981125",
+      "name": "Josep Peris Crespo",
+      "position": "SG",
+      "age": 26,
+      "nationality": "España",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 83,
+        "defense": 72,
+        "passing": 77,
+        "rebounding": 63,
+        "physical": 58
+      },
+      "overall": 82,
+      "potential": 82
+    },
+    {
+      "id": "febp2863857",
+      "teamId": "feb981125",
+      "name": "Bine Prepelic",
+      "position": "PF",
+      "age": 25,
+      "nationality": "Eslovenia",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 44,
+        "defense": 66,
+        "passing": 63,
+        "rebounding": 81,
+        "physical": 66
+      },
+      "overall": 55,
+      "potential": 55
+    },
+    {
+      "id": "febp2813978",
+      "teamId": "feb981125",
+      "name": "Tyrell Paul Roberts",
+      "position": "PG",
+      "age": 27,
+      "nationality": "Estados Unidos",
+      "heightCm": 180,
+      "ratings": {
+        "shooting": 90,
+        "defense": 74,
+        "passing": 88,
+        "rebounding": 58,
+        "physical": 45
+      },
+      "overall": 89,
+      "potential": 89
+    },
+    {
+      "id": "febp2814246",
+      "teamId": "feb981125",
+      "name": "Colby Allen Rogers",
+      "position": "SG",
+      "age": 25,
+      "nationality": "Estados Unidos",
+      "heightCm": 190,
+      "ratings": {
+        "shooting": 79,
+        "defense": 54,
+        "passing": 51,
+        "rebounding": 52,
+        "physical": 49
+      },
+      "overall": 54,
+      "potential": 54
+    },
+    {
+      "id": "febp2335424",
+      "teamId": "feb981125",
+      "name": "Jacob Nathaniel Round",
+      "position": "SG",
+      "age": 26,
+      "nationality": "Gran Bretaña",
+      "heightCm": 192,
+      "ratings": {
+        "shooting": 74,
+        "defense": 46,
+        "passing": 55,
+        "rebounding": 47,
+        "physical": 50
+      },
+      "overall": 45,
+      "potential": 45
+    },
+    {
+      "id": "febp2814245",
+      "teamId": "feb981125",
+      "name": "Stymir Snaer Thrastarson",
+      "position": "SF",
+      "age": 25,
+      "nationality": "Islandia",
+      "heightCm": 200,
+      "ratings": {
+        "shooting": 75,
+        "defense": 70,
+        "passing": 65,
+        "rebounding": 68,
+        "physical": 70
+      },
+      "overall": 67,
+      "potential": 67
+    },
+    {
+      "id": "febp2335179",
+      "teamId": "feb981125",
+      "name": "Johan Willem Van Zegeren",
+      "position": "C",
+      "age": 35,
+      "nationality": "Países Bajos",
+      "heightCm": 208,
+      "ratings": {
+        "shooting": 49,
+        "defense": 89,
+        "passing": 48,
+        "rebounding": 86,
+        "physical": 89
+      },
+      "overall": 75,
+      "potential": 75
+    },
+    {
+      "id": "febp2446631",
+      "teamId": "feb981525",
+      "name": "Prince Adams Ali",
+      "position": "SF",
+      "age": 30,
+      "nationality": "Ghana",
+      "heightCm": 193,
+      "ratings": {
+        "shooting": 93,
+        "defense": 71,
+        "passing": 64,
+        "rebounding": 65,
+        "physical": 57
+      },
+      "overall": 84,
+      "potential": 84
+    },
+    {
+      "id": "febp2157874",
+      "teamId": "feb981525",
+      "name": "Vitor  Alves Benite",
+      "position": "SG",
+      "age": 36,
+      "nationality": "Italia",
+      "heightCm": 194,
+      "ratings": {
+        "shooting": 94,
+        "defense": 69,
+        "passing": 84,
+        "rebounding": 69,
+        "physical": 63
+      },
+      "overall": 92,
+      "potential": 92
+    },
+    {
+      "id": "febp2820728",
+      "teamId": "feb981525",
+      "name": "Judicaël Romaric Belemene-Dzabatou",
+      "position": "SF",
+      "age": 29,
+      "nationality": "R. Del Congo",
+      "heightCm": 202,
+      "ratings": {
+        "shooting": 55,
+        "defense": 84,
+        "passing": 62,
+        "rebounding": 75,
+        "physical": 76
+      },
+      "overall": 58,
+      "potential": 58
+    },
+    {
+      "id": "febp2703151",
+      "teamId": "feb981525",
+      "name": "Brooks Lourdeaux De Bisschop",
+      "position": "C",
+      "age": 28,
+      "nationality": "Estados Unidos",
+      "heightCm": 206,
+      "ratings": {
+        "shooting": 49,
+        "defense": 91,
+        "passing": 75,
+        "rebounding": 88,
+        "physical": 85
+      },
+      "overall": 78,
+      "potential": 78
+    },
+    {
+      "id": "febp2736767",
+      "teamId": "feb981525",
+      "name": "Mateo Diaz",
+      "position": "PG",
+      "age": 24,
+      "nationality": "Italia",
+      "heightCm": 186,
+      "ratings": {
+        "shooting": 93,
+        "defense": 93,
+        "passing": 93,
+        "rebounding": 87,
+        "physical": 52
+      },
+      "overall": 94,
+      "potential": 94
+    },
+    {
+      "id": "febp2820727",
+      "teamId": "feb981525",
+      "name": "Jonathan Kasibabu Shilala",
+      "position": "PF",
+      "age": 30,
+      "nationality": "R. Del Congo",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 67,
+        "defense": 81,
+        "passing": 61,
+        "rebounding": 85,
+        "physical": 82
+      },
+      "overall": 79,
+      "potential": 79
+    },
+    {
+      "id": "febp1583271",
+      "teamId": "feb981525",
+      "name": "Augusto Cesar Lima Brito",
+      "position": "SF",
+      "age": 34,
+      "nationality": "España",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 46,
+        "defense": 86,
+        "passing": 77,
+        "rebounding": 88,
+        "physical": 66
+      },
+      "overall": 71,
+      "potential": 71
+    },
+    {
+      "id": "febp1710454",
+      "teamId": "feb981525",
+      "name": "Daniel Manchon Crespo",
+      "position": "SG",
+      "age": 24,
+      "nationality": "España",
+      "heightCm": 191,
+      "ratings": {
+        "shooting": 81,
+        "defense": 88,
+        "passing": 82,
+        "rebounding": 71,
+        "physical": 55
+      },
+      "overall": 82,
+      "potential": 82
+    },
+    {
+      "id": "febp2236015",
+      "teamId": "feb981525",
+      "name": "Gregory Alexander  Renfroe",
+      "position": "PG",
+      "age": 40,
+      "nationality": "Bosnia-Herzergovina",
+      "heightCm": 191,
+      "ratings": {
+        "shooting": 57,
+        "defense": 72,
+        "passing": 89,
+        "rebounding": 74,
+        "physical": 53
+      },
+      "overall": 68,
+      "potential": 68
+    },
+    {
+      "id": "febp2820729",
+      "teamId": "feb981525",
+      "name": "Paul Emmanuel Olivier Rigot",
+      "position": "SF",
+      "age": 31,
+      "nationality": "Francia",
+      "heightCm": 201,
+      "ratings": {
+        "shooting": 56,
+        "defense": 41,
+        "passing": 40,
+        "rebounding": 47,
+        "physical": 64
+      },
+      "overall": 44,
+      "potential": 44
+    },
+    {
+      "id": "febp2736363",
+      "teamId": "feb981525",
+      "name": "Daniil Stolbetskiy",
+      "position": "SF",
+      "age": 19,
+      "nationality": "Rusia",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 45,
+        "defense": 36,
+        "passing": 41,
+        "rebounding": 37,
+        "physical": 57
+      },
+      "overall": 37,
+      "potential": 44
+    },
+    {
+      "id": "febp1941607",
+      "teamId": "feb981251",
+      "name": "Marc Marti Roig",
+      "position": "PF",
+      "age": 22,
+      "nationality": "España",
+      "heightCm": 203,
+      "ratings": {
+        "shooting": 48,
+        "defense": 48,
+        "passing": 48,
+        "rebounding": 48,
+        "physical": 48
+      },
+      "overall": 48,
+      "potential": 50
+    },
+    {
+      "id": "febp2349620",
+      "teamId": "feb981525",
+      "name": "Christ Okito Kanyinda",
+      "position": "SF",
+      "age": 21,
+      "nationality": "Rep. Democrática Del Congo",
+      "heightCm": null,
+      "ratings": {
+        "shooting": 49,
+        "defense": 49,
+        "passing": 49,
+        "rebounding": 49,
+        "physical": 49
+      },
+      "overall": 49,
+      "potential": 52
+    }
+  ]
+}

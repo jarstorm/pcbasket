@@ -40,7 +40,7 @@ def clamp(v, lo=30, hi=99):
 
 
 def main():
-    with open("feb_primerafeb_2025_26_raw.json", encoding="utf-8") as f:
+    with open("primerafeb_2025_raw.json", encoding="utf-8") as f:
         raw = json.load(f)
 
     flat_players = []
