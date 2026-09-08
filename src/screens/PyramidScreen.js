@@ -26,7 +26,7 @@ const DIVISION_BLURB = {
   tercerafeb: "Los 2 mejores campeones de grupo ascienden directos a Segunda FEB. Los otros 8 campeones juegan un playoff por las 4 plazas restantes. No desciende nadie.",
 };
 
-export default function PyramidScreen() {
+export default function PyramidScreen({ onOpenTeam }) {
   const { state } = useGame();
 
   const divisionsById = {
@@ -153,6 +153,7 @@ export default function PyramidScreen() {
           data={rows}
           rowKey={(t) => t.id}
           rowStyle={rowStyle}
+          onRowPress={onOpenTeam ? (t) => onOpenTeam(t.id) : undefined}
         />
         <View style={styles.legendRow}>
           {canPromote && (

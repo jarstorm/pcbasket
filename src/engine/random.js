@@ -1,6 +1,10 @@
 // Small deterministic PRNG (mulberry32) so "random" selections (which staff
 // roles are available, which market players show up) stay stable for a given
 // seed — e.g. the current jornada — instead of reshuffling on every render.
+export function seededRandom(seed) {
+  return mulberry32(seed);
+}
+
 function mulberry32(seed) {
   let a = seed;
   return function () {

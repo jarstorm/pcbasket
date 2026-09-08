@@ -3,7 +3,7 @@ import { View, Text, Pressable, ScrollView, Animated, Easing, ImageBackground, S
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import { GameProvider, useGame } from "./src/state/GameContext";
+import { GameProvider, useGame, findTeamAnywhere } from "./src/state/GameContext";
 import TeamPicker from "./src/screens/TeamPicker";
 import Dashboard from "./src/screens/Dashboard";
 import RosterScreen from "./src/screens/RosterScreen";
@@ -19,6 +19,7 @@ import MainMenu from "./src/screens/MainMenu";
 import MatchResult from "./src/screens/MatchResult";
 import SeasonSummaryScreen from "./src/screens/SeasonSummaryScreen";
 import PlayerDetailScreen from "./src/screens/PlayerDetailScreen";
+import TeamRosterScreen from "./src/screens/TeamRosterScreen";
 import TeamLogo from "./src/components/TeamLogo";
 import BottomNav from "./src/components/BottomNav";
 import Icon from "./src/components/Icon";
@@ -80,7 +81,6 @@ const SCREEN_COMPONENTS = {
   finance: FinanceScreen,
   sponsor: SponsorScreen,
   contracts: ContractsScreen,
-  pyramid: PyramidScreen,
 };
 
 function HubTabs({ hub, activeId, onSelect }) {
@@ -106,10 +106,15 @@ function GameShell() {
   const { state } = useGame();
   const [screen, setScreen] = useState("home");
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
+  const [selectedTeamId, setSelectedTeamId] = useState(null);
   const fade = useRef(new Animated.Value(1)).current;
   const openPlayer = (playerId) => {
     setSelectedPlayerId(playerId);
     setScreen("player");
+  };
+  const openTeam = (teamId) => {
+    setSelectedTeamId(teamId);
+    setScreen("teamRoster");
   };
 
   useEffect(() => {
@@ -125,9 +130,15 @@ function GameShell() {
 
   const hubId = LEAF_TO_HUB[screen];
   const hub = hubId ? HUBS[hubId] : null;
-  const showBack = screen === "menu" || screen === "result" || screen === "seasonSummary" || screen === "player";
+  const showBack =
+    screen === "menu" ||
+    screen === "result" ||
+    screen === "seasonSummary" ||
+    screen === "player" ||
+    screen === "teamRoster";
   const activeTab = hubId || (screen === "home" ? "home" : null);
   const selectedPlayer = screen === "player" ? state.playersById[selectedPlayerId] : null;
+  const selectedTeam = screen === "teamRoster" ? findTeamAnywhere(state, selectedTeamId) : null;
 
   const title =
     screen === "menu"
@@ -136,6 +147,8 @@ function GameShell() {
       ? "RESULTADO"
       : screen === "seasonSummary"
       ? "TEMPORADA"
+      : screen === "teamRoster"
+      ? selectedTeam?.name.toUpperCase() || "PLANTILLA"
       : screen === "player"
       ? selectedPlayer?.name.toUpperCase() || "FICHA"
       : hub
@@ -149,7 +162,7 @@ function GameShell() {
           <View style={styles.titleRow}>
             <TeamLogo team={team} size={22} />
             <Text style={styles.title} numberOfLines={1}>
-              PC BASKET — {team.name.toUpperCase()}
+              {team.name.toUpperCase()}
             </Text>
           </View>
         ) : showBack ? (
@@ -183,6 +196,8 @@ function GameShell() {
           {screen === "seasonSummary" && <SeasonSummaryScreen onContinue={goHome} />}
           {screen === "roster" && <RosterScreen onOpenPlayer={openPlayer} />}
           {screen === "player" && <PlayerDetailScreen player={selectedPlayer} />}
+          {screen === "pyramid" && <PyramidScreen onOpenTeam={openTeam} />}
+          {screen === "teamRoster" && <TeamRosterScreen team={selectedTeam} onOpenPlayer={openPlayer} />}
           {ActiveScreen && <ActiveScreen />}
           {screen === "home" && (
             <Text style={styles.footer}>

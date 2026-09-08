@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
 import { colors } from "../theme";
 
 function Cell({ col, row }) {
@@ -12,7 +12,10 @@ function Cell({ col, row }) {
 // pinFirst keeps columns[0] (usually the player name) fixed while the rest
 // of the row scrolls horizontally — avoids the primary action/identity
 // column being pushed off-screen behind a wide stat table.
-export default function Table({ columns, data, rowKey, rowStyle, pinFirst }) {
+export default function Table({ columns, data, rowKey, rowStyle, pinFirst, onRowPress }) {
+  const RowContainer = onRowPress ? Pressable : View;
+  const rowContainerProps = (row) => (onRowPress ? { onPress: () => onRowPress(row) } : {});
+
   if (!pinFirst) {
     return (
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -25,11 +28,15 @@ export default function Table({ columns, data, rowKey, rowStyle, pinFirst }) {
             ))}
           </View>
           {data.map((row, i) => (
-            <View key={rowKey ? rowKey(row) : i} style={[styles.row, rowStyle ? rowStyle(row) : null]}>
+            <RowContainer
+              key={rowKey ? rowKey(row) : i}
+              style={[styles.row, rowStyle ? rowStyle(row) : null]}
+              {...rowContainerProps(row)}
+            >
               {columns.map((col) => (
                 <Cell key={col.key} col={col} row={row} />
               ))}
-            </View>
+            </RowContainer>
           ))}
         </View>
       </ScrollView>
@@ -46,9 +53,13 @@ export default function Table({ columns, data, rowKey, rowStyle, pinFirst }) {
           </View>
         </View>
         {data.map((row, i) => (
-          <View key={rowKey ? rowKey(row) : i} style={[styles.row, rowStyle ? rowStyle(row) : null]}>
+          <RowContainer
+            key={rowKey ? rowKey(row) : i}
+            style={[styles.row, rowStyle ? rowStyle(row) : null]}
+            {...rowContainerProps(row)}
+          >
             <Cell col={pinnedCol} row={row} />
-          </View>
+          </RowContainer>
         ))}
       </View>
       <View style={styles.pinDivider} />
@@ -62,11 +73,15 @@ export default function Table({ columns, data, rowKey, rowStyle, pinFirst }) {
             ))}
           </View>
           {data.map((row, i) => (
-            <View key={rowKey ? rowKey(row) : i} style={[styles.row, rowStyle ? rowStyle(row) : null]}>
+            <RowContainer
+              key={rowKey ? rowKey(row) : i}
+              style={[styles.row, rowStyle ? rowStyle(row) : null]}
+              {...rowContainerProps(row)}
+            >
               {scrollCols.map((col) => (
                 <Cell key={col.key} col={col} row={row} />
               ))}
-            </View>
+            </RowContainer>
           ))}
         </View>
       </ScrollView>

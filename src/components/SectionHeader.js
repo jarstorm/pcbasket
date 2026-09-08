@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors, spacing, radii } from "../theme";
 
-export default function SectionHeader({ children, style }) {
+export default function SectionHeader({ children, right, style }) {
   return (
     <LinearGradient
       colors={[colors.headerGradTop, colors.headerGradBottom]}
@@ -12,6 +12,7 @@ export default function SectionHeader({ children, style }) {
     >
       <View style={styles.ball} />
       <Text style={styles.label}>{children}</Text>
+      {right}
       <View style={styles.stripe} />
     </LinearGradient>
   );

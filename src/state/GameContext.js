@@ -20,7 +20,7 @@ import {
 import { simulateMatch, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
 import { getUpgradeTiers } from "../engine/stadium";
 import {
-  getRoleTiers,
+  generateStaffCandidates,
   currentRoleTier,
   formRecoveryBonus,
   injuryRecoveryChance,
@@ -122,7 +122,7 @@ function transferPlayer(teams, playerId, sellerId, buyerId, price) {
 // and patch a team wherever it actually lives, so the transfer market can
 // let the user sign a player from a division they aren't currently playing
 // in (see BUY_PLAYER/MAKE_OFFER below).
-function findTeamAnywhere(state, teamId) {
+export function findTeamAnywhere(state, teamId) {
   const active = state.teams.find((t) => t.id === teamId);
   if (active) return active;
   for (const division of Object.values(state.otherDivisions)) {
@@ -908,18 +908,28 @@ export function reducer(state, action) {
     }
 
     case "HIRE_STAFF_ROLE": {
-      const { teamId, roleId, tierId } = action;
+      const { teamId, roleId, candidateId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const tier = getRoleTiers(team.staff, roleId, team.wageScale ?? 1).find((t) => t.id === tierId);
-      if (!tier) return state;
-      if (team.budget < tier.hireCost) return state;
+      const candidate = generateStaffCandidates(team.staff, roleId, state.round, team.wageScale ?? 1).find(
+        (c) => c.candidateId === candidateId
+      );
+      if (!candidate) return state;
+      if (team.budget < candidate.hireCost) return state;
       const teams = state.teams.map((t) =>
         t.id === teamId
           ? {
               ...t,
-              budget: t.budget - tier.hireCost,
-              staff: { ...t.staff, [roleId]: { tierId } },
+              budget: t.budget - candidate.hireCost,
+              staff: {
+                ...t.staff,
+                [roleId]: {
+                  tierId: candidate.id,
+                  wage: candidate.wage,
+                  hireCost: candidate.hireCost,
+                  name: candidate.name,
+                },
+              },
               // A newly hired scout starts a fresh search cycle.
               scoutCooldown: roleId === "scout" ? null : t.scoutCooldown,
               scoutSearchTotal: roleId === "scout" ? null : t.scoutSearchTotal,
@@ -929,7 +939,11 @@ export function reducer(state, action) {
       return {
         ...state,
         teams,
-        log: pushLog(state.currentDate, state.log, `${team.name} contrató: ${tier.label}`),
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `${team.name} contrató a ${candidate.name} (${candidate.label})`
+        ),
       };
     }
 
@@ -957,7 +971,7 @@ export function reducer(state, action) {
         log: pushLog(
           state.currentDate,
           state.log,
-          `${team.name} despidió a: ${tier.label} (indemnización €${severance.toLocaleString()})`
+          `${team.name} despidió a ${tier.name ? `${tier.name} (${tier.label})` : tier.label} (indemnización €${severance.toLocaleString()})`
         ),
       };
     }
@@ -966,10 +980,13 @@ export function reducer(state, action) {
       const { teamId, slot, sponsorId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
+      // A signed deal runs for the rest of the season — no swapping to a
+      // better offer mid-contract, only once the slot is empty again.
+      if (team.sponsors?.[slot]) return state;
       const offers =
         slot === "stadium"
-          ? getStadiumSponsorOffers(team, state.teams, state.activeDivisionId)
-          : getJerseySponsorOffers(team, state.teams, state.activeDivisionId);
+          ? getStadiumSponsorOffers(team, state.teams, state.activeDivisionId, state.playersById)
+          : getJerseySponsorOffers(team, state.teams, state.activeDivisionId, state.playersById);
       const offer = offers.find((s) => s.id === sponsorId);
       if (!offer) return state;
       const teams = state.teams.map((t) =>
@@ -1378,8 +1395,8 @@ export function reducer(state, action) {
       let finalTeams = teams.map((t) => {
         const retiredIds = retiredByTeam[t.id];
         const retiredSet = retiredIds ? new Set(retiredIds) : null;
-        const roster = retiredSet ? t.roster.filter((id) => !retiredSet.has(id)) : t.roster;
-        const lineup = retiredSet
+        let roster = retiredSet ? t.roster.filter((id) => !retiredSet.has(id)) : t.roster;
+        let lineup = retiredSet
           ? Object.fromEntries(Object.entries(t.lineup).map(([pos, id]) => [pos, retiredSet.has(id) ? null : id]))
           : t.lineup;
 
@@ -1389,18 +1406,38 @@ export function reducer(state, action) {
             if (p && p.contractYears <= 0) pendingContracts.push(pid);
           }
         } else {
+          // AI clubs don't quietly re-sign everyone whose contract lapses —
+          // some walk into free agency instead, same as a user's rejected
+          // renewal, so the free-agent pool actually refills each season.
+          // Foreign players (harder for a club to keep long-term, per the
+          // ACB-style quota) walk far more often, so the pool skews foreign.
+          const releasedIds = [];
           for (const pid of roster) {
             const p = finalPlayersById[pid];
-            if (p && p.contractYears <= 0) {
+            if (!p || p.contractYears > 0) continue;
+            const releaseChance = isForeign(p) ? 0.35 : 0.12;
+            if (roster.length - releasedIds.length > 8 && Math.random() < releaseChance) {
+              releasedIds.push(pid);
+              finalPlayersById[pid] = { ...p, teamId: null, listed: false };
+            } else {
               finalPlayersById[pid] = { ...p, contractYears: randInt(1, 3) };
             }
+          }
+          if (releasedIds.length) {
+            const releasedSet = new Set(releasedIds);
+            roster = roster.filter((id) => !releasedSet.has(id));
+            lineup = Object.fromEntries(
+              Object.entries(lineup).map(([pos, id]) => [pos, releasedSet.has(id) ? null : id])
+            );
           }
         }
 
         // Record is left as-is (this season's real result) so promotion/
         // relegation can judge it — resolvePyramid resets it for everyone
         // once the whole pyramid's standings have been read.
-        return { ...t, roster, lineup };
+        // Sponsorship deals run for the season they were signed in, not
+        // beyond it — a fresh season means a fresh round of offers.
+        return { ...t, roster, lineup, sponsors: { jersey: null, stadium: null } };
       });
 
       const retiredNames = Object.values(retiredByTeam)
@@ -1525,7 +1562,10 @@ export function reducer(state, action) {
         schedule: newActive.schedule,
         round: 0,
         results: [],
-        lastRoundResults: roundResults,
+        // Not last season's final result — this is a brand-new season with
+        // no games played yet, so the dashboard's "last result" card must
+        // show its empty state instead of stale data from the old season.
+        lastRoundResults: [],
         pendingContracts,
         pendingOffers: [...state.pendingOffers, ...newOffers].filter((o) => finalPlayersById[o.playerId]),
         activeDivisionId: newActiveDivisionId,

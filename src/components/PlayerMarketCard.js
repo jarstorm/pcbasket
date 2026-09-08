@@ -29,19 +29,19 @@ export default function PlayerMarketCard({ player, teamName, feeLabel, feeValue,
 
       <View style={styles.barsRow}>
         <View style={{ flex: 1 }}>
-          <StatBar label="TIR" value={player.ratings.shooting} />
+          <StatBar compact label="TIR" value={player.ratings.shooting} />
         </View>
         <View style={{ flex: 1 }}>
-          <StatBar label="DEF" value={player.ratings.defense} />
+          <StatBar compact label="DEF" value={player.ratings.defense} />
         </View>
         <View style={{ flex: 1 }}>
-          <StatBar label="PAS" value={player.ratings.passing} />
+          <StatBar compact label="PAS" value={player.ratings.passing} />
         </View>
         <View style={{ flex: 1 }}>
-          <StatBar label="REB" value={player.ratings.rebounding} />
+          <StatBar compact label="REB" value={player.ratings.rebounding} />
         </View>
         <View style={{ flex: 1 }}>
-          <StatBar label="FÍS" value={player.ratings.physical} />
+          <StatBar compact label="FÍS" value={player.ratings.physical} />
         </View>
       </View>
 

@@ -2,22 +2,27 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import { getJerseySponsorOffers, getStadiumSponsorOffers, tvRightsIncome } from "../engine/finance";
-import { leaguePosition } from "../engine/standings";
+import { averageRosterOverall } from "../engine/transfers";
 import { DIVISION_META } from "../engine/pyramid";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
 function OfferList({ title, offers, current, onSelect }) {
+  const locked = Boolean(current);
   return (
     <Card>
       <SectionHeader>{title}</SectionHeader>
+      {locked && (
+        <Text style={styles.lockedNote}>Contrato en vigor esta temporada — no se puede cambiar.</Text>
+      )}
       {offers.map((offer) => {
         const isCurrent = current?.id === offer.id;
         return (
           <Pressable
             key={offer.id}
+            disabled={locked}
             onPress={() => onSelect(offer.id)}
-            style={[styles.offerRow, isCurrent && styles.offerRowSelected]}
+            style={[styles.offerRow, isCurrent && styles.offerRowSelected, locked && !isCurrent && styles.offerRowLocked]}
           >
             <View style={{ flex: 1 }}>
               <Text style={styles.offerLabel}>{offer.label}</Text>
@@ -34,9 +39,9 @@ function OfferList({ title, offers, current, onSelect }) {
 export default function SponsorScreen() {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
-  const position = leaguePosition(team, state.teams);
-  const jerseyOffers = getJerseySponsorOffers(team, state.teams, state.activeDivisionId);
-  const stadiumOffers = getStadiumSponsorOffers(team, state.teams, state.activeDivisionId);
+  const teamOverall = Math.round(averageRosterOverall(team, state.playersById));
+  const jerseyOffers = getJerseySponsorOffers(team, state.teams, state.activeDivisionId, state.playersById);
+  const stadiumOffers = getStadiumSponsorOffers(team, state.teams, state.activeDivisionId, state.playersById);
   const tvIncome = tvRightsIncome(state.activeDivisionId, team, state.teams);
   const divisionName = DIVISION_META[state.activeDivisionId]?.name || state.activeDivisionId;
 
@@ -45,8 +50,9 @@ export default function SponsorScreen() {
       <Card>
         <SectionHeader>PUBLICIDAD E INGRESOS DE MEDIA</SectionHeader>
         <Text style={styles.dim}>
-          Posición actual en la liga: #{position}. Los mejores patrocinadores solo firman con
-          equipos arriba en la clasificación.
+          Media de la plantilla: {teamOverall} OVR. Los mejores patrocinadores solo firman con
+          equipos de nivel alto. Un contrato firmado dura toda la temporada (o lo que quede de
+          ella) — no se puede cambiar de patrocinador hasta la temporada siguiente.
         </Text>
       </Card>
 
@@ -90,6 +96,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   offerRowSelected: { borderColor: colors.accent, backgroundColor: colors.panelAlt },
+  offerRowLocked: { opacity: 0.4 },
+  lockedNote: { color: colors.textDim, fontSize: 11, fontWeight: "700", marginBottom: spacing.sm },
   offerLabel: { color: colors.text, fontWeight: "700", fontSize: 13 },
   offerCurrent: { color: colors.accent, fontSize: 11, fontWeight: "700", marginTop: 2 },
   offerIncome: { color: colors.win, fontWeight: "800", fontSize: 13 },

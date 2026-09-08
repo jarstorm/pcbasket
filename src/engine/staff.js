@@ -1,3 +1,6 @@
+import { seededRandom } from "./random";
+import { randomName } from "../data/names";
+
 const TIER_LABELS = ["Básico", "Avanzado", "Élite"];
 // Wide gap on purpose: a Básico hire should be a trivial expense, an Élite
 // one a real commitment — not a smooth 1x/2x/4x ramp. hireCost/wage below
@@ -157,8 +160,21 @@ function rawTier(staff, roleId) {
   return STAFF_ROLES[roleId].tiers.find((t) => t.id === hired.tierId) || null;
 }
 
+// The static STAFF_ROLES tier only supplies the label/effect for the hired
+// level — the actual wage/hireCost/name a person was hired at is random
+// (see generateStaffCandidates) and stored on the hire itself. Older saves
+// (or tests that build a `{ tierId }` record directly) have no stored
+// wage/hireCost, so those fall back to the plain scaled tier figure.
 function currentTier(staff, roleId, wageScale = 1) {
-  return scaleTier(rawTier(staff, roleId), wageScale);
+  const hired = staff?.[roleId];
+  const base = rawTier(staff, roleId);
+  if (!base) return null;
+  return {
+    ...base,
+    wage: hired.wage ?? Math.round(base.wage * wageScale),
+    hireCost: hired.hireCost ?? Math.round(base.hireCost * wageScale),
+    name: hired.name || null,
+  };
 }
 
 // A role can only be hired when empty — replacing someone means firing them
@@ -166,6 +182,43 @@ function currentTier(staff, roleId, wageScale = 1) {
 export function getRoleTiers(staff, roleId, wageScale = 1) {
   if (staff?.[roleId]) return [];
   return STAFF_ROLES[roleId].tiers.map((t) => scaleTier(t, wageScale));
+}
+
+// hireCost baseline for a role's Élite candidate (before wageScale) — every
+// other tier/role uses its STAFF_ROLES formula, but a real elite head coach
+// commands a real, unpredictable transfer fee, not a smooth multiplier of
+// the base rate.
+const HEAD_COACH_ELITE_HIRE_COST_RANGE = [1_000_000, 3_000_000];
+
+// A rotating, per-jornada hiring pool: 1-3 named candidates for the role,
+// each landing on a random tier (so an Élite candidate isn't guaranteed
+// every week, or ever, for a given role) with a wage that varies ±30% from
+// that tier's baseline — no two candidates cost exactly the tier sticker
+// price. Deterministic per (round, role) so the list doesn't reshuffle on
+// every re-render, only when the jornada actually changes.
+export function generateStaffCandidates(staff, roleId, round, wageScale = 1) {
+  if (staff?.[roleId]) return [];
+  const role = STAFF_ROLES[roleId];
+  const roleIndex = ROLE_IDS.indexOf(roleId);
+  const rand = seededRandom(round * 977 + roleIndex * 131 + 7919);
+  const count = 1 + Math.floor(rand() * 3);
+
+  const candidates = [];
+  for (let i = 0; i < count; i++) {
+    const tierIdx = Math.floor(rand() * TIER_LABELS.length);
+    const baseTier = role.tiers[tierIdx];
+    const wageVariance = 0.7 + rand() * 0.6;
+    const hireCost =
+      roleId === "headCoach" && tierIdx === 2
+        ? Math.round(
+            HEAD_COACH_ELITE_HIRE_COST_RANGE[0] +
+              rand() * (HEAD_COACH_ELITE_HIRE_COST_RANGE[1] - HEAD_COACH_ELITE_HIRE_COST_RANGE[0])
+          )
+        : baseTier.hireCost;
+    const scaled = scaleTier({ ...baseTier, hireCost, wage: Math.round(baseTier.wage * wageVariance) }, wageScale);
+    candidates.push({ ...scaled, candidateId: `${roleId}_${round}_${i}`, name: randomName(rand) });
+  }
+  return candidates;
 }
 
 export function currentRoleTier(staff, roleId, wageScale = 1) {

@@ -270,14 +270,17 @@ export default function Dashboard({ onNavigate }) {
       )}
 
       <Card>
-        <View style={styles.newsHeader}>
-          <SectionHeader>NOTICIAS</SectionHeader>
-          {state.log.length > 5 && (
-            <Pressable onPress={() => setShowAllNews(true)}>
-              <Text style={styles.newsLink}>Ver todas ({state.log.length})</Text>
-            </Pressable>
-          )}
-        </View>
+        <SectionHeader
+          right={
+            state.log.length > 5 && (
+              <Pressable onPress={() => setShowAllNews(true)}>
+                <Text style={styles.newsLink}>Ver todas ({state.log.length})</Text>
+              </Pressable>
+            )
+          }
+        >
+          NOTICIAS
+        </SectionHeader>
         <View>
           {state.log.length === 0 && <Text style={styles.logItem}>Sin novedades.</Text>}
           {state.log.slice(0, 5).map((entry, i) => (
@@ -292,10 +295,16 @@ export default function Dashboard({ onNavigate }) {
       <Modal visible={showAllNews} animationType="slide" onRequestClose={() => setShowAllNews(false)}>
         <View style={styles.modalShell}>
           <View style={styles.modalHeader}>
-            <SectionHeader>TODAS LAS NOTICIAS</SectionHeader>
-            <Pressable onPress={() => setShowAllNews(false)}>
-              <Text style={styles.newsLink}>Cerrar</Text>
-            </Pressable>
+            <SectionHeader
+              style={{ flex: 1, marginBottom: 0 }}
+              right={
+                <Pressable onPress={() => setShowAllNews(false)}>
+                  <Text style={styles.newsLink}>Cerrar</Text>
+                </Pressable>
+              }
+            >
+              TODAS LAS NOTICIAS
+            </SectionHeader>
           </View>
           <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
             {state.log.map((entry, i) => (
@@ -410,7 +419,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   logDate: { color: colors.accent, fontWeight: "700" },
-  newsHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 4 },
   newsLink: { color: colors.accent, fontSize: 12, fontWeight: "700" },
   modalShell: { flex: 1, backgroundColor: colors.bg },
   modalHeader: {

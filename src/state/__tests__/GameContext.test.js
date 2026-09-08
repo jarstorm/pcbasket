@@ -1,4 +1,5 @@
 import { reducer } from "../GameContext";
+import { generateStaffCandidates } from "../../engine/staff";
 
 function baseState() {
   const teamA = {
@@ -117,6 +118,20 @@ function baseState() {
       },
     },
   };
+}
+
+// Season-end also resolves promotion/relegation, so a non-user team can land
+// in otherDivisions instead of state.teams — look in both.
+function findTeamAnywhere(state, id) {
+  const active = state.teams.find((t) => t.id === id);
+  if (active) return active;
+  for (const div of Object.values(state.otherDivisions)) {
+    for (const g of div.groups) {
+      const t = g.teams.find((t) => t.id === id);
+      if (t) return t;
+    }
+  }
+  return null;
 }
 
 function dummyTeam(id) {
@@ -409,28 +424,41 @@ describe("reducer", () => {
     expect(next.teams.find((t) => t.id === "a").stadium.ticketPrice).toBe(100);
   });
 
-  it("HIRE_STAFF_ROLE fills the role and charges the hire cost", () => {
+  it("HIRE_STAFF_ROLE fills the role with the chosen candidate's own wage/hireCost/name and charges the hire cost", () => {
     const state = baseState();
-    const next = reducer(state, { type: "HIRE_STAFF_ROLE", teamId: "a", roleId: "headCoach", tierId: "head_0" });
+    const candidate = generateStaffCandidates({}, "headCoach", state.round, 1).find((c) => c.hireCost <= 500000);
+    const next = reducer(state, {
+      type: "HIRE_STAFF_ROLE",
+      teamId: "a",
+      roleId: "headCoach",
+      candidateId: candidate.candidateId,
+    });
     const team = next.teams.find((t) => t.id === "a");
-    expect(team.staff.headCoach).toEqual({ tierId: "head_0" });
-    expect(team.budget).toBeLessThan(500000);
+    expect(team.staff.headCoach).toEqual({
+      tierId: candidate.id,
+      wage: candidate.wage,
+      hireCost: candidate.hireCost,
+      name: candidate.name,
+    });
+    expect(team.budget).toBe(500000 - candidate.hireCost);
   });
 
   it("HIRE_STAFF_ROLE refuses to fill an already-occupied role", () => {
     const state = baseState();
     state.teams[0].staff = { headCoach: { tierId: "head_0" } };
-    const next = reducer(state, { type: "HIRE_STAFF_ROLE", teamId: "a", roleId: "headCoach", tierId: "head_1" });
+    const next = reducer(state, { type: "HIRE_STAFF_ROLE", teamId: "a", roleId: "headCoach", candidateId: "anything" });
     expect(next).toBe(state);
   });
 
-  it("FIRE_STAFF_ROLE charges a full season of wages as severance and frees the role", () => {
+  it("FIRE_STAFF_ROLE charges severance based on the actual (randomized) wage the hire was made at, not the tier formula", () => {
     const state = baseState();
-    state.teams[0].staff = { headCoach: { tierId: "head_0" } };
+    // A stored wage far from the head_0 tier's formula wage — proves
+    // severance reads the stored figure instead of recomputing it.
+    state.teams[0].staff = { headCoach: { tierId: "head_0", wage: 9999, hireCost: 1, name: "Test Coach" } };
     const next = reducer(state, { type: "FIRE_STAFF_ROLE", teamId: "a", roleId: "headCoach" });
     const team = next.teams.find((t) => t.id === "a");
     expect(team.staff.headCoach).toBeNull();
-    expect(team.budget).toBeLessThan(500000);
+    expect(team.budget).toBe(500000 - 9999 * state.schedule.length);
   });
 
   it("SELECT_SPONSOR signs one of the available offers into the given slot", () => {
@@ -444,6 +472,32 @@ describe("reducer", () => {
     const team = next.teams.find((t) => t.id === "a");
     expect(team.sponsors.jersey.id).toBe("jersey_local");
     expect(team.sponsors.stadium).toBeNull();
+  });
+
+  it("SELECT_SPONSOR refuses to swap a slot that's already under contract this season", () => {
+    const state = baseState();
+    state.teams[0].sponsors = { jersey: { id: "jersey_local", label: "x", incomePerRound: 1 }, stadium: null };
+    const next = reducer(state, {
+      type: "SELECT_SPONSOR",
+      teamId: "a",
+      slot: "jersey",
+      sponsorId: "jersey_regional",
+    });
+    expect(next).toBe(state);
+  });
+
+  it("SIM_ROUND clears both sponsor slots at season end, freeing them up for the new season", () => {
+    const state = {
+      ...withPlayoffSizedDivisions(baseState()),
+      round: 1,
+    };
+    state.teams[0].sponsors = {
+      jersey: { id: "jersey_local", label: "x", incomePerRound: 1 },
+      stadium: { id: "stadium_local", label: "y", incomePerRound: 1 },
+    };
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.sponsors).toEqual({ jersey: null, stadium: null });
   });
 
   it("SIM_ROUND advances the round and records a result", () => {
@@ -514,6 +568,9 @@ describe("reducer", () => {
     expect(next.schedule.length).toBeGreaterThan(0);
     expect(next.playersById.p1.age).toBe(26);
     expect(next.playersById.p1.contractYears).toBe(1);
+    // No game has been played in the new season yet — the dashboard's
+    // "last result" card must not show last season's final match.
+    expect(next.lastRoundResults).toEqual([]);
     const team = next.teams.find((t) => t.id === "a");
     expect(team.record.wins).toBe(0);
     expect(team.record.losses).toBe(0);
@@ -559,13 +616,97 @@ describe("reducer", () => {
     expect(segundaSummary.promoted).toHaveLength(3);
   });
 
-  it("SIM_ROUND flags the user's team's expired contracts for renewal, but auto-renews AI teams", () => {
+  it("SIM_ROUND flags the user's team's expired contracts for renewal, and renews an AI team's when the free-agency roll misses", () => {
     const state = { ...withPlayoffSizedDivisions(baseState()), round: 1 };
     state.playersById.p1.contractYears = 1; // hits 0 after this season's aging step
     state.playersById.p4.contractYears = 1;
+    // High roll clears both the domestic (12%) and foreign (35%) release
+    // chance, so p4 (AI team, Spanish) auto-renews instead of walking.
+    const randomSpy = jest.spyOn(Math, "random").mockReturnValue(0.99);
     const next = reducer(state, { type: "SIM_ROUND" });
+    randomSpy.mockRestore();
     expect(next.pendingContracts).toContain("p1");
+    expect(next.playersById.p4.teamId).toBe("b");
     expect(next.playersById.p4.contractYears).toBeGreaterThan(0);
+  });
+
+  it("SIM_ROUND can release an AI team's out-of-contract player to free agency instead of renewing", () => {
+    const state = { ...withPlayoffSizedDivisions(baseState()), round: 1 };
+    // Pad team b past the 8-player release floor with non-expiring
+    // contracts, so p4's release isn't blocked by the floor.
+    const fillerIds = Array.from({ length: 8 }, (_, i) => `bf${i + 1}`);
+    state.teams = state.teams.map((t) =>
+      t.id === "b" ? { ...t, roster: [...t.roster, ...fillerIds] } : t
+    );
+    for (const id of fillerIds) {
+      state.playersById[id] = { ...state.playersById.p4, id, teamId: "b", contractYears: 2 };
+    }
+    state.playersById.p4.contractYears = 1;
+    // Roll below both the domestic and foreign release chance, so the
+    // AI team's expiring player walks into free agency.
+    const randomSpy = jest.spyOn(Math, "random").mockReturnValue(0.001);
+    const next = reducer(state, { type: "SIM_ROUND" });
+    randomSpy.mockRestore();
+    expect(next.playersById.p4.teamId).toBeNull();
+    expect(next.playersById.p4.listed).toBe(false);
+    const teamB = findTeamAnywhere(next, "b");
+    expect(teamB.roster).not.toContain("p4");
+    expect(Object.values(teamB.lineup)).not.toContain("p4");
+  });
+
+  it("SIM_ROUND's AI free agency releases foreign players far more often than domestic ones", () => {
+    const state = { ...withPlayoffSizedDivisions(baseState()) };
+    // Pad team b past the 8-player release floor with players whose
+    // contracts aren't expiring, so p4/p5's release isn't blocked by it.
+    const fillerIds = Array.from({ length: 8 }, (_, i) => `bf${i + 1}`);
+    state.teams = state.teams.map((t) =>
+      t.id === "b" ? { ...t, roster: [...t.roster, "p5", ...fillerIds] } : t
+    );
+    state.playersById.p5 = {
+      ...state.playersById.p4,
+      id: "p5",
+      teamId: "b",
+      nationality: "Estados Unidos",
+      contractYears: 1,
+    };
+    for (const id of fillerIds) {
+      state.playersById[id] = { ...state.playersById.p4, id, teamId: "b", contractYears: 2 };
+    }
+    state.playersById.p4.contractYears = 1;
+    state.round = 1;
+    // Between the two thresholds (domestic 12%, foreign 35%): clears the
+    // domestic chance (renews) but not the foreign one (released).
+    const randomSpy = jest.spyOn(Math, "random").mockReturnValue(0.2);
+    const next = reducer(state, { type: "SIM_ROUND" });
+    randomSpy.mockRestore();
+    expect(next.playersById.p4.teamId).toBe("b"); // domestic: renewed
+    expect(next.playersById.p5.teamId).toBeNull(); // foreign: released
+  });
+
+  it("SIM_ROUND's AI free agency never drops a roster below 8 players", () => {
+    const state = { ...withPlayoffSizedDivisions(baseState()) };
+    const extraIds = Array.from({ length: 9 }, (_, i) => `e${i + 1}`);
+    state.teams = state.teams.map((t) =>
+      t.id === "b" ? { ...t, roster: [...t.roster, ...extraIds] } : t
+    );
+    for (const id of extraIds) {
+      state.playersById[id] = {
+        ...state.playersById.p4,
+        id,
+        teamId: "b",
+        nationality: "Estados Unidos",
+        contractYears: 1,
+      };
+    }
+    state.playersById.p4.contractYears = 1;
+    state.round = 1;
+    // Always below the release chance, so every eligible player would walk
+    // if the floor didn't stop it.
+    const randomSpy = jest.spyOn(Math, "random").mockReturnValue(0.001);
+    const next = reducer(state, { type: "SIM_ROUND" });
+    randomSpy.mockRestore();
+    const teamB = findTeamAnywhere(next, "b");
+    expect(teamB.roster.length).toBe(8);
   });
 
   it("RESOLVE_CONTRACT accepts a generous offer and clears the pending flag", () => {

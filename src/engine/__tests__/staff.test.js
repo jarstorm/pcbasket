@@ -1,6 +1,7 @@
 import {
   STAFF_ROLES,
   getRoleTiers,
+  generateStaffCandidates,
   currentRoleTier,
   totalStaffWage,
   headCoachBonus,
@@ -74,5 +75,61 @@ describe("staff roles", () => {
       expect(tiers[i].hireCost).toBeGreaterThan(tiers[i - 1].hireCost);
       expect(tiers[i].wage).toBeGreaterThan(tiers[i - 1].wage);
     }
+  });
+});
+
+describe("generateStaffCandidates", () => {
+  it("returns 1-3 named candidates for an open role, and none once it's filled", () => {
+    for (let round = 0; round < 30; round++) {
+      const candidates = generateStaffCandidates({}, "physio", round, 1);
+      expect(candidates.length).toBeGreaterThanOrEqual(1);
+      expect(candidates.length).toBeLessThanOrEqual(3);
+      for (const c of candidates) {
+        expect(typeof c.name).toBe("string");
+        expect(c.name.length).toBeGreaterThan(0);
+      }
+    }
+    const filled = generateStaffCandidates({ physio: { tierId: "phys_0" } }, "physio", 0, 1);
+    expect(filled).toEqual([]);
+  });
+
+  it("is deterministic for a given (role, round) so the list doesn't reshuffle on re-render", () => {
+    const a = generateStaffCandidates({}, "scout", 12, 1);
+    const b = generateStaffCandidates({}, "scout", 12, 1);
+    expect(a).toEqual(b);
+  });
+
+  it("each candidate's wage is within ±30% of its tier's baseline wage", () => {
+    for (let round = 0; round < 30; round++) {
+      for (const c of generateStaffCandidates({}, "doctor", round, 1)) {
+        const baseTier = STAFF_ROLES.doctor.tiers.find((t) => t.id === c.id);
+        expect(c.wage).toBeGreaterThanOrEqual(Math.round(baseTier.wage * 0.7));
+        expect(c.wage).toBeLessThanOrEqual(Math.round(baseTier.wage * 1.3));
+      }
+    }
+  });
+
+  it("an Élite headCoach candidate's hireCost lands between 1M and 3M, unlike the flat tier formula", () => {
+    let sawElite = false;
+    for (let round = 0; round < 60; round++) {
+      for (const c of generateStaffCandidates({}, "headCoach", round, 1)) {
+        if (c.id !== "head_2") continue;
+        sawElite = true;
+        expect(c.hireCost).toBeGreaterThanOrEqual(1_000_000);
+        expect(c.hireCost).toBeLessThanOrEqual(3_000_000);
+      }
+    }
+    expect(sawElite).toBe(true); // otherwise this test isn't exercising anything
+  });
+
+  it("scales candidate wage/hireCost by wageScale, same as getRoleTiers", () => {
+    // wageScale only touches the final $ figures, not the random draws that
+    // pick who/which tier — same seed means the same candidate at index 0.
+    const full = generateStaffCandidates({}, "physio", 5, 1)[0];
+    const scaled = generateStaffCandidates({}, "physio", 5, 0.2)[0];
+    expect(scaled.id).toBe(full.id);
+    expect(scaled.name).toBe(full.name);
+    expect(scaled.hireCost).toBeLessThan(full.hireCost);
+    expect(scaled.wage).toBeLessThan(full.wage);
   });
 });

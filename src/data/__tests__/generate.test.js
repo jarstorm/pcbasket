@@ -1,8 +1,45 @@
-import { generateRealLeague, generateAcbDivision, generateSegundaFebDivision, generateTerceraFebDivision } from "../generate";
+import {
+  generateRealLeague,
+  generateAcbDivision,
+  generateSegundaFebDivision,
+  generateTerceraFebDivision,
+  valueOf,
+  wageOf,
+} from "../generate";
 
 function teamsOf({ groups }) {
   return groups.flatMap((g) => g.teams);
 }
+
+describe("valueOf", () => {
+  it("never exceeds 10x the player's wage", () => {
+    for (let overall = 30; overall <= 99; overall += 3) {
+      for (const age of [19, 25, 30, 34, 39]) {
+        const value = valueOf(overall, age, null);
+        const wage = wageOf(overall, age);
+        expect(value).toBeLessThanOrEqual(wage * 10);
+      }
+    }
+  });
+
+  it("stays capped at 10x wage even with a big potential bonus (young prospect)", () => {
+    const overall = 60;
+    const age = 19;
+    const value = valueOf(overall, age, /* potential */ 99);
+    const wage = wageOf(overall, age);
+    expect(value).toBeLessThanOrEqual(wage * 10);
+  });
+
+  it("scales with the division's wage scale, keeping the same ratio", () => {
+    const full = valueOf(80, 27, null, 1);
+    const scaled = valueOf(80, 27, null, 0.2);
+    const fullWage = wageOf(80, 27, 1);
+    const scaledWage = wageOf(80, 27, 0.2);
+    expect(full).toBeLessThanOrEqual(fullWage * 10);
+    expect(scaled).toBeLessThanOrEqual(scaledWage * 10);
+    expect(scaled).toBeLessThan(full);
+  });
+});
 
 describe("generateAcbDivision", () => {
   it("produces 18 teams with full rosters and a bigger budget than lower tiers", () => {

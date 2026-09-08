@@ -49,7 +49,11 @@ function overallOf(ratings) {
 export function valueOf(overall, age, potential, scale = 1) {
   const ageFactor = age <= 24 ? 1.15 : age <= 29 ? 1.0 : age <= 33 ? 0.7 : 0.4;
   const potentialBonus = potential ? (potential - overall) * 4000 * scale : 0;
-  return Math.max(Math.round(20000 * scale), Math.round((overall ** 2.1) * 40 * ageFactor * scale + potentialBonus));
+  const raw = Math.round((overall ** 2.1) * 40 * ageFactor * scale + potentialBonus);
+  // Capped at 10x the player's wage — a raw curve grows much faster than
+  // wageOf's, so uncapped it produced buyout clauses 40x+ a player's wage
+  // (e.g. a €3,000 earner with a €120,000 clause), way out of proportion.
+  return Math.min(raw, wageOf(overall, age, scale) * 10);
 }
 
 // Recurring per-round salary — modest relative to transfer value (valueOf).

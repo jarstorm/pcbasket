@@ -1,5 +1,6 @@
 import { totalStaffWage, maintenanceReduction } from "./staff";
 import { leaguePosition } from "./standings";
+import { averageRosterOverall } from "./transfers";
 
 export function playerWageTotal(team, playersById) {
   return team.roster.reduce((sum, id) => sum + (playersById[id]?.wage || 0), 0);
@@ -41,15 +42,15 @@ export function amortizedSeasonTicketIncomePerRound(stadium, roundsInSeason) {
 }
 
 const JERSEY_SPONSOR_TIERS = [
-  { id: "jersey_local", label: "Marca Local", incomePerRound: 3000, maxPosition: null },
-  { id: "jersey_regional", label: "Marca Regional", incomePerRound: 8000, maxPosition: 12 },
-  { id: "jersey_nacional", label: "Marca Nacional", incomePerRound: 18000, maxPosition: 4 },
+  { id: "jersey_local", label: "Marca Local", incomePerRound: 3000, maxRank: null },
+  { id: "jersey_regional", label: "Marca Regional", incomePerRound: 8000, maxRank: 12 },
+  { id: "jersey_nacional", label: "Marca Nacional", incomePerRound: 18000, maxRank: 4 },
 ];
 
 const STADIUM_SPONSOR_TIERS = [
-  { id: "stadium_local", label: "Naming Rights Local", incomePerRound: 2500, maxPosition: null },
-  { id: "stadium_regional", label: "Naming Rights Regional", incomePerRound: 6500, maxPosition: 12 },
-  { id: "stadium_nacional", label: "Naming Rights Nacional", incomePerRound: 14000, maxPosition: 4 },
+  { id: "stadium_local", label: "Naming Rights Local", incomePerRound: 2500, maxRank: null },
+  { id: "stadium_regional", label: "Naming Rights Regional", incomePerRound: 6500, maxRank: 12 },
+  { id: "stadium_nacional", label: "Naming Rights Nacional", incomePerRound: 14000, maxRank: 4 },
 ];
 
 // Sponsorship deals scale with the division too — a Tercera FEB shirt deal
@@ -63,20 +64,30 @@ function scaleSponsorTiers(tiers, divisionId) {
   return tiers.map((t) => ({ ...t, incomePerRound: Math.max(200, Math.round(t.incomePerRound * scale)) }));
 }
 
-// Offers available right now: better-paying sponsors want a team that's
-// actually doing well in the league, scaled to what a club at this level
-// can actually command.
-export function getJerseySponsorOffers(team, teams, divisionId) {
-  const position = leaguePosition(team, teams);
+// Ranked by squad quality (average roster overall) rather than league
+// position — early in a season the standings are mostly noise (a couple of
+// results either way), while a team's actual talent level is known from
+// day one and doesn't swing with a single upset.
+function overallRank(team, teams, playersById) {
+  const ranked = [...teams].sort(
+    (a, b) => averageRosterOverall(b, playersById) - averageRosterOverall(a, playersById)
+  );
+  return ranked.findIndex((t) => t.id === team.id) + 1;
+}
+
+// Offers available right now: better-paying sponsors want a genuinely
+// strong squad, scaled to what a club at this level can actually command.
+export function getJerseySponsorOffers(team, teams, divisionId, playersById) {
+  const rank = overallRank(team, teams, playersById);
   return scaleSponsorTiers(JERSEY_SPONSOR_TIERS, divisionId).filter(
-    (t) => t.maxPosition === null || position <= t.maxPosition
+    (t) => t.maxRank === null || rank <= t.maxRank
   );
 }
 
-export function getStadiumSponsorOffers(team, teams, divisionId) {
-  const position = leaguePosition(team, teams);
+export function getStadiumSponsorOffers(team, teams, divisionId, playersById) {
+  const rank = overallRank(team, teams, playersById);
   return scaleSponsorTiers(STADIUM_SPONSOR_TIERS, divisionId).filter(
-    (t) => t.maxPosition === null || position <= t.maxPosition
+    (t) => t.maxRank === null || rank <= t.maxRank
   );
 }
 

@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import Button from "../components/Button";
-import { STAFF_ROLES, getRoleTiers, currentRoleTier, totalStaffWage } from "../engine/staff";
+import { STAFF_ROLES, generateStaffCandidates, currentRoleTier, totalStaffWage } from "../engine/staff";
 import { seededShuffle } from "../engine/random";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
@@ -49,23 +49,25 @@ export default function StaffScreen() {
       {ROLE_IDS.map((roleId) => {
         const role = STAFF_ROLES[roleId];
         const current = currentRoleTier(team.staff, roleId, team.wageScale ?? 1);
-        const availableTiers = getRoleTiers(team.staff, roleId, team.wageScale ?? 1);
+        const candidates = generateStaffCandidates(team.staff, roleId, state.round, team.wageScale ?? 1);
         const isOpen = openRole === roleId;
-        const selectedId = selectedTierByRole[roleId] ?? availableTiers[0]?.id;
-        const selectedTier = availableTiers.find((t) => t.id === selectedId);
+        const selectedId = selectedTierByRole[roleId] ?? candidates[0]?.candidateId;
+        const selectedCandidate = candidates.find((c) => c.candidateId === selectedId);
 
         return (
           <Card key={roleId}>
             <Pressable
               onPress={() => setOpenRole(isOpen ? null : roleId)}
               style={styles.roleHeader}
-              disabled={!current && availableTiers.length === 0}
+              disabled={!current && candidates.length === 0}
             >
               <View style={{ flex: 1 }}>
                 <Text style={styles.roleLabel}>{role.label.toUpperCase()}</Text>
                 <Text style={styles.roleDesc}>{role.desc}</Text>
                 <Text style={styles.roleStatus}>
-                  {current ? `${current.label} · €${current.wage.toLocaleString()}/jornada` : "Sin contratar"}
+                  {current
+                    ? `${current.name ? `${current.name} · ` : ""}${current.label} · €${current.wage.toLocaleString()}/jornada`
+                    : "Sin contratar"}
                 </Text>
               </View>
             </Pressable>
@@ -80,33 +82,40 @@ export default function StaffScreen() {
             ) : (
               isOpen && (
                 <View style={{ marginTop: spacing.sm }}>
-                  {availableTiers.map((tier) => {
-                    const isSelected = tier.id === selectedId;
-                    const affordable = team.budget >= tier.hireCost;
+                  {candidates.map((candidate) => {
+                    const isSelected = candidate.candidateId === selectedId;
+                    const affordable = team.budget >= candidate.hireCost;
                     return (
                       <Pressable
-                        key={tier.id}
-                        onPress={() => setSelectedTierByRole({ ...selectedTierByRole, [roleId]: tier.id })}
+                        key={candidate.candidateId}
+                        onPress={() => setSelectedTierByRole({ ...selectedTierByRole, [roleId]: candidate.candidateId })}
                         style={[styles.tierRow, isSelected && styles.tierRowSelected]}
                       >
                         <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
                           {isSelected && <Text style={styles.checkboxMark}>✓</Text>}
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={styles.tierLabel}>{tier.label}</Text>
-                          <Text style={styles.tierDesc}>€{tier.wage.toLocaleString()}/jornada</Text>
+                          <Text style={styles.tierLabel}>{candidate.name}</Text>
+                          <Text style={styles.tierDesc}>
+                            {candidate.label} · €{candidate.wage.toLocaleString()}/jornada
+                          </Text>
                         </View>
                         <Text style={[styles.tierCost, !affordable && styles.tierCostBad]}>
-                          €{tier.hireCost.toLocaleString()}
+                          €{candidate.hireCost.toLocaleString()}
                         </Text>
                       </Pressable>
                     );
                   })}
                   <Button
                     primary
-                    disabled={!selectedTier || team.budget < selectedTier.hireCost}
+                    disabled={!selectedCandidate || team.budget < selectedCandidate.hireCost}
                     onPress={() =>
-                      dispatch({ type: "HIRE_STAFF_ROLE", teamId: team.id, roleId, tierId: selectedId })
+                      dispatch({
+                        type: "HIRE_STAFF_ROLE",
+                        teamId: team.id,
+                        roleId,
+                        candidateId: selectedId,
+                      })
                     }
                   >
                     Contratar

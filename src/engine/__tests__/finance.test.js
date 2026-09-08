@@ -38,17 +38,21 @@ describe("finance", () => {
     expect(sponsorIncome(null)).toBe(0);
   });
 
-  it("only offers the top sponsor tier to a team near the top of the table", () => {
-    // 16 teams so the bottom-placed team actually falls outside the
-    // "nacional"/"regional" position thresholds.
-    const teams = Array.from({ length: 16 }, (_, i) => team(`t${i}`, 15 - i, i, []));
-    const topJersey = getJerseySponsorOffers(teams[0], teams).map((o) => o.id);
-    const bottomJersey = getJerseySponsorOffers(teams[15], teams).map((o) => o.id);
+  it("only offers the top sponsor tier to a team with a genuinely strong squad (by average overall, not record)", () => {
+    // 16 teams, each with one player, ranked purely by overall — win/loss
+    // record is identical (0-0) for all of them so the tiers can only be
+    // reflecting squad quality, not the standings.
+    const teams = Array.from({ length: 16 }, (_, i) => team(`t${i}`, 0, 0, [`p${i}`]));
+    const playersById = Object.fromEntries(
+      teams.map((t, i) => [`p${i}`, { overall: 90 - i * 3 }]) // t0 strongest, t15 weakest
+    );
+    const topJersey = getJerseySponsorOffers(teams[0], teams, undefined, playersById).map((o) => o.id);
+    const bottomJersey = getJerseySponsorOffers(teams[15], teams, undefined, playersById).map((o) => o.id);
     expect(topJersey).toContain("jersey_nacional");
     expect(bottomJersey).not.toContain("jersey_nacional");
     expect(bottomJersey).toContain("jersey_local");
 
-    const topStadium = getStadiumSponsorOffers(teams[0], teams).map((o) => o.id);
+    const topStadium = getStadiumSponsorOffers(teams[0], teams, undefined, playersById).map((o) => o.id);
     expect(topStadium).toContain("stadium_nacional");
   });
 

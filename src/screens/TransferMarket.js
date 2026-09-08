@@ -75,11 +75,35 @@ export default function TransferMarket() {
         !p.retired &&
         canRealisticallySign(team, p, state.playersById)
     );
-    const pool = seededShuffle(eligible, state.round).slice(0, MARKET_POOL_SIZE);
+    // Divisions vary wildly in size (Tercera FEB alone dwarfs the other
+    // three combined), so a flat random sample of the pool ends up almost
+    // entirely same-division players once the user's team plays in the
+    // biggest one. Shuffle each division separately and round-robin across
+    // them instead, so every division with an eligible player gets a fair
+    // shot at a market slot.
+    const byDivision = {};
+    for (const p of eligible) {
+      const divId = teamDivisionById[p.teamId] || "unknown";
+      (byDivision[divId] ??= []).push(p);
+    }
+    const divisionIds = Object.keys(byDivision);
+    const shuffledByDivision = Object.fromEntries(
+      divisionIds.map((id, i) => [id, seededShuffle(byDivision[id], state.round + i)])
+    );
+    const pool = [];
+    for (let cursor = 0; pool.length < MARKET_POOL_SIZE; cursor++) {
+      const before = pool.length;
+      for (const id of divisionIds) {
+        if (pool.length >= MARKET_POOL_SIZE) break;
+        const p = shuffledByDivision[id][cursor];
+        if (p) pool.push(p);
+      }
+      if (pool.length === before) break; // every division's shuffled list is exhausted
+    }
     return pool
       .filter((p) => posFilter === "ALL" || p.position === posFilter)
       .sort((a, b) => (sortBy === "overall" ? b.overall - a.overall : a.value - b.value));
-  }, [state.playersById, state.round, team, posFilter, sortBy]);
+  }, [state.playersById, state.round, team, posFilter, sortBy, teamDivisionById]);
 
   // Released or rejected-renewal players with no club — free to sign, no fee.
   const freeAgents = useMemo(() => {
@@ -190,15 +214,11 @@ function MarketPlayerRow({ player, teamName, team, dispatch, annualWage }) {
         feeLabel="CLÁUSULA"
         feeValue={player.value}
         wageValue={annualWage}
-        disabled={team.budget < player.value || team.roster.length >= 15}
+        disabled={team.roster.length >= 15}
         buyLabel="Fichar"
-        onBuy={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: player.id })}
+        onBuy={() => setOffering(true)}
       />
-      {!offering ? (
-        <Pressable onPress={() => setOffering(true)}>
-          <Text style={styles.offerToggle}>Ofrecer menos de la cláusula</Text>
-        </Pressable>
-      ) : (
+      {offering && (
         <View style={styles.offerPanel}>
           <View style={styles.stepperRow}>
             <Pressable
@@ -246,14 +266,6 @@ const styles = StyleSheet.create({
   offerReceivedName: { color: colors.text, fontWeight: "700", fontSize: 13 },
   offerBtn: { paddingHorizontal: spacing.sm, marginBottom: 0 },
   offerBtnReject: { borderColor: colors.loss },
-  offerToggle: {
-    color: colors.accent,
-    fontSize: 11,
-    fontWeight: "700",
-    textAlign: "center",
-    marginTop: -spacing.xs,
-    marginBottom: spacing.sm,
-  },
   offerPanel: {
     borderWidth: 1,
     borderColor: colors.border,

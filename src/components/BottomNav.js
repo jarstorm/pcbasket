@@ -7,15 +7,20 @@ export default function BottomNav({ tabs, activeId, onSelect }) {
     <View style={styles.bar}>
       {tabs.map((tab) => {
         const active = tab.id === activeId;
+        const isHome = tab.id === "home";
         return (
           <Pressable key={tab.id} onPress={() => onSelect(tab.id)} style={styles.item}>
-            <View style={styles.indicator}>{active && <View style={styles.indicatorDot} />}</View>
-            <View style={[styles.iconWrap, active && styles.iconWrapActive]}>
+            <View
+              style={[
+                styles.iconWrap,
+                isHome && styles.iconWrapHome,
+                isHome && active && styles.iconWrapHomeActive,
+              ]}
+            >
               <Icon
                 name={tab.icon}
-                size={18}
-                color={active ? colors.accent : colors.textDim}
-                style={{ opacity: active ? 1 : 0.75 }}
+                size={isHome ? 26 : 20}
+                color={active ? (isHome ? colors.accentText : colors.accent) : colors.textDim}
               />
             </View>
             <Text style={[styles.label, active && styles.labelActive]} numberOfLines={1}>
@@ -31,31 +36,36 @@ export default function BottomNav({ tabs, activeId, onSelect }) {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: "row",
+    alignItems: "flex-end",
     borderTopWidth: 3,
     borderTopColor: colors.accent,
     backgroundColor: colors.panel,
+    paddingTop: spacing.xs,
     paddingBottom: spacing.xs,
   },
   item: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: spacing.xs,
-    gap: 2,
+    justifyContent: "flex-end",
+    gap: 3,
   },
-  indicator: { height: 3, width: 24, alignItems: "center", justifyContent: "center" },
-  indicatorDot: { width: 24, height: 3, borderRadius: 2, backgroundColor: colors.accent },
   iconWrap: {
-    width: 44,
-    height: 28,
+    width: 40,
+    height: 40,
     borderRadius: radii.pill,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: "transparent",
   },
-  iconWrapActive: {
-    backgroundColor: "rgba(255, 149, 0, 0.28)",
+  iconWrapHome: {
+    width: 56,
+    height: 56,
+    marginTop: -18,
+    backgroundColor: colors.panelAlt,
+    borderWidth: 3,
     borderColor: colors.accent,
+  },
+  iconWrapHomeActive: {
+    backgroundColor: colors.accent,
   },
   label: { fontSize: 10, fontWeight: "700", color: colors.textDim, letterSpacing: 0.3 },
   labelActive: { color: colors.accent, fontWeight: "800" },
