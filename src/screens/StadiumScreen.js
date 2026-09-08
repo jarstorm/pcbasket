@@ -40,7 +40,7 @@ export default function StadiumScreen() {
             label="ENTRADAS A LA VENTA"
             value={`${Math.max(0, team.stadium.capacity - (team.stadium.seasonTicketHolders || 0)).toLocaleString()}`}
           />
-          <StatRow label="PRECIO ENTRADA" value={`$${team.stadium.ticketPrice}`} />
+          <StatRow label="PRECIO ENTRADA" value={`€${team.stadium.ticketPrice}`} />
         </View>
         <Text style={styles.dim}>
           Los abonados se fijan al empezar la temporada (pagan de golpe) y ocupan su asiento siempre.
@@ -60,7 +60,7 @@ export default function StadiumScreen() {
           >
             <Text style={styles.priceBtnText}>−</Text>
           </Pressable>
-          <Text style={styles.priceValue}>${team.stadium.ticketPrice}</Text>
+          <Text style={styles.priceValue}>€{team.stadium.ticketPrice}</Text>
           <Pressable
             style={styles.priceBtn}
             onPress={() =>
@@ -90,7 +90,7 @@ export default function StadiumScreen() {
           >
             <Text style={styles.priceBtnText}>−</Text>
           </Pressable>
-          <Text style={styles.priceValue}>${team.stadium.seasonTicketPrice}</Text>
+          <Text style={styles.priceValue}>€{team.stadium.seasonTicketPrice}</Text>
           <Pressable
             style={styles.priceBtn}
             onPress={() =>
@@ -127,7 +127,7 @@ export default function StadiumScreen() {
                 </Text>
               </View>
               <Text style={[styles.tierCost, !affordable && styles.tierCostBad]}>
-                ${tier.cost.toLocaleString()}
+                €{tier.cost.toLocaleString()}
               </Text>
             </Pressable>
           );
@@ -168,7 +168,7 @@ export default function StadiumScreen() {
                 onPress={() => dispatch({ type: "BUILD_AMENITY", teamId: team.id, amenityId: a.id })}
                 style={styles.amenityBtn}
               >
-                ${a.cost.toLocaleString()}
+                €{a.cost.toLocaleString()}
               </Button>
             )}
           </View>

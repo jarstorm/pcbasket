@@ -87,7 +87,7 @@ export default function FinanceScreen() {
         <View style={styles.divider} />
         <Row label="Total ingresos" value={avgIncome} bold positive />
         <Text style={styles.small}>
-          Último partido en casa: {team.lastTicketRevenue ? `+$${team.lastTicketRevenue.toLocaleString()}` : "aún no jugado / fue fuera"}
+          Último partido en casa: {team.lastTicketRevenue ? `+€${team.lastTicketRevenue.toLocaleString()}` : "aún no jugado / fue fuera"}
         </Text>
       </Card>
 
@@ -104,9 +104,9 @@ export default function FinanceScreen() {
         <SectionHeader>BALANCE MEDIO POR MES</SectionHeader>
         <Text style={[styles.netValue, { color: avgNet >= 0 ? colors.win : colors.loss }]}>
           {avgNet >= 0 ? "+" : ""}
-          ${Math.round(avgNet).toLocaleString()}
+          €{Math.round(avgNet).toLocaleString()}
         </Text>
-        <Text style={styles.dim}>Presupuesto actual: ${team.budget.toLocaleString()}</Text>
+        <Text style={styles.dim}>Presupuesto actual: €{team.budget.toLocaleString()}</Text>
       </Card>
 
       <LoanCard team={team} playersById={state.playersById} dispatch={dispatch} />
@@ -142,7 +142,7 @@ export default function FinanceScreen() {
             <Row label="Gastos" value={-shownEntry.expenses} />
             <View style={styles.divider} />
             <Row label="Balance" value={shownEntry.net} bold />
-            <Text style={styles.small}>Presupuesto tras esa jornada: ${shownEntry.budget.toLocaleString()}</Text>
+            <Text style={styles.small}>Presupuesto tras esa jornada: €{shownEntry.budget.toLocaleString()}</Text>
           </>
         )}
       </Card>
@@ -187,8 +187,8 @@ function LoanCard({ team, playersById, dispatch }) {
     <Card>
       <SectionHeader>CRÉDITO</SectionHeader>
       <Text style={styles.dim}>
-        Puedes pedir hasta ${cap.toLocaleString()}, a devolver ${remaining.toLocaleString()} en{" "}
-        {LOAN_TERM_WEEKS} semanas (${weeklyPayment.toLocaleString()}/semana). El importe queda
+        Puedes pedir hasta €{cap.toLocaleString()}, a devolver €{remaining.toLocaleString()} en{" "}
+        {LOAN_TERM_WEEKS} semanas (€{weeklyPayment.toLocaleString()}/semana). El importe queda
         descontado semana a semana aunque el presupuesto entre en números rojos.
       </Text>
       <Button
@@ -196,7 +196,7 @@ function LoanCard({ team, playersById, dispatch }) {
         onPress={() => dispatch({ type: "REQUEST_LOAN", teamId: team.id, amount: cap })}
         style={{ marginTop: spacing.sm }}
       >
-        Pedir crédito de ${cap.toLocaleString()}
+        Pedir crédito de €{cap.toLocaleString()}
       </Button>
     </Card>
   );
@@ -209,7 +209,7 @@ function Row({ label, value, positive, bold }) {
       <Text style={[styles.rowLabel, bold && styles.bold]}>{label}</Text>
       <Text style={[styles.rowValue, { color }, bold && styles.bold]}>
         {value > 0 ? "+" : ""}
-        ${value.toLocaleString()}
+        €{value.toLocaleString()}
       </Text>
     </View>
   );

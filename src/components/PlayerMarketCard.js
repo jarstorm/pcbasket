@@ -49,12 +49,12 @@ export default function PlayerMarketCard({ player, teamName, feeLabel, feeValue,
         {feeLabel && (
           <View style={styles.footerCell}>
             <Text style={styles.footerLabel}>{feeLabel}</Text>
-            <Text style={styles.footerValue}>${feeValue.toLocaleString()}</Text>
+            <Text style={styles.footerValue}>€{feeValue.toLocaleString()}</Text>
           </View>
         )}
         <View style={[styles.footerCell, feeLabel && styles.footerCellBorder]}>
           <Text style={styles.footerLabel}>SALARIO/AÑO</Text>
-          <Text style={styles.footerValue}>${wageValue.toLocaleString()}</Text>
+          <Text style={styles.footerValue}>€{wageValue.toLocaleString()}</Text>
         </View>
         <Button primary disabled={disabled} onPress={onBuy} style={styles.buyBtn}>
           {buyLabel}

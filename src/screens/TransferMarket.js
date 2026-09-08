@@ -107,7 +107,7 @@ export default function TransferMarket() {
                 <View style={{ flex: 1 }}>
                   <Text style={styles.offerReceivedName}>{player.name}</Text>
                   <Text style={styles.dim}>
-                    {teamNameById[offer.fromTeamId] || "Un equipo"} ofrece $
+                    {teamNameById[offer.fromTeamId] || "Un equipo"} ofrece €
                     {offer.amount.toLocaleString()}
                   </Text>
                 </View>
@@ -133,7 +133,7 @@ export default function TransferMarket() {
       <Card>
         <SectionHeader>Mercado de fichajes</SectionHeader>
         <Text style={styles.dim}>
-          Presupuesto disponible: <Text style={[styles.bold, { color: colors.accent }]}>${team.budget.toLocaleString()}</Text>{" "}
+          Presupuesto disponible: <Text style={[styles.bold, { color: colors.accent }]}>€{team.budget.toLocaleString()}</Text>{" "}
           · Plantilla: {team.roster.length}/15
         </Text>
 
@@ -207,7 +207,7 @@ function MarketPlayerRow({ player, teamName, team, dispatch, annualWage }) {
             >
               <Text style={styles.stepBtnText}>−</Text>
             </Pressable>
-            <Text style={styles.offerAmount}>${amount.toLocaleString()}</Text>
+            <Text style={styles.offerAmount}>€{amount.toLocaleString()}</Text>
             <Pressable
               style={styles.stepBtn}
               onPress={() => setAmount(Math.min(player.value, amount + OFFER_STEP))}

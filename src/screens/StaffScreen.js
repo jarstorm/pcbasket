@@ -42,7 +42,7 @@ export default function StaffScreen() {
         </Text>
         <Text style={[styles.dim, { marginTop: spacing.xs }]}>
           Sueldo total de personal por jornada:{" "}
-          <Text style={styles.bold}>${totalStaffWage(team.staff).toLocaleString()}</Text>
+          <Text style={styles.bold}>€{totalStaffWage(team.staff).toLocaleString()}</Text>
         </Text>
       </Card>
 
@@ -65,7 +65,7 @@ export default function StaffScreen() {
                 <Text style={styles.roleLabel}>{role.label.toUpperCase()}</Text>
                 <Text style={styles.roleDesc}>{role.desc}</Text>
                 <Text style={styles.roleStatus}>
-                  {current ? `${current.label} · $${current.wage.toLocaleString()}/jornada` : "Sin contratar"}
+                  {current ? `${current.label} · €${current.wage.toLocaleString()}/jornada` : "Sin contratar"}
                 </Text>
               </View>
             </Pressable>
@@ -75,7 +75,7 @@ export default function StaffScreen() {
                 onPress={() => dispatch({ type: "FIRE_STAFF_ROLE", teamId: team.id, roleId })}
                 style={{ marginTop: spacing.sm }}
               >
-                Despedir (indemnización ${(current.wage * state.schedule.length).toLocaleString()})
+                Despedir (indemnización €{(current.wage * state.schedule.length).toLocaleString()})
               </Button>
             ) : (
               isOpen && (
@@ -94,10 +94,10 @@ export default function StaffScreen() {
                         </View>
                         <View style={{ flex: 1 }}>
                           <Text style={styles.tierLabel}>{tier.label}</Text>
-                          <Text style={styles.tierDesc}>${tier.wage.toLocaleString()}/jornada</Text>
+                          <Text style={styles.tierDesc}>€{tier.wage.toLocaleString()}/jornada</Text>
                         </View>
                         <Text style={[styles.tierCost, !affordable && styles.tierCostBad]}>
-                          ${tier.hireCost.toLocaleString()}
+                          €{tier.hireCost.toLocaleString()}
                         </Text>
                       </Pressable>
                     );

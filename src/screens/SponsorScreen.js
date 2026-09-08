@@ -23,7 +23,7 @@ function OfferList({ title, offers, current, onSelect }) {
               <Text style={styles.offerLabel}>{offer.label}</Text>
               {isCurrent && <Text style={styles.offerCurrent}>Patrocinador actual</Text>}
             </View>
-            <Text style={styles.offerIncome}>+${offer.incomePerRound.toLocaleString()}/jornada</Text>
+            <Text style={styles.offerIncome}>+€{offer.incomePerRound.toLocaleString()}/jornada</Text>
           </Pressable>
         );
       })}
@@ -56,7 +56,7 @@ export default function SponsorScreen() {
           Automáticos, según división ({divisionName}) y posición — no se eligen, suben si mejoras
           en la tabla o asciendes de categoría.
         </Text>
-        <Text style={styles.tvIncome}>+${tvIncome.toLocaleString()}/jornada</Text>
+        <Text style={styles.tvIncome}>+€{tvIncome.toLocaleString()}/jornada</Text>
       </Card>
 
       <OfferList

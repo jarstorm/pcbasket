@@ -69,7 +69,7 @@ export default function TeamPicker() {
               <TeamLogo team={t} size={36} />
               <View style={{ flexShrink: 1 }}>
                 <Text style={styles.teamName}>{t.name}</Text>
-                <Text style={styles.teamBudget}>Presupuesto: ${t.budget.toLocaleString()}</Text>
+                <Text style={styles.teamBudget}>Presupuesto: €{t.budget.toLocaleString()}</Text>
               </View>
             </View>
           </Pressable>

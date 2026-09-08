@@ -70,7 +70,7 @@ function ContractOffer({ player, team, dispatch, roundsPerSeason, lawyerTier }) 
     <Card>
       <Text style={styles.name}>{player.name}</Text>
       <Text style={styles.dim}>
-        {player.age} años · OVR {player.overall} · sueldo actual ${player.wage.toLocaleString()}/jornada ($
+        {player.age} años · OVR {player.overall} · sueldo actual €{player.wage.toLocaleString()}/jornada (€
         {(player.wage * roundsPerSeason).toLocaleString()}/año)
       </Text>
 
@@ -84,8 +84,8 @@ function ContractOffer({ player, team, dispatch, roundsPerSeason, lawyerTier }) 
           return (
             <Text style={styles.lawyerHint}>
               {insight.exact
-                ? `El abogado dice que aceptará exactamente $${insight.exact.toLocaleString()}/jornada.`
-                : `El abogado estima que aceptaría entre $${insight.low.toLocaleString()} y $${insight.high.toLocaleString()}/jornada.`}
+                ? `El abogado dice que aceptará exactamente €${insight.exact.toLocaleString()}/jornada.`
+                : `El abogado estima que aceptaría entre €${insight.low.toLocaleString()} y €${insight.high.toLocaleString()}/jornada.`}
             </Text>
           );
         })()
@@ -109,12 +109,12 @@ function ContractOffer({ player, team, dispatch, roundsPerSeason, lawyerTier }) 
         <Pressable style={styles.stepBtn} onPress={() => setWage(Math.max(200, wage - 200))}>
           <Text style={styles.stepBtnText}>−</Text>
         </Pressable>
-        <Text style={styles.wageValue}>${wage.toLocaleString()}</Text>
+        <Text style={styles.wageValue}>€{wage.toLocaleString()}</Text>
         <Pressable style={styles.stepBtn} onPress={() => setWage(wage + 200)}>
           <Text style={styles.stepBtnText}>+</Text>
         </Pressable>
       </View>
-      <Text style={styles.dim}>${(wage * roundsPerSeason).toLocaleString()}/año</Text>
+      <Text style={styles.dim}>€{(wage * roundsPerSeason).toLocaleString()}/año</Text>
 
       <Button
         primary

@@ -69,11 +69,11 @@ export default function PlayerDetailScreen({ player }) {
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>CLÁUSULA</Text>
-          <Text style={styles.infoValue}>${player.value.toLocaleString()}</Text>
+          <Text style={styles.infoValue}>€{player.value.toLocaleString()}</Text>
         </View>
         <View style={[styles.infoRow, { borderBottomWidth: 0 }]}>
           <Text style={styles.infoLabel}>SALARIO/AÑO</Text>
-          <Text style={styles.infoValue}>${annualWage.toLocaleString()}</Text>
+          <Text style={styles.infoValue}>€{annualWage.toLocaleString()}</Text>
         </View>
       </Card>
 

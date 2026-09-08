@@ -335,7 +335,7 @@ describe("reducer", () => {
     const state = baseState();
     const next = reducer(state, { type: "MAKE_OFFER", buyerTeamId: "a", playerId: "p4", amount: 70000 });
     expect(next.teams.find((t) => t.id === "b").roster).toContain("p4");
-    expect(next.log[0].text).toContain("$90,000");
+    expect(next.log[0].text).toContain("€90,000");
   });
 
   it("MAKE_OFFER far below value gets flatly rejected", () => {
