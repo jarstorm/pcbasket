@@ -13,9 +13,11 @@ import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
 const POSITION_HUE = { PG: 205, SG: 165, SF: 130, PF: 35, C: 5 };
-// Rough "1-3-1" spread across the full-court diagram (left hoop / right
-// hoop), matched to the design mockup — not real tactical positioning.
-const COURT_SPOT = { PG: [22, 76], SG: [20, 24], SF: [48, 56], PF: [70, 22], C: [72, 76] };
+// Half-court position spread (hoop at the bottom) — base up top near
+// half-court, escolta/alero on the wings, ala-pivot/pívot down low by the
+// basket, matching the classic position diagram — not real tactics.
+const COURT_SPOT = { PG: [50, 16], SG: [22, 46], SF: [78, 46], PF: [32, 80], C: [68, 80] };
+const PLANK_COUNT = 9;
 
 export default function RosterScreen({ onOpenPlayer }) {
   const { state, dispatch } = useGame();
@@ -45,7 +47,7 @@ export default function RosterScreen({ onOpenPlayer }) {
     const label = (p) => {
       const penalized = p.position !== pos ? Math.round(p.overall * positionMismatchFactor(pos, p.position)) : null;
       const ovrLabel = penalized !== null ? `${p.overall}→${penalized}` : `${p.overall}`;
-      return `${p.name} (${POSITION_ABBR[p.position] || p.position}, ${ovrLabel})${isForeign(p) ? " · EXT" : ""}${penalized !== null ? " ⚠" : ""}`;
+      return `${p.name} (${POSITION_ABBR[p.position] || p.position}, ${ovrLabel})${isForeign(p) ? " •" : ""}${penalized !== null ? " ⚠" : ""}`;
     };
     const options = [
       { label: "-- vacío --", value: "" },
@@ -84,12 +86,23 @@ export default function RosterScreen({ onOpenPlayer }) {
         </View>
 
         <View style={styles.court}>
+          {Array.from({ length: PLANK_COUNT }, (_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.plank,
+                i % 2 === 1 && styles.plankAlt,
+                { left: `${(i * 100) / PLANK_COUNT}%`, width: `${100 / PLANK_COUNT}%` },
+              ]}
+            />
+          ))}
           <Image source={require("../../assets/court-texture.png")} style={styles.courtTexture} resizeMode="repeat" />
           <View style={styles.courtBorder} />
-          <View style={styles.centerLine} />
-          <View style={styles.centerCircle} />
-          <View style={[styles.paint, styles.paintLeft]} />
-          <View style={[styles.paint, styles.paintRight]} />
+          <View style={styles.threePointArc} />
+          <View style={styles.key} />
+          <View style={styles.freeThrowCircle} />
+          <View style={styles.hoop} />
+          <View style={styles.backboard} />
           {lineupSlots.map((slot) => {
             const [x, y] = COURT_SPOT[slot.pos];
             return (
@@ -229,14 +242,16 @@ const styles = StyleSheet.create({
   summaryValue: { color: colors.text, fontWeight: "800" },
   summaryRow: { flexDirection: "row", gap: spacing.lg, marginBottom: spacing.sm },
   court: {
-    height: 210,
+    height: 300,
     borderRadius: radii.md,
     borderWidth: 2,
     borderColor: colors.border,
-    backgroundColor: colors.panelAlt,
+    backgroundColor: "#b97a3d",
     overflow: "hidden",
   },
-  courtTexture: { ...StyleSheet.absoluteFillObject, opacity: 0.5 },
+  plank: { position: "absolute", top: 0, bottom: 0, backgroundColor: "#c68d54" },
+  plankAlt: { backgroundColor: "#b97a3d" },
+  courtTexture: { ...StyleSheet.absoluteFillObject, opacity: 0.12 },
   courtBorder: {
     position: "absolute",
     left: 10,
@@ -244,40 +259,64 @@ const styles = StyleSheet.create({
     top: 8,
     bottom: 8,
     borderWidth: 2,
-    borderColor: "rgba(147,163,201,0.3)",
+    borderColor: "rgba(255,250,240,0.75)",
     borderRadius: 2,
   },
-  centerLine: {
+  // The three-point arc is a big circle centered below the baseline, mostly
+  // clipped by the court's overflow:hidden — only its top edge peeks in.
+  threePointArc: {
     position: "absolute",
     left: "50%",
-    top: 8,
+    bottom: -210,
+    width: 420,
+    height: 420,
+    marginLeft: -210,
+    borderRadius: 210,
+    borderWidth: 2,
+    borderColor: "rgba(255,250,240,0.6)",
+  },
+  key: {
+    position: "absolute",
+    left: "50%",
     bottom: 8,
-    width: 2,
-    backgroundColor: "rgba(147,163,201,0.16)",
+    width: 100,
+    height: 150,
+    marginLeft: -50,
+    borderWidth: 2,
+    borderColor: "rgba(255,250,240,0.65)",
+    borderBottomWidth: 0,
   },
-  centerCircle: {
+  freeThrowCircle: {
     position: "absolute",
     left: "50%",
-    top: "50%",
-    width: 48,
-    height: 48,
-    marginLeft: -24,
-    marginTop: -24,
+    bottom: 8 + 150 - 30,
+    width: 60,
+    height: 60,
+    marginLeft: -30,
     borderWidth: 2,
-    borderColor: "rgba(147,163,201,0.22)",
-    borderRadius: 24,
+    borderColor: "rgba(255,250,240,0.65)",
+    borderRadius: 30,
   },
-  paint: {
+  hoop: {
     position: "absolute",
-    top: "50%",
-    width: 78,
-    height: 128,
-    marginTop: -64,
+    left: "50%",
+    bottom: 14,
+    width: 20,
+    height: 20,
+    marginLeft: -10,
+    borderRadius: 10,
     borderWidth: 2,
-    borderColor: "rgba(147,163,201,0.22)",
+    borderColor: colors.accent,
   },
-  paintLeft: { left: 10, borderLeftWidth: 0, borderTopRightRadius: 99, borderBottomRightRadius: 99 },
-  paintRight: { right: 10, borderRightWidth: 0, borderTopLeftRadius: 99, borderBottomLeftRadius: 99 },
+  backboard: {
+    position: "absolute",
+    left: "50%",
+    bottom: 8,
+    width: 40,
+    height: 3,
+    marginLeft: -20,
+    backgroundColor: "rgba(255,250,240,0.75)",
+  },
   dotWrap: { position: "absolute", transform: [{ translateX: -37 }, { translateY: -30 }], width: 74 },
   dot: { alignItems: "center", gap: 3 },
   dotAvatar: {
@@ -320,7 +359,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     right: 12,
-    color: "rgba(147,163,201,0.5)",
+    color: "rgba(255,250,240,0.7)",
     fontSize: 8.5,
     fontWeight: "700",
     letterSpacing: 0.5,
