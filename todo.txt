@@ -16,3 +16,5 @@
 - [hecho] no poder estar en numeros rojos muchas jornadas
 - [hecho] las mejoras del estado no pueden hacerse automaticamente, deben llevar semanas
 - [hecho] los fichajes se pueden hacer ofertas? quizás esto sea muy complicado
+- Resumen de temporada con cambios de stats de jugadores: no implementado aún — si lo quieres, dime y lo añado a SeasonSummaryScreen.
+- Comprar barato/vender caro para facilitar el ascenso: no toqué esto, es un cambio de balance más subjetivo. Dime si quieres que ajuste evaluateTransferOffer/ofertas de IA en esa dirección.
