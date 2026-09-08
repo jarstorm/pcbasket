@@ -309,7 +309,7 @@ export function generateAcbDivision() {
   const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
 
   for (const rp of acbData.players) {
-    const player = buildRealIdentityRatedPlayer(rp, { base: randInt(65, 90), spread: 20 });
+    const player = buildRealIdentityRatedPlayer(rp, { base: randInt(70, 85), spread: 20 });
     players.push(player);
     const team = teamById[rp.teamId];
     if (team) team.roster.push(player.id);

@@ -81,14 +81,14 @@
       "nationality": "Estados Unidos",
       "heightCm": null,
       "ratings": {
-        "shooting": 82,
-        "defense": 44,
-        "passing": 69,
-        "rebounding": 52,
-        "physical": 63
+        "shooting": 89,
+        "defense": 51,
+        "passing": 76,
+        "rebounding": 59,
+        "physical": 70
       },
-      "overall": 52,
-      "potential": 52
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2818653",
@@ -99,14 +99,14 @@
       "nationality": "Mali",
       "heightCm": 208,
       "ratings": {
-        "shooting": 39,
-        "defense": 74,
-        "passing": 40,
-        "rebounding": 76,
-        "physical": 82
+        "shooting": 46,
+        "defense": 81,
+        "passing": 47,
+        "rebounding": 83,
+        "physical": 89
       },
-      "overall": 52,
-      "potential": 52
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2817123",
@@ -117,14 +117,14 @@
       "nationality": "Uganda",
       "heightCm": 203,
       "ratings": {
-        "shooting": 61,
-        "defense": 61,
-        "passing": 46,
-        "rebounding": 72,
-        "physical": 73
+        "shooting": 66,
+        "defense": 66,
+        "passing": 51,
+        "rebounding": 77,
+        "physical": 78
       },
-      "overall": 55,
-      "potential": 55
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp1676991",
@@ -135,14 +135,14 @@
       "nationality": "España",
       "heightCm": 193,
       "ratings": {
-        "shooting": 73,
-        "defense": 42,
-        "passing": 65,
-        "rebounding": 42,
-        "physical": 56
+        "shooting": 85,
+        "defense": 54,
+        "passing": 77,
+        "rebounding": 54,
+        "physical": 68
       },
-      "overall": 46,
-      "potential": 46
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2868750",
@@ -153,14 +153,14 @@
       "nationality": "Canada",
       "heightCm": null,
       "ratings": {
-        "shooting": 68,
-        "defense": 55,
-        "passing": 81,
-        "rebounding": 59,
-        "physical": 68
+        "shooting": 70,
+        "defense": 57,
+        "passing": 83,
+        "rebounding": 61,
+        "physical": 70
       },
-      "overall": 59,
-      "potential": 59
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2433482",
@@ -171,14 +171,14 @@
       "nationality": "Dinamarca",
       "heightCm": 208,
       "ratings": {
-        "shooting": 92,
-        "defense": 91,
-        "passing": 89,
-        "rebounding": 94,
-        "physical": 87
+        "shooting": 67,
+        "defense": 66,
+        "passing": 64,
+        "rebounding": 69,
+        "physical": 62
       },
-      "overall": 95,
-      "potential": 95
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp1381662",
@@ -189,14 +189,14 @@
       "nationality": "España",
       "heightCm": 185,
       "ratings": {
-        "shooting": 48,
-        "defense": 37,
-        "passing": 47,
-        "rebounding": 36,
-        "physical": 39
+        "shooting": 67,
+        "defense": 56,
+        "passing": 66,
+        "rebounding": 55,
+        "physical": 58
       },
-      "overall": 36,
-      "potential": 36
+      "overall": 55,
+      "potential": 55
     },
     {
       "id": "febp1869378",
@@ -207,14 +207,14 @@
       "nationality": "España",
       "heightCm": 198,
       "ratings": {
-        "shooting": 67,
-        "defense": 63,
-        "passing": 58,
-        "rebounding": 73,
-        "physical": 64
+        "shooting": 59,
+        "defense": 55,
+        "passing": 50,
+        "rebounding": 65,
+        "physical": 56
       },
-      "overall": 72,
-      "potential": 72
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2734619",
@@ -225,14 +225,14 @@
       "nationality": "Belgica",
       "heightCm": 195,
       "ratings": {
-        "shooting": 56,
-        "defense": 73,
-        "passing": 59,
-        "rebounding": 71,
-        "physical": 58
+        "shooting": 60,
+        "defense": 77,
+        "passing": 63,
+        "rebounding": 75,
+        "physical": 62
       },
-      "overall": 56,
-      "potential": 56
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2863973",
@@ -243,14 +243,14 @@
       "nationality": "República Dominicana",
       "heightCm": 193,
       "ratings": {
-        "shooting": 88,
-        "defense": 59,
-        "passing": 75,
-        "rebounding": 73,
-        "physical": 58
+        "shooting": 71,
+        "defense": 42,
+        "passing": 58,
+        "rebounding": 56,
+        "physical": 41
       },
-      "overall": 84,
-      "potential": 84
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp1997161",
@@ -261,14 +261,14 @@
       "nationality": "España",
       "heightCm": 204,
       "ratings": {
-        "shooting": 51,
-        "defense": 42,
-        "passing": 41,
-        "rebounding": 44,
-        "physical": 71
+        "shooting": 67,
+        "defense": 58,
+        "passing": 57,
+        "rebounding": 60,
+        "physical": 87
       },
-      "overall": 40,
-      "potential": 40
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp1285873",
@@ -279,14 +279,14 @@
       "nationality": "España",
       "heightCm": 188,
       "ratings": {
-        "shooting": 82,
-        "defense": 60,
-        "passing": 87,
-        "rebounding": 57,
-        "physical": 52
+        "shooting": 68,
+        "defense": 46,
+        "passing": 73,
+        "rebounding": 43,
+        "physical": 38
       },
-      "overall": 80,
-      "potential": 80
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2650871",
@@ -297,14 +297,14 @@
       "nationality": "Portugal",
       "heightCm": 183,
       "ratings": {
-        "shooting": 86,
-        "defense": 56,
-        "passing": 88,
-        "rebounding": 60,
-        "physical": 46
+        "shooting": 72,
+        "defense": 42,
+        "passing": 74,
+        "rebounding": 46,
+        "physical": 32
       },
-      "overall": 80,
-      "potential": 80
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp1886852",
@@ -315,14 +315,14 @@
       "nationality": "España",
       "heightCm": 194,
       "ratings": {
-        "shooting": 65,
-        "defense": 48,
-        "passing": 55,
-        "rebounding": 55,
-        "physical": 53
+        "shooting": 63,
+        "defense": 46,
+        "passing": 53,
+        "rebounding": 53,
+        "physical": 51
       },
-      "overall": 65,
-      "potential": 65
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2654188",
@@ -333,14 +333,14 @@
       "nationality": "Jamaica",
       "heightCm": 218,
       "ratings": {
-        "shooting": 43,
-        "defense": 88,
-        "passing": 40,
-        "rebounding": 88,
-        "physical": 89
+        "shooting": 41,
+        "defense": 86,
+        "passing": 38,
+        "rebounding": 86,
+        "physical": 87
       },
-      "overall": 64,
-      "potential": 64
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp1765084",
@@ -351,14 +351,14 @@
       "nationality": "España",
       "heightCm": 195,
       "ratings": {
-        "shooting": 44,
-        "defense": 38,
-        "passing": 44,
-        "rebounding": 41,
-        "physical": 50
+        "shooting": 61,
+        "defense": 55,
+        "passing": 61,
+        "rebounding": 58,
+        "physical": 67
       },
-      "overall": 39,
-      "potential": 39
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp1863291",
@@ -369,14 +369,14 @@
       "nationality": "España",
       "heightCm": 202,
       "ratings": {
-        "shooting": 41,
-        "defense": 56,
-        "passing": 55,
-        "rebounding": 73,
-        "physical": 72
+        "shooting": 44,
+        "defense": 59,
+        "passing": 58,
+        "rebounding": 76,
+        "physical": 75
       },
-      "overall": 57,
-      "potential": 57
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2819335",
@@ -387,14 +387,14 @@
       "nationality": "Estonia",
       "heightCm": 196,
       "ratings": {
-        "shooting": 48,
-        "defense": 67,
-        "passing": 73,
-        "rebounding": 53,
-        "physical": 62
+        "shooting": 57,
+        "defense": 76,
+        "passing": 82,
+        "rebounding": 62,
+        "physical": 71
       },
-      "overall": 49,
-      "potential": 49
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2819327",
@@ -405,14 +405,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 193,
       "ratings": {
-        "shooting": 80,
-        "defense": 55,
-        "passing": 74,
-        "rebounding": 59,
-        "physical": 60
+        "shooting": 71,
+        "defense": 46,
+        "passing": 65,
+        "rebounding": 50,
+        "physical": 51
       },
-      "overall": 73,
-      "potential": 73
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2781800",
@@ -423,14 +423,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 203,
       "ratings": {
-        "shooting": 77,
-        "defense": 82,
-        "passing": 75,
-        "rebounding": 84,
-        "physical": 79
+        "shooting": 64,
+        "defense": 69,
+        "passing": 62,
+        "rebounding": 71,
+        "physical": 66
       },
-      "overall": 79,
-      "potential": 79
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2819330",
@@ -441,14 +441,14 @@
       "nationality": "Nigeria",
       "heightCm": 202,
       "ratings": {
-        "shooting": 50,
-        "defense": 73,
-        "passing": 47,
-        "rebounding": 82,
-        "physical": 79
+        "shooting": 38,
+        "defense": 61,
+        "passing": 35,
+        "rebounding": 70,
+        "physical": 67
       },
-      "overall": 77,
-      "potential": 77
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2819332",
@@ -459,14 +459,14 @@
       "nationality": "Portugal",
       "heightCm": 203,
       "ratings": {
-        "shooting": 53,
-        "defense": 43,
-        "passing": 53,
-        "rebounding": 47,
-        "physical": 71
+        "shooting": 68,
+        "defense": 58,
+        "passing": 68,
+        "rebounding": 62,
+        "physical": 86
       },
-      "overall": 41,
-      "potential": 44
+      "overall": 56,
+      "potential": 59
     },
     {
       "id": "febp1778999",
@@ -477,14 +477,14 @@
       "nationality": "España",
       "heightCm": 193,
       "ratings": {
-        "shooting": 66,
-        "defense": 79,
-        "passing": 88,
-        "rebounding": 73,
-        "physical": 62
+        "shooting": 54,
+        "defense": 67,
+        "passing": 76,
+        "rebounding": 61,
+        "physical": 50
       },
-      "overall": 78,
-      "potential": 82
+      "overall": 66,
+      "potential": 70
     },
     {
       "id": "febp2867056",
@@ -495,14 +495,14 @@
       "nationality": "Bosnia-Herzergovina",
       "heightCm": null,
       "ratings": {
-        "shooting": 47,
-        "defense": 50,
-        "passing": 60,
-        "rebounding": 56,
-        "physical": 63
+        "shooting": 64,
+        "defense": 67,
+        "passing": 77,
+        "rebounding": 73,
+        "physical": 80
       },
-      "overall": 39,
-      "potential": 39
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp1382456",
@@ -513,14 +513,14 @@
       "nationality": "España",
       "heightCm": 212,
       "ratings": {
-        "shooting": 40,
-        "defense": 51,
-        "passing": 39,
-        "rebounding": 60,
-        "physical": 84
+        "shooting": 51,
+        "defense": 62,
+        "passing": 50,
+        "rebounding": 70,
+        "physical": 96
       },
-      "overall": 47,
-      "potential": 47
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2785180",
@@ -531,14 +531,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 180,
       "ratings": {
-        "shooting": 65,
-        "defense": 44,
-        "passing": 64,
-        "rebounding": 45,
-        "physical": 38
+        "shooting": 75,
+        "defense": 54,
+        "passing": 74,
+        "rebounding": 55,
+        "physical": 48
       },
-      "overall": 48,
-      "potential": 48
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp1496030",
@@ -549,14 +549,14 @@
       "nationality": "España",
       "heightCm": 186,
       "ratings": {
-        "shooting": 48,
-        "defense": 45,
-        "passing": 82,
-        "rebounding": 41,
-        "physical": 42
+        "shooting": 59,
+        "defense": 56,
+        "passing": 93,
+        "rebounding": 52,
+        "physical": 53
       },
-      "overall": 47,
-      "potential": 47
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2820270",
@@ -567,14 +567,14 @@
       "nationality": "Haiti",
       "heightCm": 198,
       "ratings": {
-        "shooting": 66,
-        "defense": 64,
-        "passing": 53,
-        "rebounding": 65,
-        "physical": 65
+        "shooting": 72,
+        "defense": 70,
+        "passing": 59,
+        "rebounding": 71,
+        "physical": 71
       },
-      "overall": 53,
-      "potential": 53
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2650859",
@@ -585,14 +585,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 192,
       "ratings": {
-        "shooting": 93,
-        "defense": 61,
-        "passing": 85,
-        "rebounding": 57,
-        "physical": 59
+        "shooting": 73,
+        "defense": 41,
+        "passing": 65,
+        "rebounding": 37,
+        "physical": 39
       },
-      "overall": 89,
-      "potential": 89
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp1938697",
@@ -603,14 +603,14 @@
       "nationality": "España",
       "heightCm": 180,
       "ratings": {
-        "shooting": 76,
-        "defense": 42,
-        "passing": 64,
-        "rebounding": 40,
-        "physical": 40
+        "shooting": 82,
+        "defense": 48,
+        "passing": 70,
+        "rebounding": 46,
+        "physical": 46
       },
-      "overall": 53,
-      "potential": 53
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp1784407",
@@ -621,14 +621,14 @@
       "nationality": "España",
       "heightCm": 196,
       "ratings": {
-        "shooting": 41,
-        "defense": 38,
-        "passing": 53,
-        "rebounding": 37,
-        "physical": 55
+        "shooting": 60,
+        "defense": 57,
+        "passing": 72,
+        "rebounding": 56,
+        "physical": 74
       },
-      "overall": 37,
-      "potential": 37
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2869790",
@@ -639,14 +639,14 @@
       "nationality": "Noruega",
       "heightCm": null,
       "ratings": {
-        "shooting": 67,
-        "defense": 37,
-        "passing": 36,
-        "rebounding": 38,
-        "physical": 59
+        "shooting": 86,
+        "defense": 56,
+        "passing": 55,
+        "rebounding": 57,
+        "physical": 78
       },
-      "overall": 36,
-      "potential": 36
+      "overall": 55,
+      "potential": 55
     },
     {
       "id": "febp2662856",
@@ -657,14 +657,14 @@
       "nationality": "Austria",
       "heightCm": 203,
       "ratings": {
-        "shooting": 38,
-        "defense": 62,
-        "passing": 58,
-        "rebounding": 69,
-        "physical": 78
+        "shooting": 51,
+        "defense": 75,
+        "passing": 71,
+        "rebounding": 82,
+        "physical": 91
       },
-      "overall": 44,
-      "potential": 44
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp1875914",
@@ -675,14 +675,14 @@
       "nationality": "España",
       "heightCm": 193,
       "ratings": {
-        "shooting": 66,
-        "defense": 81,
-        "passing": 76,
-        "rebounding": 90,
-        "physical": 54
+        "shooting": 52,
+        "defense": 67,
+        "passing": 62,
+        "rebounding": 76,
+        "physical": 40
       },
-      "overall": 81,
-      "potential": 81
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp1715117",
@@ -693,14 +693,14 @@
       "nationality": "España",
       "heightCm": 202,
       "ratings": {
-        "shooting": 73,
-        "defense": 84,
-        "passing": 57,
-        "rebounding": 85,
-        "physical": 74
+        "shooting": 66,
+        "defense": 76,
+        "passing": 50,
+        "rebounding": 78,
+        "physical": 67
       },
-      "overall": 71,
-      "potential": 71
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2702840",
@@ -711,14 +711,14 @@
       "nationality": "Rep. Democrática Del Congo",
       "heightCm": 205,
       "ratings": {
-        "shooting": 46,
-        "defense": 75,
-        "passing": 67,
-        "rebounding": 73,
-        "physical": 84
+        "shooting": 43,
+        "defense": 72,
+        "passing": 64,
+        "rebounding": 70,
+        "physical": 81
       },
-      "overall": 65,
-      "potential": 65
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp2446720",
@@ -729,14 +729,14 @@
       "nationality": "Italia",
       "heightCm": 185,
       "ratings": {
-        "shooting": 84,
-        "defense": 93,
-        "passing": 94,
-        "rebounding": 87,
-        "physical": 52
+        "shooting": 60,
+        "defense": 69,
+        "passing": 70,
+        "rebounding": 63,
+        "physical": 30
       },
-      "overall": 94,
-      "potential": 94
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp2524084",
@@ -747,14 +747,14 @@
       "nationality": "Suecia",
       "heightCm": 203,
       "ratings": {
-        "shooting": 57,
-        "defense": 71,
-        "passing": 53,
-        "rebounding": 59,
-        "physical": 77
+        "shooting": 64,
+        "defense": 78,
+        "passing": 60,
+        "rebounding": 66,
+        "physical": 84
       },
-      "overall": 53,
-      "potential": 53
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2640794",
@@ -765,14 +765,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 188,
       "ratings": {
-        "shooting": 93,
-        "defense": 80,
-        "passing": 89,
-        "rebounding": 70,
-        "physical": 50
+        "shooting": 70,
+        "defense": 57,
+        "passing": 66,
+        "rebounding": 47,
+        "physical": 30
       },
-      "overall": 93,
-      "potential": 93
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp2524267",
@@ -783,14 +783,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 196,
       "ratings": {
-        "shooting": 89,
-        "defense": 68,
-        "passing": 65,
-        "rebounding": 79,
-        "physical": 65
+        "shooting": 72,
+        "defense": 51,
+        "passing": 48,
+        "rebounding": 62,
+        "physical": 48
       },
-      "overall": 84,
-      "potential": 84
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2528063",
@@ -801,14 +801,14 @@
       "nationality": "Portugal",
       "heightCm": 198,
       "ratings": {
-        "shooting": 72,
-        "defense": 75,
-        "passing": 79,
-        "rebounding": 70,
-        "physical": 66
+        "shooting": 62,
+        "defense": 65,
+        "passing": 69,
+        "rebounding": 60,
+        "physical": 56
       },
-      "overall": 75,
-      "potential": 75
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2219665",
@@ -819,14 +819,14 @@
       "nationality": "España",
       "heightCm": 218,
       "ratings": {
-        "shooting": 53,
-        "defense": 86,
-        "passing": 55,
-        "rebounding": 88,
-        "physical": 93
+        "shooting": 30,
+        "defense": 63,
+        "passing": 32,
+        "rebounding": 65,
+        "physical": 70
       },
-      "overall": 92,
-      "potential": 92
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2082696",
@@ -837,14 +837,14 @@
       "nationality": "España",
       "heightCm": 206,
       "ratings": {
-        "shooting": 37,
-        "defense": 42,
-        "passing": 47,
-        "rebounding": 40,
-        "physical": 74
+        "shooting": 52,
+        "defense": 57,
+        "passing": 62,
+        "rebounding": 55,
+        "physical": 89
       },
-      "overall": 42,
-      "potential": 42
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp1836771",
@@ -855,14 +855,14 @@
       "nationality": "España",
       "heightCm": 207,
       "ratings": {
-        "shooting": 67,
-        "defense": 75,
-        "passing": 70,
-        "rebounding": 68,
-        "physical": 85
+        "shooting": 62,
+        "defense": 70,
+        "passing": 65,
+        "rebounding": 63,
+        "physical": 80
       },
-      "overall": 68,
-      "potential": 68
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2870053",
@@ -873,14 +873,14 @@
       "nationality": "Estados Unidos",
       "heightCm": null,
       "ratings": {
-        "shooting": 37,
-        "defense": 37,
-        "passing": 68,
-        "rebounding": 36,
-        "physical": 57
+        "shooting": 55,
+        "defense": 55,
+        "passing": 86,
+        "rebounding": 54,
+        "physical": 75
       },
-      "overall": 38,
-      "potential": 38
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2026110",
@@ -891,14 +891,14 @@
       "nationality": "Serbia",
       "heightCm": 210,
       "ratings": {
-        "shooting": 40,
-        "defense": 51,
-        "passing": 62,
-        "rebounding": 40,
-        "physical": 83
+        "shooting": 50,
+        "defense": 61,
+        "passing": 72,
+        "rebounding": 50,
+        "physical": 93
       },
-      "overall": 49,
-      "potential": 49
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2371461",
@@ -909,14 +909,14 @@
       "nationality": "Serbia",
       "heightCm": 210,
       "ratings": {
-        "shooting": 50,
-        "defense": 81,
-        "passing": 79,
-        "rebounding": 84,
-        "physical": 88
+        "shooting": 33,
+        "defense": 64,
+        "passing": 62,
+        "rebounding": 67,
+        "physical": 71
       },
-      "overall": 85,
-      "potential": 85
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2482605",
@@ -927,14 +927,14 @@
       "nationality": "Suecia",
       "heightCm": 200,
       "ratings": {
-        "shooting": 60,
-        "defense": 68,
-        "passing": 71,
-        "rebounding": 54,
-        "physical": 73
+        "shooting": 52,
+        "defense": 60,
+        "passing": 63,
+        "rebounding": 46,
+        "physical": 65
       },
-      "overall": 72,
-      "potential": 72
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2734244",
@@ -945,14 +945,14 @@
       "nationality": "Bahamas",
       "heightCm": 196,
       "ratings": {
-        "shooting": 73,
-        "defense": 63,
-        "passing": 73,
-        "rebounding": 69,
-        "physical": 63
+        "shooting": 72,
+        "defense": 62,
+        "passing": 72,
+        "rebounding": 68,
+        "physical": 62
       },
-      "overall": 63,
-      "potential": 63
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp2220063",
@@ -963,14 +963,14 @@
       "nationality": "España",
       "heightCm": 185,
       "ratings": {
-        "shooting": 59,
-        "defense": 85,
-        "passing": 83,
-        "rebounding": 65,
-        "physical": 46
+        "shooting": 48,
+        "defense": 74,
+        "passing": 72,
+        "rebounding": 54,
+        "physical": 35
       },
-      "overall": 77,
-      "potential": 77
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2433193",
@@ -981,14 +981,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 178,
       "ratings": {
-        "shooting": 86,
-        "defense": 75,
-        "passing": 84,
-        "rebounding": 65,
-        "physical": 42
+        "shooting": 75,
+        "defense": 64,
+        "passing": 73,
+        "rebounding": 54,
+        "physical": 31
       },
-      "overall": 76,
-      "potential": 76
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2436780",
@@ -999,14 +999,14 @@
       "nationality": "Francia",
       "heightCm": 198,
       "ratings": {
-        "shooting": 90,
-        "defense": 76,
-        "passing": 93,
-        "rebounding": 66,
-        "physical": 71
+        "shooting": 70,
+        "defense": 56,
+        "passing": 73,
+        "rebounding": 46,
+        "physical": 51
       },
-      "overall": 88,
-      "potential": 88
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2533643",
@@ -1017,14 +1017,14 @@
       "nationality": "España",
       "heightCm": 179,
       "ratings": {
-        "shooting": 76,
-        "defense": 64,
-        "passing": 88,
-        "rebounding": 48,
-        "physical": 42
+        "shooting": 67,
+        "defense": 55,
+        "passing": 79,
+        "rebounding": 39,
+        "physical": 33
       },
-      "overall": 74,
-      "potential": 74
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2815273",
@@ -1035,14 +1035,14 @@
       "nationality": "Portugal",
       "heightCm": 200,
       "ratings": {
-        "shooting": 54,
-        "defense": 54,
-        "passing": 47,
-        "rebounding": 77,
-        "physical": 68
+        "shooting": 55,
+        "defense": 55,
+        "passing": 48,
+        "rebounding": 78,
+        "physical": 69
       },
-      "overall": 61,
-      "potential": 61
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp1591996",
@@ -1053,14 +1053,14 @@
       "nationality": "España",
       "heightCm": 201,
       "ratings": {
-        "shooting": 58,
-        "defense": 77,
-        "passing": 64,
-        "rebounding": 70,
-        "physical": 75
+        "shooting": 59,
+        "defense": 78,
+        "passing": 65,
+        "rebounding": 71,
+        "physical": 76
       },
-      "overall": 60,
-      "potential": 60
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp1197937",
@@ -1071,14 +1071,14 @@
       "nationality": "España",
       "heightCm": 192,
       "ratings": {
-        "shooting": 48,
-        "defense": 57,
-        "passing": 75,
-        "rebounding": 43,
-        "physical": 45
+        "shooting": 61,
+        "defense": 70,
+        "passing": 88,
+        "rebounding": 56,
+        "physical": 58
       },
-      "overall": 44,
-      "potential": 44
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp1766217",
@@ -1089,14 +1089,14 @@
       "nationality": "España",
       "heightCm": 202,
       "ratings": {
-        "shooting": 73,
-        "defense": 67,
-        "passing": 49,
-        "rebounding": 68,
-        "physical": 74
+        "shooting": 70,
+        "defense": 64,
+        "passing": 46,
+        "rebounding": 65,
+        "physical": 71
       },
-      "overall": 66,
-      "potential": 66
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp1759354",
@@ -1107,14 +1107,14 @@
       "nationality": "España",
       "heightCm": 208,
       "ratings": {
-        "shooting": 54,
-        "defense": 63,
-        "passing": 59,
-        "rebounding": 73,
-        "physical": 81
+        "shooting": 66,
+        "defense": 75,
+        "passing": 71,
+        "rebounding": 85,
+        "physical": 93
       },
-      "overall": 46,
-      "potential": 46
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp1688669",
@@ -1125,14 +1125,14 @@
       "nationality": "España",
       "heightCm": 186,
       "ratings": {
-        "shooting": 66,
-        "defense": 57,
-        "passing": 58,
-        "rebounding": 63,
-        "physical": 43
+        "shooting": 67,
+        "defense": 58,
+        "passing": 59,
+        "rebounding": 64,
+        "physical": 44
       },
-      "overall": 61,
-      "potential": 61
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp2812898",
@@ -1143,14 +1143,14 @@
       "nationality": "Belgica",
       "heightCm": 210,
       "ratings": {
-        "shooting": 45,
-        "defense": 91,
-        "passing": 41,
-        "rebounding": 90,
-        "physical": 90
+        "shooting": 39,
+        "defense": 85,
+        "passing": 35,
+        "rebounding": 84,
+        "physical": 84
       },
-      "overall": 70,
-      "potential": 70
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2860169",
@@ -1161,14 +1161,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 206,
       "ratings": {
-        "shooting": 43,
-        "defense": 70,
-        "passing": 52,
-        "rebounding": 77,
-        "physical": 80
+        "shooting": 40,
+        "defense": 67,
+        "passing": 49,
+        "rebounding": 74,
+        "physical": 77
       },
-      "overall": 66,
-      "potential": 66
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2850268",
@@ -1179,14 +1179,14 @@
       "nationality": "Georgia",
       "heightCm": 192,
       "ratings": {
-        "shooting": 75,
-        "defense": 57,
-        "passing": 55,
-        "rebounding": 51,
-        "physical": 55
+        "shooting": 79,
+        "defense": 61,
+        "passing": 59,
+        "rebounding": 55,
+        "physical": 59
       },
-      "overall": 56,
-      "potential": 56
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2863891",
@@ -1197,14 +1197,14 @@
       "nationality": "Canada",
       "heightCm": 194,
       "ratings": {
-        "shooting": 94,
-        "defense": 86,
-        "passing": 95,
-        "rebounding": 69,
-        "physical": 64
+        "shooting": 69,
+        "defense": 61,
+        "passing": 70,
+        "rebounding": 44,
+        "physical": 39
       },
-      "overall": 95,
-      "potential": 95
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp1593686",
@@ -1215,14 +1215,14 @@
       "nationality": "España",
       "heightCm": 203,
       "ratings": {
-        "shooting": 58,
-        "defense": 52,
-        "passing": 46,
-        "rebounding": 61,
-        "physical": 71
+        "shooting": 68,
+        "defense": 62,
+        "passing": 56,
+        "rebounding": 71,
+        "physical": 81
       },
-      "overall": 48,
-      "potential": 48
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2818672",
@@ -1233,14 +1233,14 @@
       "nationality": "Serbia",
       "heightCm": 205,
       "ratings": {
-        "shooting": 62,
-        "defense": 81,
-        "passing": 52,
-        "rebounding": 89,
-        "physical": 80
+        "shooting": 60,
+        "defense": 79,
+        "passing": 50,
+        "rebounding": 87,
+        "physical": 78
       },
-      "overall": 64,
-      "potential": 64
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp2092465",
@@ -1251,14 +1251,14 @@
       "nationality": "Suecia",
       "heightCm": 183,
       "ratings": {
-        "shooting": 83,
-        "defense": 60,
-        "passing": 82,
-        "rebounding": 57,
-        "physical": 44
+        "shooting": 75,
+        "defense": 52,
+        "passing": 74,
+        "rebounding": 49,
+        "physical": 36
       },
-      "overall": 73,
-      "potential": 73
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp1382607",
@@ -1269,14 +1269,14 @@
       "nationality": "España",
       "heightCm": 207,
       "ratings": {
-        "shooting": 37,
-        "defense": 39,
-        "passing": 44,
-        "rebounding": 46,
-        "physical": 75
+        "shooting": 52,
+        "defense": 54,
+        "passing": 59,
+        "rebounding": 61,
+        "physical": 90
       },
-      "overall": 42,
-      "potential": 42
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2819191",
@@ -1287,14 +1287,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 196,
       "ratings": {
-        "shooting": 70,
-        "defense": 47,
-        "passing": 50,
-        "rebounding": 42,
-        "physical": 60
+        "shooting": 81,
+        "defense": 58,
+        "passing": 61,
+        "rebounding": 53,
+        "physical": 71
       },
-      "overall": 47,
-      "potential": 47
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2734950",
@@ -1305,14 +1305,14 @@
       "nationality": "R. Del Congo",
       "heightCm": 196,
       "ratings": {
-        "shooting": 81,
-        "defense": 87,
-        "passing": 72,
-        "rebounding": 83,
-        "physical": 64
+        "shooting": 64,
+        "defense": 70,
+        "passing": 55,
+        "rebounding": 66,
+        "physical": 47
       },
-      "overall": 84,
-      "potential": 84
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2734949",
@@ -1323,14 +1323,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 193,
       "ratings": {
-        "shooting": 87,
-        "defense": 53,
-        "passing": 65,
-        "rebounding": 56,
-        "physical": 60
+        "shooting": 81,
+        "defense": 47,
+        "passing": 59,
+        "rebounding": 50,
+        "physical": 54
       },
-      "overall": 70,
-      "potential": 70
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp1253254",
@@ -1341,14 +1341,14 @@
       "nationality": "España",
       "heightCm": 196,
       "ratings": {
-        "shooting": 62,
-        "defense": 62,
-        "passing": 62,
-        "rebounding": 60,
-        "physical": 60
+        "shooting": 68,
+        "defense": 68,
+        "passing": 68,
+        "rebounding": 66,
+        "physical": 66
       },
-      "overall": 54,
-      "potential": 54
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp1750421",
@@ -1359,14 +1359,14 @@
       "nationality": "España",
       "heightCm": 194,
       "ratings": {
-        "shooting": 47,
-        "defense": 64,
-        "passing": 69,
-        "rebounding": 65,
-        "physical": 52
+        "shooting": 55,
+        "defense": 72,
+        "passing": 77,
+        "rebounding": 73,
+        "physical": 60
       },
-      "overall": 51,
-      "potential": 51
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp1376540",
@@ -1377,14 +1377,14 @@
       "nationality": "España",
       "heightCm": 192,
       "ratings": {
-        "shooting": 55,
-        "defense": 40,
-        "passing": 49,
-        "rebounding": 39,
-        "physical": 48
+        "shooting": 72,
+        "defense": 57,
+        "passing": 66,
+        "rebounding": 56,
+        "physical": 65
       },
-      "overall": 39,
-      "potential": 39
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2640789",
@@ -1395,14 +1395,14 @@
       "nationality": "Croacia",
       "heightCm": 205,
       "ratings": {
-        "shooting": 81,
-        "defense": 90,
-        "passing": 81,
-        "rebounding": 85,
-        "physical": 86
+        "shooting": 59,
+        "defense": 68,
+        "passing": 59,
+        "rebounding": 63,
+        "physical": 64
       },
-      "overall": 91,
-      "potential": 91
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2217440",
@@ -1431,14 +1431,14 @@
       "nationality": "Jamaica",
       "heightCm": 180,
       "ratings": {
-        "shooting": 84,
-        "defense": 81,
-        "passing": 87,
-        "rebounding": 75,
-        "physical": 46
+        "shooting": 63,
+        "defense": 60,
+        "passing": 66,
+        "rebounding": 54,
+        "physical": 30
       },
-      "overall": 89,
-      "potential": 89
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2325671",
@@ -1449,14 +1449,14 @@
       "nationality": "España",
       "heightCm": 187,
       "ratings": {
-        "shooting": 60,
-        "defense": 45,
-        "passing": 69,
-        "rebounding": 43,
-        "physical": 43
+        "shooting": 70,
+        "defense": 55,
+        "passing": 79,
+        "rebounding": 53,
+        "physical": 53
       },
-      "overall": 48,
-      "potential": 48
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2814907",
@@ -1467,14 +1467,14 @@
       "nationality": "Canada",
       "heightCm": 213,
       "ratings": {
-        "shooting": 47,
-        "defense": 85,
-        "passing": 50,
-        "rebounding": 81,
-        "physical": 90
+        "shooting": 38,
+        "defense": 76,
+        "passing": 41,
+        "rebounding": 72,
+        "physical": 81
       },
-      "overall": 74,
-      "potential": 76
+      "overall": 65,
+      "potential": 66
     },
     {
       "id": "febp2870010",
@@ -1485,14 +1485,14 @@
       "nationality": "Suecia",
       "heightCm": null,
       "ratings": {
-        "shooting": 46,
-        "defense": 76,
-        "passing": 74,
-        "rebounding": 80,
-        "physical": 63
+        "shooting": 56,
+        "defense": 86,
+        "passing": 84,
+        "rebounding": 90,
+        "physical": 73
       },
-      "overall": 49,
-      "potential": 49
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp1808439",
@@ -1503,14 +1503,14 @@
       "nationality": "España",
       "heightCm": 200,
       "ratings": {
-        "shooting": 51,
-        "defense": 69,
-        "passing": 67,
-        "rebounding": 72,
-        "physical": 69
+        "shooting": 60,
+        "defense": 78,
+        "passing": 76,
+        "rebounding": 81,
+        "physical": 78
       },
-      "overall": 50,
-      "potential": 50
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2814904",
@@ -1521,14 +1521,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 183,
       "ratings": {
-        "shooting": 84,
-        "defense": 63,
-        "passing": 85,
-        "rebounding": 53,
-        "physical": 45
+        "shooting": 75,
+        "defense": 54,
+        "passing": 76,
+        "rebounding": 44,
+        "physical": 36
       },
-      "overall": 74,
-      "potential": 74
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp1787363",
@@ -1539,14 +1539,14 @@
       "nationality": "España",
       "heightCm": 183,
       "ratings": {
-        "shooting": 74,
-        "defense": 61,
-        "passing": 65,
-        "rebounding": 58,
-        "physical": 42
+        "shooting": 71,
+        "defense": 58,
+        "passing": 62,
+        "rebounding": 55,
+        "physical": 39
       },
-      "overall": 66,
-      "potential": 66
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2869253",
@@ -1557,14 +1557,14 @@
       "nationality": "Nigeria",
       "heightCm": null,
       "ratings": {
-        "shooting": 90,
-        "defense": 90,
-        "passing": 80,
-        "rebounding": 67,
-        "physical": 71
+        "shooting": 74,
+        "defense": 74,
+        "passing": 64,
+        "rebounding": 51,
+        "physical": 55
       },
-      "overall": 83,
-      "potential": 83
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp1787348",
@@ -1575,14 +1575,14 @@
       "nationality": "España",
       "heightCm": 204,
       "ratings": {
-        "shooting": 67,
-        "defense": 78,
-        "passing": 69,
-        "rebounding": 85,
-        "physical": 81
+        "shooting": 62,
+        "defense": 73,
+        "passing": 64,
+        "rebounding": 80,
+        "physical": 76
       },
-      "overall": 68,
-      "potential": 68
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp1625687",
@@ -1593,14 +1593,14 @@
       "nationality": "España",
       "heightCm": 204,
       "ratings": {
-        "shooting": 67,
-        "defense": 59,
-        "passing": 58,
-        "rebounding": 69,
-        "physical": 75
+        "shooting": 75,
+        "defense": 67,
+        "passing": 66,
+        "rebounding": 77,
+        "physical": 83
       },
-      "overall": 51,
-      "potential": 51
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2814906",
@@ -1611,14 +1611,14 @@
       "nationality": "Suecia",
       "heightCm": 188,
       "ratings": {
-        "shooting": 80,
-        "defense": 57,
-        "passing": 84,
-        "rebounding": 57,
-        "physical": 50
+        "shooting": 74,
+        "defense": 51,
+        "passing": 78,
+        "rebounding": 51,
+        "physical": 44
       },
-      "overall": 69,
-      "potential": 69
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp1572466",
@@ -1629,14 +1629,14 @@
       "nationality": "España",
       "heightCm": 203,
       "ratings": {
-        "shooting": 68,
-        "defense": 60,
-        "passing": 68,
-        "rebounding": 69,
-        "physical": 79
+        "shooting": 62,
+        "defense": 54,
+        "passing": 62,
+        "rebounding": 63,
+        "physical": 73
       },
-      "overall": 69,
-      "potential": 69
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2736183",
@@ -1647,14 +1647,14 @@
       "nationality": "R. Checa",
       "heightCm": 206,
       "ratings": {
-        "shooting": 87,
-        "defense": 52,
-        "passing": 52,
-        "rebounding": 60,
-        "physical": 79
+        "shooting": 76,
+        "defense": 41,
+        "passing": 41,
+        "rebounding": 49,
+        "physical": 68
       },
-      "overall": 77,
-      "potential": 77
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2866764",
@@ -1665,14 +1665,14 @@
       "nationality": "España",
       "heightCm": 198,
       "ratings": {
-        "shooting": 63,
-        "defense": 91,
-        "passing": 83,
-        "rebounding": 87,
-        "physical": 68
+        "shooting": 49,
+        "defense": 77,
+        "passing": 69,
+        "rebounding": 73,
+        "physical": 54
       },
-      "overall": 81,
-      "potential": 81
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2787126",
@@ -1683,14 +1683,14 @@
       "nationality": "Dinamarca",
       "heightCm": 189,
       "ratings": {
-        "shooting": 92,
-        "defense": 60,
-        "passing": 82,
-        "rebounding": 68,
-        "physical": 55
+        "shooting": 72,
+        "defense": 40,
+        "passing": 62,
+        "rebounding": 48,
+        "physical": 35
       },
-      "overall": 88,
-      "potential": 88
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp1677841",
@@ -1701,14 +1701,14 @@
       "nationality": "España",
       "heightCm": 188,
       "ratings": {
-        "shooting": 55,
-        "defense": 66,
-        "passing": 68,
-        "rebounding": 70,
-        "physical": 46
+        "shooting": 58,
+        "defense": 69,
+        "passing": 71,
+        "rebounding": 73,
+        "physical": 49
       },
-      "overall": 58,
-      "potential": 58
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2647156",
@@ -1719,14 +1719,14 @@
       "nationality": "Francia",
       "heightCm": 213,
       "ratings": {
-        "shooting": 74,
-        "defense": 77,
-        "passing": 48,
-        "rebounding": 91,
-        "physical": 91
+        "shooting": 60,
+        "defense": 63,
+        "passing": 34,
+        "rebounding": 77,
+        "physical": 77
       },
-      "overall": 80,
-      "potential": 80
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp1251001",
@@ -1737,14 +1737,14 @@
       "nationality": "España",
       "heightCm": 184,
       "ratings": {
-        "shooting": 58,
-        "defense": 51,
-        "passing": 84,
-        "rebounding": 47,
-        "physical": 44
+        "shooting": 54,
+        "defense": 47,
+        "passing": 80,
+        "rebounding": 43,
+        "physical": 40
       },
-      "overall": 67,
-      "potential": 67
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp1978541",
@@ -1755,14 +1755,14 @@
       "nationality": "España",
       "heightCm": 191,
       "ratings": {
-        "shooting": 60,
-        "defense": 46,
-        "passing": 82,
-        "rebounding": 49,
-        "physical": 49
+        "shooting": 68,
+        "defense": 54,
+        "passing": 90,
+        "rebounding": 57,
+        "physical": 57
       },
-      "overall": 51,
-      "potential": 51
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2532075",
@@ -1773,14 +1773,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 193,
       "ratings": {
-        "shooting": 69,
-        "defense": 48,
-        "passing": 70,
-        "rebounding": 48,
-        "physical": 53
+        "shooting": 70,
+        "defense": 49,
+        "passing": 71,
+        "rebounding": 49,
+        "physical": 54
       },
-      "overall": 60,
-      "potential": 60
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2734873",
@@ -1791,14 +1791,14 @@
       "nationality": "Ucrania",
       "heightCm": 201,
       "ratings": {
-        "shooting": 52,
-        "defense": 39,
-        "passing": 47,
-        "rebounding": 42,
-        "physical": 63
+        "shooting": 68,
+        "defense": 55,
+        "passing": 63,
+        "rebounding": 58,
+        "physical": 79
       },
-      "overall": 41,
-      "potential": 41
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2869128",
@@ -1809,14 +1809,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 202,
       "ratings": {
-        "shooting": 52,
-        "defense": 76,
-        "passing": 52,
-        "rebounding": 89,
-        "physical": 75
+        "shooting": 50,
+        "defense": 74,
+        "passing": 50,
+        "rebounding": 87,
+        "physical": 73
       },
-      "overall": 64,
-      "potential": 64
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp1373532",
@@ -1827,14 +1827,14 @@
       "nationality": "España",
       "heightCm": 203,
       "ratings": {
-        "shooting": 72,
-        "defense": 68,
-        "passing": 62,
-        "rebounding": 75,
-        "physical": 77
+        "shooting": 65,
+        "defense": 61,
+        "passing": 55,
+        "rebounding": 68,
+        "physical": 70
       },
-      "overall": 71,
-      "potential": 71
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2734242",
@@ -1845,14 +1845,14 @@
       "nationality": "Países Bajos",
       "heightCm": 203,
       "ratings": {
-        "shooting": 50,
-        "defense": 47,
-        "passing": 51,
-        "rebounding": 55,
-        "physical": 72
+        "shooting": 64,
+        "defense": 61,
+        "passing": 65,
+        "rebounding": 69,
+        "physical": 86
       },
-      "overall": 43,
-      "potential": 43
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2180409",
@@ -1863,14 +1863,14 @@
       "nationality": "España",
       "heightCm": null,
       "ratings": {
-        "shooting": 35,
-        "defense": 35,
-        "passing": 37,
-        "rebounding": 35,
-        "physical": 53
+        "shooting": 55,
+        "defense": 55,
+        "passing": 57,
+        "rebounding": 55,
+        "physical": 73
       },
-      "overall": 35,
-      "potential": 35
+      "overall": 55,
+      "potential": 55
     },
     {
       "id": "febp2082685",
@@ -1881,14 +1881,14 @@
       "nationality": "España",
       "heightCm": 196,
       "ratings": {
-        "shooting": 74,
-        "defense": 91,
-        "passing": 74,
-        "rebounding": 90,
-        "physical": 66
+        "shooting": 56,
+        "defense": 72,
+        "passing": 56,
+        "rebounding": 71,
+        "physical": 47
       },
-      "overall": 87,
-      "potential": 87
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2275973",
@@ -1899,14 +1899,14 @@
       "nationality": "España",
       "heightCm": 188,
       "ratings": {
-        "shooting": 67,
-        "defense": 60,
-        "passing": 88,
-        "rebounding": 57,
-        "physical": 47
+        "shooting": 63,
+        "defense": 56,
+        "passing": 84,
+        "rebounding": 53,
+        "physical": 43
       },
-      "overall": 67,
-      "potential": 67
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2678649",
@@ -1935,14 +1935,14 @@
       "nationality": "Georgia",
       "heightCm": 203,
       "ratings": {
-        "shooting": 58,
-        "defense": 90,
-        "passing": 70,
-        "rebounding": 93,
-        "physical": 82
+        "shooting": 39,
+        "defense": 71,
+        "passing": 51,
+        "rebounding": 74,
+        "physical": 63
       },
-      "overall": 87,
-      "potential": 87
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp1822814",
@@ -1953,14 +1953,14 @@
       "nationality": "España",
       "heightCm": 191,
       "ratings": {
-        "shooting": 60,
-        "defense": 44,
-        "passing": 80,
-        "rebounding": 43,
-        "physical": 49
+        "shooting": 66,
+        "defense": 50,
+        "passing": 86,
+        "rebounding": 49,
+        "physical": 55
       },
-      "overall": 54,
-      "potential": 54
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2814207",
@@ -1971,14 +1971,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 195,
       "ratings": {
-        "shooting": 72,
-        "defense": 64,
-        "passing": 56,
-        "rebounding": 58,
-        "physical": 59
+        "shooting": 74,
+        "defense": 66,
+        "passing": 58,
+        "rebounding": 60,
+        "physical": 61
       },
-      "overall": 59,
-      "potential": 60
+      "overall": 61,
+      "potential": 62
     },
     {
       "id": "febp1447983",
@@ -1989,14 +1989,14 @@
       "nationality": "España",
       "heightCm": 194,
       "ratings": {
-        "shooting": 47,
-        "defense": 49,
-        "passing": 64,
-        "rebounding": 58,
-        "physical": 52
+        "shooting": 61,
+        "defense": 63,
+        "passing": 78,
+        "rebounding": 72,
+        "physical": 66
       },
-      "overall": 43,
-      "potential": 43
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2640663",
@@ -2007,14 +2007,14 @@
       "nationality": "Senegal",
       "heightCm": 218,
       "ratings": {
-        "shooting": 80,
-        "defense": 95,
-        "passing": 48,
-        "rebounding": 94,
-        "physical": 95
+        "shooting": 56,
+        "defense": 71,
+        "passing": 30,
+        "rebounding": 70,
+        "physical": 71
       },
-      "overall": 93,
-      "potential": 93
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp1988355",
@@ -2025,14 +2025,14 @@
       "nationality": "España",
       "heightCm": 208,
       "ratings": {
-        "shooting": 91,
-        "defense": 87,
-        "passing": 67,
-        "rebounding": 74,
-        "physical": 88
+        "shooting": 81,
+        "defense": 77,
+        "passing": 57,
+        "rebounding": 64,
+        "physical": 78
       },
-      "overall": 75,
-      "potential": 75
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2862573",
@@ -2043,14 +2043,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 198,
       "ratings": {
-        "shooting": 83,
-        "defense": 63,
-        "passing": 91,
-        "rebounding": 60,
-        "physical": 74
+        "shooting": 65,
+        "defense": 45,
+        "passing": 73,
+        "rebounding": 42,
+        "physical": 56
       },
-      "overall": 86,
-      "potential": 86
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp1749125",
@@ -2061,14 +2061,14 @@
       "nationality": "España",
       "heightCm": 191,
       "ratings": {
-        "shooting": 46,
-        "defense": 42,
-        "passing": 73,
-        "rebounding": 46,
-        "physical": 47
+        "shooting": 59,
+        "defense": 55,
+        "passing": 86,
+        "rebounding": 59,
+        "physical": 60
       },
-      "overall": 44,
-      "potential": 44
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2862313",
@@ -2079,14 +2079,14 @@
       "nationality": "Senegal",
       "heightCm": 208,
       "ratings": {
-        "shooting": 49,
-        "defense": 70,
-        "passing": 43,
-        "rebounding": 80,
-        "physical": 87
+        "shooting": 36,
+        "defense": 57,
+        "passing": 30,
+        "rebounding": 67,
+        "physical": 74
       },
-      "overall": 79,
-      "potential": 79
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2814191",
@@ -2097,14 +2097,14 @@
       "nationality": "Angola",
       "heightCm": 202,
       "ratings": {
-        "shooting": 47,
-        "defense": 38,
-        "passing": 37,
-        "rebounding": 40,
-        "physical": 66
+        "shooting": 64,
+        "defense": 55,
+        "passing": 54,
+        "rebounding": 57,
+        "physical": 83
       },
-      "overall": 39,
-      "potential": 39
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2814190",
@@ -2115,14 +2115,14 @@
       "nationality": "Montenegro",
       "heightCm": 200,
       "ratings": {
-        "shooting": 58,
-        "defense": 40,
-        "passing": 50,
-        "rebounding": 45,
-        "physical": 62
+        "shooting": 71,
+        "defense": 53,
+        "passing": 63,
+        "rebounding": 58,
+        "physical": 75
       },
-      "overall": 45,
-      "potential": 45
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2452677",
@@ -2133,14 +2133,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 193,
       "ratings": {
-        "shooting": 85,
-        "defense": 65,
-        "passing": 81,
-        "rebounding": 68,
-        "physical": 60
+        "shooting": 70,
+        "defense": 50,
+        "passing": 66,
+        "rebounding": 53,
+        "physical": 45
       },
-      "overall": 81,
-      "potential": 81
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2557970",
@@ -2151,14 +2151,14 @@
       "nationality": "España",
       "heightCm": 178,
       "ratings": {
-        "shooting": 66,
-        "defense": 84,
-        "passing": 93,
-        "rebounding": 70,
-        "physical": 44
+        "shooting": 48,
+        "defense": 66,
+        "passing": 75,
+        "rebounding": 52,
+        "physical": 30
       },
-      "overall": 86,
-      "potential": 86
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2644143",
@@ -2169,14 +2169,14 @@
       "nationality": "Portugal",
       "heightCm": 190,
       "ratings": {
-        "shooting": 87,
-        "defense": 64,
-        "passing": 93,
-        "rebounding": 54,
-        "physical": 53
+        "shooting": 66,
+        "defense": 43,
+        "passing": 72,
+        "rebounding": 33,
+        "physical": 32
       },
-      "overall": 90,
-      "potential": 90
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp1541543",
@@ -2187,14 +2187,14 @@
       "nationality": "España",
       "heightCm": 206,
       "ratings": {
-        "shooting": 83,
-        "defense": 74,
-        "passing": 61,
-        "rebounding": 77,
-        "physical": 83
+        "shooting": 72,
+        "defense": 63,
+        "passing": 50,
+        "rebounding": 66,
+        "physical": 72
       },
-      "overall": 76,
-      "potential": 76
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp1848359",
@@ -2205,14 +2205,14 @@
       "nationality": "España",
       "heightCm": 210,
       "ratings": {
-        "shooting": 55,
-        "defense": 89,
-        "passing": 51,
-        "rebounding": 88,
-        "physical": 90
+        "shooting": 43,
+        "defense": 77,
+        "passing": 39,
+        "rebounding": 76,
+        "physical": 78
       },
-      "overall": 78,
-      "potential": 78
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2371535",
@@ -2223,14 +2223,14 @@
       "nationality": "Italia",
       "heightCm": 188,
       "ratings": {
-        "shooting": 87,
-        "defense": 77,
-        "passing": 82,
-        "rebounding": 69,
-        "physical": 49
+        "shooting": 69,
+        "defense": 59,
+        "passing": 64,
+        "rebounding": 51,
+        "physical": 31
       },
-      "overall": 86,
-      "potential": 86
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp1491674",
@@ -2241,14 +2241,14 @@
       "nationality": "España",
       "heightCm": 197,
       "ratings": {
-        "shooting": 77,
-        "defense": 69,
-        "passing": 69,
-        "rebounding": 78,
-        "physical": 64
+        "shooting": 70,
+        "defense": 62,
+        "passing": 62,
+        "rebounding": 71,
+        "physical": 57
       },
-      "overall": 71,
-      "potential": 71
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2869453",
@@ -2259,14 +2259,14 @@
       "nationality": "Serbia",
       "heightCm": null,
       "ratings": {
-        "shooting": 55,
-        "defense": 48,
-        "passing": 54,
-        "rebounding": 57,
-        "physical": 62
+        "shooting": 68,
+        "defense": 61,
+        "passing": 67,
+        "rebounding": 70,
+        "physical": 75
       },
-      "overall": 45,
-      "potential": 45
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp2843861",
@@ -2277,14 +2277,14 @@
       "nationality": "Serbia",
       "heightCm": 202,
       "ratings": {
-        "shooting": 82,
-        "defense": 77,
-        "passing": 82,
-        "rebounding": 82,
-        "physical": 79
+        "shooting": 61,
+        "defense": 56,
+        "passing": 61,
+        "rebounding": 61,
+        "physical": 58
       },
-      "overall": 90,
-      "potential": 90
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2815798",
@@ -2295,14 +2295,14 @@
       "nationality": "Senegal",
       "heightCm": 211,
       "ratings": {
-        "shooting": 91,
-        "defense": 78,
-        "passing": 47,
-        "rebounding": 86,
-        "physical": 88
+        "shooting": 86,
+        "defense": 73,
+        "passing": 42,
+        "rebounding": 81,
+        "physical": 83
       },
-      "overall": 69,
-      "potential": 69
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2736779",
@@ -2313,14 +2313,14 @@
       "nationality": "España",
       "heightCm": 193,
       "ratings": {
-        "shooting": 59,
-        "defense": 40,
-        "passing": 40,
-        "rebounding": 38,
-        "physical": 47
+        "shooting": 75,
+        "defense": 56,
+        "passing": 56,
+        "rebounding": 54,
+        "physical": 63
       },
-      "overall": 40,
-      "potential": 40
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp1923881",
@@ -2331,14 +2331,14 @@
       "nationality": "España",
       "heightCm": 205,
       "ratings": {
-        "shooting": 58,
-        "defense": 79,
-        "passing": 51,
-        "rebounding": 74,
-        "physical": 81
+        "shooting": 59,
+        "defense": 80,
+        "passing": 52,
+        "rebounding": 75,
+        "physical": 82
       },
-      "overall": 60,
-      "potential": 60
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2820135",
@@ -2349,14 +2349,14 @@
       "nationality": "España",
       "heightCm": 212,
       "ratings": {
-        "shooting": 79,
-        "defense": 94,
-        "passing": 54,
-        "rebounding": 94,
-        "physical": 93
+        "shooting": 55,
+        "defense": 70,
+        "passing": 30,
+        "rebounding": 70,
+        "physical": 69
       },
-      "overall": 93,
-      "potential": 93
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2159336",
@@ -2367,14 +2367,14 @@
       "nationality": "España",
       "heightCm": 192,
       "ratings": {
-        "shooting": 65,
-        "defense": 68,
-        "passing": 63,
-        "rebounding": 66,
-        "physical": 57
+        "shooting": 63,
+        "defense": 66,
+        "passing": 61,
+        "rebounding": 64,
+        "physical": 55
       },
-      "overall": 64,
-      "potential": 67
+      "overall": 62,
+      "potential": 65
     },
     {
       "id": "febp1997544",
@@ -2385,14 +2385,14 @@
       "nationality": "España",
       "heightCm": 200,
       "ratings": {
-        "shooting": 51,
-        "defense": 47,
-        "passing": 45,
-        "rebounding": 44,
-        "physical": 65
+        "shooting": 67,
+        "defense": 63,
+        "passing": 61,
+        "rebounding": 60,
+        "physical": 81
       },
-      "overall": 40,
-      "potential": 40
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2525411",
@@ -2403,14 +2403,14 @@
       "nationality": "España",
       "heightCm": 208,
       "ratings": {
-        "shooting": 60,
-        "defense": 60,
-        "passing": 41,
-        "rebounding": 72,
-        "physical": 82
+        "shooting": 75,
+        "defense": 75,
+        "passing": 56,
+        "rebounding": 87,
+        "physical": 97
       },
-      "overall": 42,
-      "potential": 42
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp1525747",
@@ -2421,14 +2421,14 @@
       "nationality": "España",
       "heightCm": 185,
       "ratings": {
-        "shooting": 70,
-        "defense": 53,
-        "passing": 89,
-        "rebounding": 53,
-        "physical": 44
+        "shooting": 61,
+        "defense": 44,
+        "passing": 80,
+        "rebounding": 44,
+        "physical": 35
       },
-      "overall": 73,
-      "potential": 73
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp1384223",
@@ -2439,14 +2439,14 @@
       "nationality": "España",
       "heightCm": 180,
       "ratings": {
-        "shooting": 51,
-        "defense": 55,
-        "passing": 83,
-        "rebounding": 45,
-        "physical": 39
+        "shooting": 58,
+        "defense": 62,
+        "passing": 90,
+        "rebounding": 52,
+        "physical": 46
       },
-      "overall": 52,
-      "potential": 52
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2862304",
@@ -2457,14 +2457,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 210,
       "ratings": {
-        "shooting": 52,
-        "defense": 82,
-        "passing": 55,
-        "rebounding": 73,
-        "physical": 84
+        "shooting": 58,
+        "defense": 88,
+        "passing": 61,
+        "rebounding": 79,
+        "physical": 90
       },
-      "overall": 54,
-      "potential": 54
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2816796",
@@ -2475,14 +2475,14 @@
       "nationality": "República Dominicana",
       "heightCm": 196,
       "ratings": {
-        "shooting": 76,
-        "defense": 63,
-        "passing": 58,
-        "rebounding": 60,
-        "physical": 62
+        "shooting": 75,
+        "defense": 62,
+        "passing": 57,
+        "rebounding": 59,
+        "physical": 61
       },
-      "overall": 63,
-      "potential": 63
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp2816849",
@@ -2493,14 +2493,14 @@
       "nationality": "R. Checa",
       "heightCm": 190,
       "ratings": {
-        "shooting": 74,
-        "defense": 50,
-        "passing": 66,
-        "rebounding": 53,
-        "physical": 48
+        "shooting": 76,
+        "defense": 52,
+        "passing": 68,
+        "rebounding": 55,
+        "physical": 50
       },
-      "overall": 59,
-      "potential": 59
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2862296",
@@ -2511,14 +2511,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 193,
       "ratings": {
-        "shooting": 84,
-        "defense": 82,
-        "passing": 88,
-        "rebounding": 60,
-        "physical": 60
+        "shooting": 66,
+        "defense": 64,
+        "passing": 70,
+        "rebounding": 42,
+        "physical": 42
       },
-      "overall": 85,
-      "potential": 85
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp1509876",
@@ -2529,14 +2529,14 @@
       "nationality": "España",
       "heightCm": 204,
       "ratings": {
-        "shooting": 64,
-        "defense": 93,
-        "passing": 78,
-        "rebounding": 90,
-        "physical": 84
+        "shooting": 47,
+        "defense": 76,
+        "passing": 61,
+        "rebounding": 73,
+        "physical": 67
       },
-      "overall": 85,
-      "potential": 85
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2819257",
@@ -2547,14 +2547,14 @@
       "nationality": "Cuba",
       "heightCm": 206,
       "ratings": {
-        "shooting": 55,
-        "defense": 91,
-        "passing": 75,
-        "rebounding": 89,
-        "physical": 88
+        "shooting": 33,
+        "defense": 69,
+        "passing": 53,
+        "rebounding": 67,
+        "physical": 66
       },
-      "overall": 91,
-      "potential": 91
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp1597927",
@@ -2565,14 +2565,14 @@
       "nationality": "España",
       "heightCm": null,
       "ratings": {
-        "shooting": 36,
-        "defense": 35,
-        "passing": 38,
-        "rebounding": 36,
-        "physical": 52
+        "shooting": 55,
+        "defense": 54,
+        "passing": 57,
+        "rebounding": 55,
+        "physical": 71
       },
-      "overall": 36,
-      "potential": 36
+      "overall": 55,
+      "potential": 55
     },
     {
       "id": "febp2583212",
@@ -2583,14 +2583,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 193,
       "ratings": {
-        "shooting": 71,
-        "defense": 53,
-        "passing": 80,
-        "rebounding": 49,
-        "physical": 57
+        "shooting": 66,
+        "defense": 48,
+        "passing": 75,
+        "rebounding": 44,
+        "physical": 52
       },
-      "overall": 69,
-      "potential": 69
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2818075",
@@ -2601,14 +2601,14 @@
       "nationality": "Italia",
       "heightCm": 175,
       "ratings": {
-        "shooting": 81,
-        "defense": 76,
-        "passing": 91,
-        "rebounding": 68,
-        "physical": 44
+        "shooting": 65,
+        "defense": 60,
+        "passing": 75,
+        "rebounding": 52,
+        "physical": 30
       },
-      "overall": 83,
-      "potential": 83
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp1241485",
@@ -2619,14 +2619,14 @@
       "nationality": "España",
       "heightCm": 187,
       "ratings": {
-        "shooting": 39,
-        "defense": 42,
-        "passing": 70,
-        "rebounding": 39,
-        "physical": 40
+        "shooting": 57,
+        "defense": 60,
+        "passing": 88,
+        "rebounding": 57,
+        "physical": 58
       },
-      "overall": 38,
-      "potential": 38
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2027826",
@@ -2673,14 +2673,14 @@
       "nationality": "España",
       "heightCm": 190,
       "ratings": {
-        "shooting": 63,
-        "defense": 46,
-        "passing": 79,
-        "rebounding": 46,
-        "physical": 46
+        "shooting": 66,
+        "defense": 49,
+        "passing": 82,
+        "rebounding": 49,
+        "physical": 49
       },
-      "overall": 58,
-      "potential": 58
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2008018",
@@ -2691,14 +2691,14 @@
       "nationality": "España",
       "heightCm": 188,
       "ratings": {
-        "shooting": 39,
-        "defense": 35,
-        "passing": 48,
-        "rebounding": 36,
-        "physical": 39
+        "shooting": 58,
+        "defense": 54,
+        "passing": 67,
+        "rebounding": 55,
+        "physical": 58
       },
-      "overall": 36,
-      "potential": 36
+      "overall": 55,
+      "potential": 55
     },
     {
       "id": "febp2788739",
@@ -2727,14 +2727,14 @@
       "nationality": "España",
       "heightCm": 190,
       "ratings": {
-        "shooting": 88,
-        "defense": 56,
-        "passing": 61,
-        "rebounding": 47,
-        "physical": 53
+        "shooting": 82,
+        "defense": 50,
+        "passing": 55,
+        "rebounding": 41,
+        "physical": 47
       },
-      "overall": 70,
-      "potential": 70
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp2822577",
@@ -2745,14 +2745,14 @@
       "nationality": "Italia",
       "heightCm": 197,
       "ratings": {
-        "shooting": 52,
-        "defense": 44,
-        "passing": 51,
-        "rebounding": 49,
-        "physical": 58
+        "shooting": 66,
+        "defense": 58,
+        "passing": 65,
+        "rebounding": 63,
+        "physical": 72
       },
-      "overall": 43,
-      "potential": 43
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp1662155",
@@ -2763,14 +2763,14 @@
       "nationality": "España",
       "heightCm": 204,
       "ratings": {
-        "shooting": 73,
-        "defense": 78,
-        "passing": 76,
-        "rebounding": 89,
-        "physical": 82
+        "shooting": 62,
+        "defense": 67,
+        "passing": 65,
+        "rebounding": 78,
+        "physical": 71
       },
-      "overall": 76,
-      "potential": 76
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2822575",
@@ -2781,14 +2781,14 @@
       "nationality": "Eslovenia",
       "heightCm": 185,
       "ratings": {
-        "shooting": 66,
-        "defense": 72,
-        "passing": 87,
-        "rebounding": 60,
-        "physical": 47
+        "shooting": 58,
+        "defense": 64,
+        "passing": 79,
+        "rebounding": 52,
+        "physical": 39
       },
-      "overall": 72,
-      "potential": 72
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp1853585",
@@ -2799,14 +2799,14 @@
       "nationality": "España",
       "heightCm": 208,
       "ratings": {
-        "shooting": 86,
-        "defense": 84,
-        "passing": 46,
-        "rebounding": 89,
-        "physical": 87
+        "shooting": 75,
+        "defense": 73,
+        "passing": 35,
+        "rebounding": 78,
+        "physical": 76
       },
-      "overall": 76,
-      "potential": 76
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp1821152",
@@ -2817,14 +2817,14 @@
       "nationality": "España",
       "heightCm": 188,
       "ratings": {
-        "shooting": 45,
-        "defense": 40,
-        "passing": 45,
-        "rebounding": 39,
-        "physical": 43
+        "shooting": 63,
+        "defense": 58,
+        "passing": 63,
+        "rebounding": 57,
+        "physical": 61
       },
-      "overall": 38,
-      "potential": 38
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2735658",
@@ -2835,14 +2835,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 198,
       "ratings": {
-        "shooting": 66,
-        "defense": 47,
-        "passing": 50,
-        "rebounding": 48,
-        "physical": 61
+        "shooting": 75,
+        "defense": 56,
+        "passing": 59,
+        "rebounding": 57,
+        "physical": 70
       },
-      "overall": 49,
-      "potential": 49
+      "overall": 58,
+      "potential": 58
     },
     {
       "id": "febp1978545",
@@ -2853,14 +2853,14 @@
       "nationality": "España",
       "heightCm": 190,
       "ratings": {
-        "shooting": 87,
-        "defense": 87,
-        "passing": 72,
-        "rebounding": 82,
-        "physical": 57
+        "shooting": 69,
+        "defense": 69,
+        "passing": 54,
+        "rebounding": 64,
+        "physical": 39
       },
-      "overall": 86,
-      "potential": 86
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2819514",
@@ -2871,13 +2871,13 @@
       "nationality": "Nigeria",
       "heightCm": 201,
       "ratings": {
-        "shooting": 57,
-        "defense": 84,
-        "passing": 47,
-        "rebounding": 78,
-        "physical": 72
+        "shooting": 56,
+        "defense": 83,
+        "passing": 46,
+        "rebounding": 77,
+        "physical": 71
       },
-      "overall": 63,
+      "overall": 62,
       "potential": 64
     },
     {
@@ -2889,14 +2889,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 192,
       "ratings": {
-        "shooting": 86,
-        "defense": 63,
-        "passing": 84,
-        "rebounding": 68,
-        "physical": 57
+        "shooting": 71,
+        "defense": 48,
+        "passing": 69,
+        "rebounding": 53,
+        "physical": 42
       },
-      "overall": 81,
-      "potential": 81
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2822578",
@@ -2907,14 +2907,14 @@
       "nationality": "Ucrania",
       "heightCm": 203,
       "ratings": {
-        "shooting": 55,
-        "defense": 58,
-        "passing": 54,
-        "rebounding": 68,
-        "physical": 74
+        "shooting": 60,
+        "defense": 63,
+        "passing": 59,
+        "rebounding": 73,
+        "physical": 79
       },
-      "overall": 55,
-      "potential": 56
+      "overall": 60,
+      "potential": 62
     },
     {
       "id": "febp2839186",
@@ -2925,14 +2925,14 @@
       "nationality": "República Dominicana",
       "heightCm": 193,
       "ratings": {
-        "shooting": 93,
-        "defense": 94,
-        "passing": 92,
-        "rebounding": 90,
-        "physical": 62
+        "shooting": 69,
+        "defense": 70,
+        "passing": 68,
+        "rebounding": 66,
+        "physical": 38
       },
-      "overall": 94,
-      "potential": 94
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp2451497",
@@ -2943,14 +2943,14 @@
       "nationality": "Suecia",
       "heightCm": 190,
       "ratings": {
-        "shooting": 48,
-        "defense": 37,
-        "passing": 49,
-        "rebounding": 36,
-        "physical": 43
+        "shooting": 67,
+        "defense": 56,
+        "passing": 68,
+        "rebounding": 55,
+        "physical": 62
       },
-      "overall": 37,
-      "potential": 37
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp2275135",
@@ -2961,14 +2961,14 @@
       "nationality": "Italia",
       "heightCm": 201,
       "ratings": {
-        "shooting": 84,
-        "defense": 76,
-        "passing": 62,
-        "rebounding": 69,
-        "physical": 76
+        "shooting": 71,
+        "defense": 63,
+        "passing": 49,
+        "rebounding": 56,
+        "physical": 63
       },
-      "overall": 79,
-      "potential": 79
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2433615",
@@ -2979,14 +2979,14 @@
       "nationality": "Italia",
       "heightCm": 200,
       "ratings": {
-        "shooting": 56,
-        "defense": 57,
-        "passing": 52,
-        "rebounding": 54,
-        "physical": 69
+        "shooting": 68,
+        "defense": 69,
+        "passing": 64,
+        "rebounding": 66,
+        "physical": 81
       },
-      "overall": 46,
-      "potential": 50
+      "overall": 58,
+      "potential": 62
     },
     {
       "id": "febp2094445",
@@ -2997,14 +2997,14 @@
       "nationality": "España",
       "heightCm": 202,
       "ratings": {
-        "shooting": 39,
-        "defense": 50,
-        "passing": 39,
-        "rebounding": 66,
-        "physical": 69
+        "shooting": 48,
+        "defense": 59,
+        "passing": 48,
+        "rebounding": 75,
+        "physical": 78
       },
-      "overall": 50,
-      "potential": 50
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2734234",
@@ -3015,14 +3015,14 @@
       "nationality": "Italia",
       "heightCm": 191,
       "ratings": {
-        "shooting": 88,
-        "defense": 74,
-        "passing": 95,
-        "rebounding": 77,
-        "physical": 54
+        "shooting": 64,
+        "defense": 50,
+        "passing": 71,
+        "rebounding": 53,
+        "physical": 30
       },
-      "overall": 94,
-      "potential": 94
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp2032354",
@@ -3033,14 +3033,14 @@
       "nationality": "España",
       "heightCm": 208,
       "ratings": {
-        "shooting": 38,
-        "defense": 54,
-        "passing": 47,
-        "rebounding": 73,
-        "physical": 81
+        "shooting": 50,
+        "defense": 66,
+        "passing": 59,
+        "rebounding": 85,
+        "physical": 93
       },
-      "overall": 46,
-      "potential": 48
+      "overall": 58,
+      "potential": 60
     },
     {
       "id": "febp2818742",
@@ -3051,14 +3051,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 203,
       "ratings": {
-        "shooting": 76,
-        "defense": 86,
-        "passing": 79,
-        "rebounding": 83,
-        "physical": 81
+        "shooting": 60,
+        "defense": 70,
+        "passing": 63,
+        "rebounding": 67,
+        "physical": 65
       },
-      "overall": 83,
-      "potential": 83
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2865685",
@@ -3069,14 +3069,14 @@
       "nationality": "Senegal",
       "heightCm": 209,
       "ratings": {
-        "shooting": 40,
-        "defense": 62,
-        "passing": 37,
-        "rebounding": 57,
-        "physical": 83
+        "shooting": 49,
+        "defense": 71,
+        "passing": 46,
+        "rebounding": 66,
+        "physical": 92
       },
-      "overall": 50,
-      "potential": 50
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp2648543",
@@ -3087,14 +3087,14 @@
       "nationality": "Nigeria",
       "heightCm": 203,
       "ratings": {
-        "shooting": 51,
-        "defense": 83,
-        "passing": 49,
-        "rebounding": 77,
-        "physical": 84
+        "shooting": 36,
+        "defense": 68,
+        "passing": 34,
+        "rebounding": 62,
+        "physical": 69
       },
-      "overall": 82,
-      "potential": 82
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2815072",
@@ -3105,14 +3105,14 @@
       "nationality": "Finlandia",
       "heightCm": 190,
       "ratings": {
-        "shooting": 78,
-        "defense": 52,
-        "passing": 71,
-        "rebounding": 57,
-        "physical": 49
+        "shooting": 75,
+        "defense": 49,
+        "passing": 68,
+        "rebounding": 54,
+        "physical": 46
       },
-      "overall": 65,
-      "potential": 65
+      "overall": 62,
+      "potential": 62
     },
     {
       "id": "febp2790189",
@@ -3123,14 +3123,14 @@
       "nationality": "República Dominicana",
       "heightCm": 190,
       "ratings": {
-        "shooting": 92,
-        "defense": 64,
-        "passing": 78,
-        "rebounding": 57,
-        "physical": 52
+        "shooting": 72,
+        "defense": 44,
+        "passing": 58,
+        "rebounding": 37,
+        "physical": 32
       },
-      "overall": 88,
-      "potential": 88
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2818741",
@@ -3141,14 +3141,14 @@
       "nationality": "Polonia",
       "heightCm": 199,
       "ratings": {
-        "shooting": 74,
-        "defense": 85,
-        "passing": 47,
-        "rebounding": 85,
-        "physical": 74
+        "shooting": 55,
+        "defense": 66,
+        "passing": 30,
+        "rebounding": 66,
+        "physical": 55
       },
-      "overall": 87,
-      "potential": 87
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp1676845",
@@ -3159,14 +3159,14 @@
       "nationality": "España",
       "heightCm": 202,
       "ratings": {
-        "shooting": 50,
-        "defense": 75,
-        "passing": 61,
-        "rebounding": 78,
-        "physical": 71
+        "shooting": 52,
+        "defense": 77,
+        "passing": 63,
+        "rebounding": 80,
+        "physical": 73
       },
-      "overall": 59,
-      "potential": 59
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp1442713",
@@ -3177,14 +3177,14 @@
       "nationality": "España",
       "heightCm": 201,
       "ratings": {
-        "shooting": 77,
-        "defense": 49,
-        "passing": 58,
-        "rebounding": 59,
-        "physical": 70
+        "shooting": 81,
+        "defense": 53,
+        "passing": 62,
+        "rebounding": 63,
+        "physical": 74
       },
-      "overall": 56,
-      "potential": 56
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2274998",
@@ -3195,14 +3195,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 187,
       "ratings": {
-        "shooting": 92,
-        "defense": 66,
-        "passing": 89,
-        "rebounding": 57,
-        "physical": 52
+        "shooting": 70,
+        "defense": 44,
+        "passing": 67,
+        "rebounding": 35,
+        "physical": 30
       },
-      "overall": 91,
-      "potential": 91
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2446696",
@@ -3213,14 +3213,14 @@
       "nationality": "Rep. Democrática Del Congo",
       "heightCm": 205,
       "ratings": {
-        "shooting": 43,
-        "defense": 63,
-        "passing": 43,
-        "rebounding": 73,
-        "physical": 81
+        "shooting": 47,
+        "defense": 67,
+        "passing": 47,
+        "rebounding": 77,
+        "physical": 85
       },
-      "overall": 57,
-      "potential": 57
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2864604",
@@ -3231,14 +3231,14 @@
       "nationality": "Eslovenia",
       "heightCm": 194,
       "ratings": {
-        "shooting": 89,
-        "defense": 85,
-        "passing": 80,
-        "rebounding": 70,
-        "physical": 63
+        "shooting": 68,
+        "defense": 64,
+        "passing": 59,
+        "rebounding": 49,
+        "physical": 42
       },
-      "overall": 89,
-      "potential": 89
+      "overall": 68,
+      "potential": 68
     },
     {
       "id": "febp2869662",
@@ -3249,14 +3249,14 @@
       "nationality": "Suecia",
       "heightCm": null,
       "ratings": {
-        "shooting": 51,
-        "defense": 46,
-        "passing": 72,
-        "rebounding": 50,
-        "physical": 62
+        "shooting": 66,
+        "defense": 61,
+        "passing": 87,
+        "rebounding": 65,
+        "physical": 77
       },
-      "overall": 41,
-      "potential": 41
+      "overall": 56,
+      "potential": 56
     },
     {
       "id": "febp1821694",
@@ -3267,14 +3267,14 @@
       "nationality": "España",
       "heightCm": 189,
       "ratings": {
-        "shooting": 68,
-        "defense": 71,
-        "passing": 80,
-        "rebounding": 71,
-        "physical": 54
+        "shooting": 72,
+        "defense": 75,
+        "passing": 84,
+        "rebounding": 75,
+        "physical": 58
       },
-      "overall": 56,
-      "potential": 56
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2334516",
@@ -3285,14 +3285,14 @@
       "nationality": "Jamaica",
       "heightCm": 183,
       "ratings": {
-        "shooting": 65,
-        "defense": 56,
-        "passing": 76,
-        "rebounding": 48,
-        "physical": 41
+        "shooting": 73,
+        "defense": 64,
+        "passing": 84,
+        "rebounding": 56,
+        "physical": 49
       },
-      "overall": 51,
-      "potential": 51
+      "overall": 59,
+      "potential": 59
     },
     {
       "id": "febp841966",
@@ -3303,14 +3303,14 @@
       "nationality": "España",
       "heightCm": 202,
       "ratings": {
-        "shooting": 77,
-        "defense": 86,
-        "passing": 76,
-        "rebounding": 83,
-        "physical": 77
+        "shooting": 56,
+        "defense": 65,
+        "passing": 55,
+        "rebounding": 62,
+        "physical": 56
       },
-      "overall": 90,
-      "potential": 90
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp1899194",
@@ -3321,14 +3321,14 @@
       "nationality": "España",
       "heightCm": 214,
       "ratings": {
-        "shooting": 42,
-        "defense": 36,
-        "passing": 38,
-        "rebounding": 36,
-        "physical": 81
+        "shooting": 62,
+        "defense": 56,
+        "passing": 58,
+        "rebounding": 56,
+        "physical": 99
       },
-      "overall": 35,
-      "potential": 35
+      "overall": 55,
+      "potential": 55
     },
     {
       "id": "febp2867402",
@@ -3339,14 +3339,14 @@
       "nationality": "Países Bajos",
       "heightCm": null,
       "ratings": {
-        "shooting": 44,
-        "defense": 40,
-        "passing": 76,
-        "rebounding": 40,
-        "physical": 56
+        "shooting": 60,
+        "defense": 56,
+        "passing": 92,
+        "rebounding": 56,
+        "physical": 72
       },
-      "overall": 41,
-      "potential": 41
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2815820",
@@ -3357,14 +3357,14 @@
       "nationality": "China",
       "heightCm": 221,
       "ratings": {
-        "shooting": 65,
-        "defense": 88,
-        "passing": 62,
-        "rebounding": 90,
-        "physical": 94
+        "shooting": 43,
+        "defense": 66,
+        "passing": 40,
+        "rebounding": 68,
+        "physical": 72
       },
-      "overall": 91,
-      "potential": 92
+      "overall": 69,
+      "potential": 70
     },
     {
       "id": "febp2432888",
@@ -3375,14 +3375,14 @@
       "nationality": "Senegal",
       "heightCm": 206,
       "ratings": {
-        "shooting": 53,
-        "defense": 77,
-        "passing": 48,
-        "rebounding": 81,
-        "physical": 81
+        "shooting": 44,
+        "defense": 68,
+        "passing": 39,
+        "rebounding": 72,
+        "physical": 72
       },
-      "overall": 74,
-      "potential": 74
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp1890908",
@@ -3393,14 +3393,14 @@
       "nationality": "España",
       "heightCm": 200,
       "ratings": {
-        "shooting": 86,
-        "defense": 86,
-        "passing": 67,
-        "rebounding": 91,
-        "physical": 71
+        "shooting": 63,
+        "defense": 63,
+        "passing": 44,
+        "rebounding": 68,
+        "physical": 48
       },
-      "overall": 92,
-      "potential": 94
+      "overall": 69,
+      "potential": 70
     },
     {
       "id": "febp1947677",
@@ -3411,14 +3411,14 @@
       "nationality": "España",
       "heightCm": 198,
       "ratings": {
-        "shooting": 60,
-        "defense": 77,
-        "passing": 85,
-        "rebounding": 68,
-        "physical": 67
+        "shooting": 64,
+        "defense": 81,
+        "passing": 89,
+        "rebounding": 72,
+        "physical": 71
       },
-      "overall": 57,
-      "potential": 57
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2334629",
@@ -3429,14 +3429,14 @@
       "nationality": "Lituania",
       "heightCm": 224,
       "ratings": {
-        "shooting": 45,
-        "defense": 71,
-        "passing": 41,
-        "rebounding": 84,
-        "physical": 90
+        "shooting": 42,
+        "defense": 68,
+        "passing": 38,
+        "rebounding": 81,
+        "physical": 87
       },
-      "overall": 66,
-      "potential": 66
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp1702420",
@@ -3447,14 +3447,14 @@
       "nationality": "España",
       "heightCm": 192,
       "ratings": {
-        "shooting": 83,
-        "defense": 72,
-        "passing": 77,
-        "rebounding": 63,
-        "physical": 58
+        "shooting": 68,
+        "defense": 57,
+        "passing": 62,
+        "rebounding": 48,
+        "physical": 43
       },
-      "overall": 82,
-      "potential": 82
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2863857",
@@ -3465,14 +3465,14 @@
       "nationality": "Eslovenia",
       "heightCm": 200,
       "ratings": {
-        "shooting": 44,
-        "defense": 66,
-        "passing": 63,
-        "rebounding": 81,
-        "physical": 66
+        "shooting": 49,
+        "defense": 71,
+        "passing": 68,
+        "rebounding": 86,
+        "physical": 71
       },
-      "overall": 55,
-      "potential": 55
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2813978",
@@ -3483,14 +3483,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 180,
       "ratings": {
-        "shooting": 90,
-        "defense": 74,
-        "passing": 88,
-        "rebounding": 58,
-        "physical": 45
+        "shooting": 70,
+        "defense": 54,
+        "passing": 68,
+        "rebounding": 38,
+        "physical": 30
       },
-      "overall": 89,
-      "potential": 89
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2814246",
@@ -3501,14 +3501,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 190,
       "ratings": {
-        "shooting": 79,
-        "defense": 54,
-        "passing": 51,
-        "rebounding": 52,
-        "physical": 49
+        "shooting": 85,
+        "defense": 60,
+        "passing": 57,
+        "rebounding": 58,
+        "physical": 55
       },
-      "overall": 54,
-      "potential": 54
+      "overall": 60,
+      "potential": 60
     },
     {
       "id": "febp2335424",
@@ -3519,14 +3519,14 @@
       "nationality": "Gran Bretaña",
       "heightCm": 192,
       "ratings": {
-        "shooting": 74,
-        "defense": 46,
-        "passing": 55,
-        "rebounding": 47,
-        "physical": 50
+        "shooting": 86,
+        "defense": 58,
+        "passing": 67,
+        "rebounding": 59,
+        "physical": 62
       },
-      "overall": 45,
-      "potential": 45
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2814245",
@@ -3537,14 +3537,14 @@
       "nationality": "Islandia",
       "heightCm": 200,
       "ratings": {
-        "shooting": 75,
-        "defense": 70,
-        "passing": 65,
-        "rebounding": 68,
-        "physical": 70
+        "shooting": 71,
+        "defense": 66,
+        "passing": 61,
+        "rebounding": 64,
+        "physical": 66
       },
-      "overall": 67,
-      "potential": 67
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2335179",
@@ -3555,14 +3555,14 @@
       "nationality": "Países Bajos",
       "heightCm": 208,
       "ratings": {
-        "shooting": 49,
-        "defense": 89,
-        "passing": 48,
-        "rebounding": 86,
-        "physical": 89
+        "shooting": 39,
+        "defense": 79,
+        "passing": 38,
+        "rebounding": 76,
+        "physical": 79
       },
-      "overall": 75,
-      "potential": 75
+      "overall": 65,
+      "potential": 65
     },
     {
       "id": "febp2446631",
@@ -3573,14 +3573,14 @@
       "nationality": "Ghana",
       "heightCm": 193,
       "ratings": {
-        "shooting": 93,
-        "defense": 71,
-        "passing": 64,
-        "rebounding": 65,
-        "physical": 57
+        "shooting": 76,
+        "defense": 54,
+        "passing": 47,
+        "rebounding": 48,
+        "physical": 40
       },
-      "overall": 84,
-      "potential": 84
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2157874",
@@ -3591,14 +3591,14 @@
       "nationality": "Italia",
       "heightCm": 194,
       "ratings": {
-        "shooting": 94,
-        "defense": 69,
-        "passing": 84,
-        "rebounding": 69,
-        "physical": 63
+        "shooting": 71,
+        "defense": 46,
+        "passing": 61,
+        "rebounding": 46,
+        "physical": 40
       },
-      "overall": 92,
-      "potential": 92
+      "overall": 69,
+      "potential": 69
     },
     {
       "id": "febp2820728",
@@ -3609,14 +3609,14 @@
       "nationality": "R. Del Congo",
       "heightCm": 202,
       "ratings": {
-        "shooting": 55,
-        "defense": 84,
-        "passing": 62,
-        "rebounding": 75,
-        "physical": 76
+        "shooting": 58,
+        "defense": 87,
+        "passing": 65,
+        "rebounding": 78,
+        "physical": 79
       },
-      "overall": 58,
-      "potential": 58
+      "overall": 61,
+      "potential": 61
     },
     {
       "id": "febp2703151",
@@ -3627,14 +3627,14 @@
       "nationality": "Estados Unidos",
       "heightCm": 206,
       "ratings": {
-        "shooting": 49,
-        "defense": 91,
-        "passing": 75,
-        "rebounding": 88,
-        "physical": 85
+        "shooting": 37,
+        "defense": 79,
+        "passing": 63,
+        "rebounding": 76,
+        "physical": 73
       },
-      "overall": 78,
-      "potential": 78
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp2736767",
@@ -3645,14 +3645,14 @@
       "nationality": "Italia",
       "heightCm": 186,
       "ratings": {
-        "shooting": 93,
-        "defense": 93,
-        "passing": 93,
-        "rebounding": 87,
-        "physical": 52
+        "shooting": 69,
+        "defense": 69,
+        "passing": 69,
+        "rebounding": 63,
+        "physical": 30
       },
-      "overall": 94,
-      "potential": 94
+      "overall": 70,
+      "potential": 70
     },
     {
       "id": "febp2820727",
@@ -3663,14 +3663,14 @@
       "nationality": "R. Del Congo",
       "heightCm": 203,
       "ratings": {
-        "shooting": 67,
-        "defense": 81,
-        "passing": 61,
-        "rebounding": 85,
-        "physical": 82
+        "shooting": 54,
+        "defense": 68,
+        "passing": 48,
+        "rebounding": 72,
+        "physical": 69
       },
-      "overall": 79,
-      "potential": 79
+      "overall": 66,
+      "potential": 66
     },
     {
       "id": "febp1583271",
@@ -3681,14 +3681,14 @@
       "nationality": "España",
       "heightCm": null,
       "ratings": {
-        "shooting": 46,
-        "defense": 86,
-        "passing": 77,
-        "rebounding": 88,
-        "physical": 66
+        "shooting": 39,
+        "defense": 79,
+        "passing": 70,
+        "rebounding": 81,
+        "physical": 59
       },
-      "overall": 71,
-      "potential": 71
+      "overall": 64,
+      "potential": 64
     },
     {
       "id": "febp1710454",
@@ -3699,14 +3699,14 @@
       "nationality": "España",
       "heightCm": 191,
       "ratings": {
-        "shooting": 81,
-        "defense": 88,
-        "passing": 82,
-        "rebounding": 71,
-        "physical": 55
+        "shooting": 66,
+        "defense": 73,
+        "passing": 67,
+        "rebounding": 56,
+        "physical": 40
       },
-      "overall": 82,
-      "potential": 82
+      "overall": 67,
+      "potential": 67
     },
     {
       "id": "febp2236015",
@@ -3717,14 +3717,14 @@
       "nationality": "Bosnia-Herzergovina",
       "heightCm": 191,
       "ratings": {
-        "shooting": 57,
-        "defense": 72,
-        "passing": 89,
-        "rebounding": 74,
-        "physical": 53
+        "shooting": 52,
+        "defense": 67,
+        "passing": 84,
+        "rebounding": 69,
+        "physical": 48
       },
-      "overall": 68,
-      "potential": 68
+      "overall": 63,
+      "potential": 63
     },
     {
       "id": "febp2820729",
@@ -3735,14 +3735,14 @@
       "nationality": "Francia",
       "heightCm": 201,
       "ratings": {
-        "shooting": 56,
-        "defense": 41,
-        "passing": 40,
-        "rebounding": 47,
-        "physical": 64
+        "shooting": 70,
+        "defense": 54,
+        "passing": 53,
+        "rebounding": 60,
+        "physical": 77
       },
-      "overall": 44,
-      "potential": 44
+      "overall": 57,
+      "potential": 57
     },
     {
       "id": "febp2736363",
@@ -3753,14 +3753,14 @@
       "nationality": "Rusia",
       "heightCm": null,
       "ratings": {
-        "shooting": 45,
-        "defense": 36,
-        "passing": 41,
-        "rebounding": 37,
-        "physical": 57
+        "shooting": 63,
+        "defense": 54,
+        "passing": 59,
+        "rebounding": 55,
+        "physical": 75
       },
-      "overall": 37,
-      "potential": 44
+      "overall": 55,
+      "potential": 62
     },
     {
       "id": "febp1941607",
@@ -3771,14 +3771,14 @@
       "nationality": "España",
       "heightCm": 203,
       "ratings": {
-        "shooting": 48,
-        "defense": 48,
-        "passing": 48,
-        "rebounding": 48,
-        "physical": 48
+        "shooting": 55,
+        "defense": 55,
+        "passing": 55,
+        "rebounding": 55,
+        "physical": 55
       },
-      "overall": 48,
-      "potential": 50
+      "overall": 55,
+      "potential": 57
     },
     {
       "id": "febp2349620",
@@ -3789,14 +3789,14 @@
       "nationality": "Rep. Democrática Del Congo",
       "heightCm": null,
       "ratings": {
-        "shooting": 49,
-        "defense": 49,
-        "passing": 49,
-        "rebounding": 49,
-        "physical": 49
+        "shooting": 56,
+        "defense": 56,
+        "passing": 56,
+        "rebounding": 56,
+        "physical": 56
       },
-      "overall": 49,
-      "potential": 52
+      "overall": 56,
+      "potential": 59
     }
   ]
 }

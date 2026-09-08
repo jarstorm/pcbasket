@@ -89,9 +89,9 @@ def main():
         out_teams.append({"id": f"tfeb{team['id']}", "name": team["name"], "group": group})
 
     # Tercera FEB is the 4th tier (below Segunda FEB), so overalls skew
-    # lower still: 25-70 base range vs Segunda FEB's 30-80.
+    # lower still: 40-55 base range vs Segunda FEB's 50-65.
     for i, p in enumerate(has_stats):
-        overall = clamp(25 + va_pct[i] * 45)
+        overall = clamp(40 + va_pct[i] * 15)
         spread = 45
         shooting = clamp(overall + (shooting_pct[i] - va_pct[i]) * spread)
         defense = clamp(overall + (defense_pct[i] - va_pct[i]) * spread)
@@ -125,7 +125,7 @@ def main():
         })
 
     for j, p in enumerate(no_stats):
-        overall = 33 + (j % 7)
+        overall = 40 + (j % 7)
         age = p["age"] or 22
         position = POSITION_MAP.get(p["position_raw"], None) or infer_position(p["height_cm"])
         out_players.append({

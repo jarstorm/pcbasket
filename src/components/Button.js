@@ -1,18 +1,22 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { colors, radii, spacing } from "../theme";
 
-export default function Button({ children, onPress, disabled, primary, style }) {
+export default function Button({ children, onPress, disabled, loading, primary, style }) {
   return (
     <Pressable
-      onPress={disabled ? undefined : onPress}
+      onPress={disabled || loading ? undefined : onPress}
       style={[
         styles.button,
         primary && styles.primary,
-        disabled && styles.disabled,
+        (disabled || loading) && styles.disabled,
         style,
       ]}
     >
-      <Text style={[styles.text, primary && styles.primaryText]}>{children}</Text>
+      {loading ? (
+        <ActivityIndicator color={primary ? colors.accentText : colors.text} />
+      ) : (
+        <Text style={[styles.text, primary && styles.primaryText]}>{children}</Text>
+      )}
     </Pressable>
   );
 }

@@ -88,10 +88,10 @@ def main():
         group = m.group(1).lower() if m else "main"
         out_teams.append({"id": f"sfeb{team['id']}", "name": team["name"], "group": group})
 
-    # Segunda FEB overalls skew a bit lower than Primera FEB (35-95 vs
-    # 35-95 base but centered lower) so it reads as a genuine lower tier.
+    # Segunda FEB overalls skew a bit lower than Primera FEB (50-65 vs
+    # 55-70) so it reads as a genuine lower tier.
     for i, p in enumerate(has_stats):
-        overall = clamp(30 + va_pct[i] * 50)
+        overall = clamp(50 + va_pct[i] * 15)
         spread = 50
         shooting = clamp(overall + (shooting_pct[i] - va_pct[i]) * spread)
         defense = clamp(overall + (defense_pct[i] - va_pct[i]) * spread)
@@ -125,7 +125,7 @@ def main():
         })
 
     for j, p in enumerate(no_stats):
-        overall = 40 + (j % 7)
+        overall = 50 + (j % 7)
         age = p["age"] or 22
         position = POSITION_MAP.get(p["position_raw"], None) or infer_position(p["height_cm"])
         out_players.append({

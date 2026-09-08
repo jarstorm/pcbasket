@@ -23,6 +23,7 @@ function formatFictionalDate(iso) {
 export default function Dashboard({ onNavigate }) {
   const { state, dispatch } = useGame();
   const [showAllNews, setShowAllNews] = useState(false);
+  const [advancingPreseason, setAdvancingPreseason] = useState(false);
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const nextRound = state.schedule[state.round];
   const myNextGame = nextRound?.find(([h, a]) => h === team.id || a === team.id);
@@ -66,6 +67,14 @@ export default function Dashboard({ onNavigate }) {
       return;
     }
     play();
+  };
+
+  const handleAdvancePreseason = () => {
+    setAdvancingPreseason(true);
+    setTimeout(() => {
+      dispatch({ type: "ADVANCE_PRESEASON" });
+      setAdvancingPreseason(false);
+    }, 0);
   };
 
   return (
@@ -179,7 +188,8 @@ export default function Dashboard({ onNavigate }) {
       {isPreseason ? (
         <Button
           primary
-          onPress={() => dispatch({ type: "ADVANCE_PRESEASON" })}
+          loading={advancingPreseason}
+          onPress={handleAdvancePreseason}
           style={styles.playBtn}
         >
           Avanzar semana

@@ -80,7 +80,7 @@ def main():
         out_teams.append({"id": f"feb{team['id']}", "name": team["name"]})
 
     for i, p in enumerate(has_stats):
-        overall = clamp(35 + va_pct[i] * 60)
+        overall = clamp(55 + va_pct[i] * 15)
         spread = 50
         shooting = clamp(overall + (shooting_pct[i] - va_pct[i]) * spread)
         defense = clamp(overall + (defense_pct[i] - va_pct[i]) * spread)
@@ -115,7 +115,7 @@ def main():
 
     # players with no minutes/stats this season: modest default rating with slight variance by index
     for j, p in enumerate(no_stats):
-        overall = 48 + (j % 7)
+        overall = 55 + (j % 7)
         age = p["age"] or 22
         position = POSITION_MAP.get(p["position_raw"], None) or infer_position(p["height_cm"])
         out_players.append({
