@@ -1,5 +1,10 @@
 const TIER_LABELS = ["Básico", "Avanzado", "Élite"];
-const COST_MULT = [1, 2.2, 4];
+// Wide gap on purpose: a Básico hire should be a trivial expense, an Élite
+// one a real commitment — not a smooth 1x/2x/4x ramp. hireCost/wage below
+// are further scaled by the team's wageScale (see scaleTier) the same way
+// player wages are, so Élite is genuinely out of reach for a Tercera FEB
+// budget while Básico stays affordable even there.
+const COST_MULT = [0.15, 2, 10];
 const EFFECT_MULT = [1, 2, 3.3];
 
 function makeTiers({ prefix, roleLabel, hireCost, wage, effectKey, effect, round }) {
@@ -137,25 +142,38 @@ export const STAFF_ROLES = {
 
 const ROLE_IDS = Object.keys(STAFF_ROLES);
 
-function currentTier(staff, roleId) {
+// hireCost/wage on STAFF_ROLES tiers are Primera FEB-scale reference
+// figures (wageScale = 1) — scaled here per-team the same way player wages
+// are, so the same "Élite" tier costs real money in ACB but stays out of
+// reach in Tercera FEB rather than being a rounding error either way.
+function scaleTier(tier, wageScale) {
+  if (!tier) return tier;
+  return { ...tier, hireCost: Math.round(tier.hireCost * wageScale), wage: Math.round(tier.wage * wageScale) };
+}
+
+function rawTier(staff, roleId) {
   const hired = staff?.[roleId];
   if (!hired) return null;
   return STAFF_ROLES[roleId].tiers.find((t) => t.id === hired.tierId) || null;
 }
 
+function currentTier(staff, roleId, wageScale = 1) {
+  return scaleTier(rawTier(staff, roleId), wageScale);
+}
+
 // A role can only be hired when empty — replacing someone means firing them
 // first (severance applies), no direct in-place upgrade.
-export function getRoleTiers(staff, roleId) {
+export function getRoleTiers(staff, roleId, wageScale = 1) {
   if (staff?.[roleId]) return [];
-  return STAFF_ROLES[roleId].tiers;
+  return STAFF_ROLES[roleId].tiers.map((t) => scaleTier(t, wageScale));
 }
 
-export function currentRoleTier(staff, roleId) {
-  return currentTier(staff, roleId);
+export function currentRoleTier(staff, roleId, wageScale = 1) {
+  return currentTier(staff, roleId, wageScale);
 }
 
-export function totalStaffWage(staff) {
-  return ROLE_IDS.reduce((sum, roleId) => sum + (currentTier(staff, roleId)?.wage || 0), 0);
+export function totalStaffWage(staff, wageScale = 1) {
+  return ROLE_IDS.reduce((sum, roleId) => sum + (currentTier(staff, roleId, wageScale)?.wage || 0), 0);
 }
 
 function effectSum(staff, effectKey) {

@@ -35,10 +35,15 @@ export function seasonAgeStep(player, seasonMinutes, wageScale = 1) {
     age,
     overall,
     ratings,
-    value: valueOf(overall, age, player.isProspect ? player.potential : null),
+    value: valueOf(overall, age, player.isProspect ? player.potential : null, wageScale),
     wage: wageOf(overall, age, wageScale),
     contractYears: player.contractYears - 1,
     seasonMinutes: 0,
+    // Preseason conditioning varies by player instead of everyone landing
+    // on a flat 99 — the in-season recovery bias (GameContext's SIM_ROUND)
+    // already pulls rested players back toward full form on its own, so
+    // this only matters for how the fresh season actually opens.
+    form: randInt(85, 99),
   };
 }
 

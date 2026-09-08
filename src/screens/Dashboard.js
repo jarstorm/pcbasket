@@ -97,14 +97,36 @@ export default function Dashboard({ onNavigate }) {
 
   const handleAdvancePreseason = () => {
     setAdvancingPreseason(true);
+    // A deliberate delay so the loading spinner is actually visible — the
+    // dispatch itself is instant, and without this the button just flickers.
     setTimeout(() => {
       dispatch({ type: "ADVANCE_PRESEASON" });
       setAdvancingPreseason(false);
-    }, 0);
+    }, 500);
   };
 
   return (
     <View>
+      {isPreseason ? (
+        <Button
+          primary
+          loading={advancingPreseason}
+          onPress={handleAdvancePreseason}
+          style={styles.playBtn}
+        >
+          Avanzar semana
+        </Button>
+      ) : (
+        <Button
+          primary
+          disabled={state.round >= totalRounds}
+          onPress={handlePlayRound}
+          style={styles.playBtn}
+        >
+          Jugar jornada
+        </Button>
+      )}
+
       <Card>
         <Text style={styles.dim}>{formatFictionalDate(state.currentDate)}</Text>
 
@@ -239,32 +261,12 @@ export default function Dashboard({ onNavigate }) {
           <Card style={!lastResult && { opacity: 0.6 }}>
             <SectionHeader>ÚLTIMO RESULTADO</SectionHeader>
             {lastResult ? (
-              <MatchSummary result={lastResult} teams={state.teams} />
+              <MatchSummary result={lastResult} teams={state.teams} userTeamId={team.id} />
             ) : (
               <Text style={styles.dim}>Aún no hay partidos jugados.</Text>
             )}
           </Card>
         </Pressable>
-      )}
-
-      {isPreseason ? (
-        <Button
-          primary
-          loading={advancingPreseason}
-          onPress={handleAdvancePreseason}
-          style={styles.playBtn}
-        >
-          Avanzar semana
-        </Button>
-      ) : (
-        <Button
-          primary
-          disabled={state.round >= totalRounds}
-          onPress={handlePlayRound}
-          style={styles.playBtn}
-        >
-          Jugar jornada
-        </Button>
       )}
 
       <Card>
@@ -309,23 +311,37 @@ export default function Dashboard({ onNavigate }) {
   );
 }
 
-function MatchSummary({ result, teams }) {
+function MatchSummary({ result, teams, userTeamId }) {
   const home = teams.find((t) => t.id === result.homeId);
   const away = teams.find((t) => t.id === result.awayId);
   const topHome = [...result.boxscore.home].sort((a, b) => b.points - a.points)[0];
   const topAway = [...result.boxscore.away].sort((a, b) => b.points - a.points)[0];
+  const userWon =
+    (result.homeId === userTeamId && result.homeScore > result.awayScore) ||
+    (result.awayId === userTeamId && result.awayScore > result.homeScore);
+  const resultColor = userWon ? colors.win : colors.loss;
   return (
-    <View>
-      <View style={styles.nextGameRow}>
-        <TeamLogo team={home} size={18} />
-        <Text style={styles.matchScore} numberOfLines={1}>
-          {home.name} {result.homeScore} - {result.awayScore} {away.name}
-        </Text>
-        <TeamLogo team={away} size={18} />
+    <View style={[styles.lastResultCard, { borderColor: resultColor }]}>
+      <View style={styles.matchTeamsRow}>
+        <View style={styles.matchTeamCol}>
+          <TeamLogo team={home} size={36} />
+          <Text style={styles.matchTeamName} numberOfLines={2}>{home.name}</Text>
+          <Text style={styles.matchTopScorer} numberOfLines={2}>{topHome?.name} · {topHome?.points} pts</Text>
+        </View>
+        <View style={styles.scoreCol}>
+          <Text style={[styles.lastResultScore, { color: resultColor }]}>
+            {result.homeScore} - {result.awayScore}
+          </Text>
+          <Text style={[styles.lastResultBadge, { color: resultColor }]}>
+            {userWon ? "VICTORIA" : "DERROTA"}
+          </Text>
+        </View>
+        <View style={styles.matchTeamCol}>
+          <TeamLogo team={away} size={36} />
+          <Text style={styles.matchTeamName} numberOfLines={2}>{away.name}</Text>
+          <Text style={styles.matchTopScorer} numberOfLines={2}>{topAway?.name} · {topAway?.points} pts</Text>
+        </View>
       </View>
-      <Text style={[styles.small, styles.dim]}>
-        Top local: {topHome?.name} ({topHome?.points} pts) · Top visitante: {topAway?.name} ({topAway?.points} pts)
-      </Text>
     </View>
   );
 }
@@ -376,8 +392,16 @@ const styles = StyleSheet.create({
   small: { fontSize: 13, color: colors.text, marginVertical: 2 },
   dim: { color: colors.textDim, fontSize: 12, fontWeight: "700", letterSpacing: 0.4 },
   bold: { fontWeight: "700" },
-  matchScore: { fontSize: 16, fontWeight: "700", color: colors.text, flexShrink: 1 },
-  nextGameRow: { flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" },
+  lastResultCard: {
+    borderWidth: 2,
+    borderRadius: radii.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  scoreCol: { alignItems: "center", gap: 2, paddingHorizontal: spacing.sm },
+  lastResultScore: { fontSize: 22, fontWeight: "800" },
+  lastResultBadge: { fontSize: 10, fontWeight: "800", letterSpacing: 0.6 },
+  matchTopScorer: { color: colors.textDim, fontSize: 10, fontWeight: "600", textAlign: "center", marginTop: 2 },
   logItem: {
     fontSize: 12,
     color: colors.textDim,

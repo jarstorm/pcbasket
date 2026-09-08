@@ -42,14 +42,14 @@ export default function StaffScreen() {
         </Text>
         <Text style={[styles.dim, { marginTop: spacing.xs }]}>
           Sueldo total de personal por jornada:{" "}
-          <Text style={styles.bold}>€{totalStaffWage(team.staff).toLocaleString()}</Text>
+          <Text style={styles.bold}>€{totalStaffWage(team.staff, team.wageScale ?? 1).toLocaleString()}</Text>
         </Text>
       </Card>
 
       {ROLE_IDS.map((roleId) => {
         const role = STAFF_ROLES[roleId];
-        const current = currentRoleTier(team.staff, roleId);
-        const availableTiers = getRoleTiers(team.staff, roleId);
+        const current = currentRoleTier(team.staff, roleId, team.wageScale ?? 1);
+        const availableTiers = getRoleTiers(team.staff, roleId, team.wageScale ?? 1);
         const isOpen = openRole === roleId;
         const selectedId = selectedTierByRole[roleId] ?? availableTiers[0]?.id;
         const selectedTier = availableTiers.find((t) => t.id === selectedId);

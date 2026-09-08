@@ -239,10 +239,11 @@ describe("reducer", () => {
     const next = reducer(state, { type: "BUY_PLAYER", buyerTeamId: "a", playerId: "p4" });
     const buyer = next.teams.find((t) => t.id === "a");
     const seller = next.teams.find((t) => t.id === "b");
+    const price = Math.round(next.playersById.p4.value * 0.85);
     expect(buyer.roster).toContain("p4");
     expect(seller.roster).not.toContain("p4");
-    expect(buyer.budget).toBe(500000 - next.playersById.p4.value);
-    expect(seller.budget).toBe(500000 + next.playersById.p4.value);
+    expect(buyer.budget).toBe(500000 - price);
+    expect(seller.budget).toBe(500000 + price);
   });
 
   it("BUY_PLAYER is a no-op if the buyer can't afford the player", () => {
@@ -285,7 +286,7 @@ describe("reducer", () => {
     expect(buyer.roster).toContain("p5");
     expect(seller.roster).not.toContain("p5");
     expect(seller.lineup.PG).toBeNull();
-    expect(seller.budget).toBe(90000);
+    expect(seller.budget).toBe(Math.round(90000 * 0.85));
     expect(next.playersById.p5.teamId).toBe("a");
   });
 
@@ -335,7 +336,7 @@ describe("reducer", () => {
     const state = baseState();
     const next = reducer(state, { type: "MAKE_OFFER", buyerTeamId: "a", playerId: "p4", amount: 70000 });
     expect(next.teams.find((t) => t.id === "b").roster).toContain("p4");
-    expect(next.log[0].text).toContain("€90,000");
+    expect(next.log[0].text).toContain("€80,000");
   });
 
   it("MAKE_OFFER far below value gets flatly rejected", () => {

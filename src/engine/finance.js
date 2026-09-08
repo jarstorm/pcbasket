@@ -5,8 +5,8 @@ export function playerWageTotal(team, playersById) {
   return team.roster.reduce((sum, id) => sum + (playersById[id]?.wage || 0), 0);
 }
 
-export function staffWageTotal(staff) {
-  return totalStaffWage(staff);
+export function staffWageTotal(staff, wageScale = 1) {
+  return totalStaffWage(staff, wageScale);
 }
 
 // Proportional to capacity rather than a flat per-level fee — a flat fee
@@ -108,7 +108,7 @@ export const LOAN_INTEREST_RATE = 0.08;
 export function maxLoanAmount(team, playersById) {
   const weeklyFixedCosts =
     playerWageTotal(team, playersById) +
-    staffWageTotal(team.staff || {}) +
+    staffWageTotal(team.staff || {}, team.wageScale ?? 1) +
     stadiumMaintenance(team.stadium, team.staff || {});
   return Math.max(20000, Math.round(weeklyFixedCosts * LOAN_TERM_WEEKS));
 }

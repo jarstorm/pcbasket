@@ -6,14 +6,14 @@ describe("evaluateTransferOffer", () => {
     expect(evaluateTransferOffer({ value: 100000 }, 100000)).toEqual({ result: "accept" });
   });
 
-  it("counters an offer in the middle range with 90% of the player's value", () => {
+  it("counters an offer in the middle range with 80% of the player's value", () => {
     const outcome = evaluateTransferOffer({ value: 100000 }, 70000);
     expect(outcome.result).toBe("counter");
-    expect(outcome.counterAmount).toBe(90000);
+    expect(outcome.counterAmount).toBe(80000);
   });
 
   it("flatly rejects a lowball offer", () => {
-    expect(evaluateTransferOffer({ value: 100000 }, 20000)).toEqual({ result: "reject" });
+    expect(evaluateTransferOffer({ value: 100000 }, 40000)).toEqual({ result: "reject" });
   });
 });
 

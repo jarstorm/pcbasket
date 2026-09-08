@@ -126,7 +126,7 @@ export default function PyramidScreen() {
         )}
         <Table
           columns={[
-            { key: "pos", label: "#", width: 40 },
+            { key: "pos", label: "#", width: 30 },
             {
               key: "name",
               label: "Equipo",
@@ -134,19 +134,19 @@ export default function PyramidScreen() {
               render: (t) => (
                 <View style={styles.teamCell}>
                   <TeamLogo team={t} size={28} />
-                  <Text style={styles.cellText} numberOfLines={1}>{t.name}</Text>
+                  <View style={styles.teamNameWrap}>
+                    <Text style={styles.cellText} numberOfLines={1} ellipsizeMode="tail">{t.name}</Text>
+                  </View>
                 </View>
               ),
             },
-            { key: "pj", label: "PJ", width: 50 },
-            { key: "wins", label: "V", width: 40, render: (t) => <Text style={styles.cellText}>{t.record.wins}</Text> },
-            { key: "losses", label: "D", width: 40, render: (t) => <Text style={styles.cellText}>{t.record.losses}</Text> },
-            { key: "pointsFor", label: "PF", width: 60, render: (t) => <Text style={styles.cellText}>{t.record.pointsFor}</Text> },
-            { key: "pointsAgainst", label: "PC", width: 60, render: (t) => <Text style={styles.cellText}>{t.record.pointsAgainst}</Text> },
+            { key: "pj", label: "PJ", width: 40 },
+            { key: "wins", label: "V", width: 36, render: (t) => <Text style={styles.cellText}>{t.record.wins}</Text> },
+            { key: "losses", label: "D", width: 36, render: (t) => <Text style={styles.cellText}>{t.record.losses}</Text> },
             {
               key: "diff",
               label: "Dif",
-              width: 60,
+              width: 50,
               render: (t) => <Text style={styles.cellText}>{t.diff > 0 ? `+${t.diff}` : t.diff}</Text>,
             },
           ]}
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
   dim: { color: colors.textDim, fontSize: 12, marginBottom: spacing.sm },
   cellText: { color: colors.text, fontSize: 13 },
   teamCell: { flexDirection: "row", alignItems: "center", gap: 8, flexShrink: 1 },
+  teamNameWrap: { flexShrink: 1 },
   meRow: { backgroundColor: "rgba(255, 122, 41, 0.08)" },
   promotionRow: { borderLeftWidth: 4, borderLeftColor: colors.win },
   playoffRow: { borderLeftWidth: 4, borderLeftColor: "rgba(62, 207, 126, 0.45)" },

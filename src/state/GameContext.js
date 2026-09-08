@@ -591,7 +591,9 @@ export function reducer(state, action) {
       const seller = findTeamAnywhere(state, player.teamId);
       const buyer = state.teams.find((t) => t.id === buyerTeamId);
       if (!buyer || !seller || buyer.id === seller.id) return state;
-      const price = player.value;
+      // Listed AI players sell at a discount off their value so the user can
+      // build a squad cheaply and climb divisions faster.
+      const price = Math.round(player.value * 0.85);
       if (buyer.budget < price) return state;
       if (buyer.roster.length >= 15) return state;
       if (!canRealisticallySign(buyer, player, state.playersById)) return state;
@@ -909,7 +911,7 @@ export function reducer(state, action) {
       const { teamId, roleId, tierId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const tier = getRoleTiers(team.staff, roleId).find((t) => t.id === tierId);
+      const tier = getRoleTiers(team.staff, roleId, team.wageScale ?? 1).find((t) => t.id === tierId);
       if (!tier) return state;
       if (team.budget < tier.hireCost) return state;
       const teams = state.teams.map((t) =>
@@ -935,7 +937,7 @@ export function reducer(state, action) {
       const { teamId, roleId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const tier = currentRoleTier(team.staff, roleId);
+      const tier = currentRoleTier(team.staff, roleId, team.wageScale ?? 1);
       if (!tier) return state;
       const severance = tier.wage * state.schedule.length;
       const teams = state.teams.map((t) =>
@@ -1075,25 +1077,38 @@ export function reducer(state, action) {
         playersById[player.id] = { ...player, teamId: buyer.id, listed: false };
       }
 
-      // Occasionally an AI team tries to poach one of the user's players
-      // with an unsolicited lowball bid — unlike the listed-player sales
-      // above, this can't auto-resolve: it goes into pendingOffers for the
-      // user to accept or reject from the transfer market screen.
+      // Almost every round an AI team tries to poach one of the user's
+      // players with an unsolicited (overpaying) bid — unlike the
+      // listed-player sales above, this can't auto-resolve: it goes into
+      // pendingOffers for the user to accept or reject from the transfer
+      // market screen.
       const newOffers = [];
-      if (state.userTeamId && Math.random() < 0.08) {
+      if (state.userTeamId && Math.random() < 0.9) {
         const userTeamNow = teamsById[state.userTeamId];
         const offeredIds = new Set(state.pendingOffers.map((o) => o.playerId));
         const candidateIds = (userTeamNow?.roster || []).filter((id) => !offeredIds.has(id));
         if (candidateIds.length > 0) {
           const targetId = candidateIds[randInt(0, candidateIds.length - 1)];
           const target = playersById[targetId];
-          const bidders = Object.values(teamsById).filter(
-            (t) => t.id !== state.userTeamId && t.roster.length < 15
-          );
+          // Richest-first so the overpay offer actually lands even in a
+          // division whose typical team budget sits well under transfer
+          // value (values don't scale down by division the way wages do) —
+          // picking a random bidder here meant the affordability check
+          // below silently dropped the offer most rounds in Segunda/Tercera
+          // FEB, leaving the user with none.
+          const bidders = Object.values(teamsById)
+            .filter((t) => t.id !== state.userTeamId && t.roster.length < 15)
+            .sort((a, b) => b.budget - a.budget);
           if (target && bidders.length > 0) {
-            const bidder = bidders[randInt(0, bidders.length - 1)];
-            const amount = Math.round(target.value * (0.5 + Math.random() * 0.35));
-            if (bidder.budget >= amount) {
+            const desired = Math.round(target.value * (0.95 + Math.random() * 0.35));
+            const bidder = bidders[0];
+            // AI bidders overpay for the user's players so selling is
+            // consistently profitable — the flip side of the buy-cheap
+            // discount above. Clamp to what the richest bidder can actually
+            // pay rather than dropping the offer outright; only skip if
+            // even that falls short of a fair price.
+            const amount = Math.min(desired, bidder.budget);
+            if (amount >= Math.round(target.value * 0.7)) {
               newOffers.push({
                 id: `offer_${state.round}_${targetId}_${bidder.id}`,
                 playerId: targetId,
@@ -1206,12 +1221,12 @@ export function reducer(state, action) {
           sponsorIncome(t.sponsors?.stadium) +
           tvRightsIncome(state.activeDivisionId, t, state.teams);
 
-        const homeWage = playerWageTotal(home, playersById) + staffWageTotal(home.staff || {});
+        const homeWage = playerWageTotal(home, playersById) + staffWageTotal(home.staff || {}, home.wageScale ?? 1);
         const homeMaintenance = stadiumMaintenance(home.stadium, home.staff || {});
         const homeIncome = ticketRevenue + sponsorAndTvIncome(home);
         const homeExpenses = homeWage + homeMaintenance;
 
-        const awayWage = playerWageTotal(away, playersById) + staffWageTotal(away.staff || {});
+        const awayWage = playerWageTotal(away, playersById) + staffWageTotal(away.staff || {}, away.wageScale ?? 1);
         const awayMaintenance = stadiumMaintenance(away.stadium, away.staff || {});
         const awayIncome = sponsorAndTvIncome(away);
         const awayExpenses = awayWage + awayMaintenance;
@@ -1330,6 +1345,7 @@ export function reducer(state, action) {
       // start a fresh season with a new schedule.
       let finalPlayersById = { ...playersById };
       const retiredByTeam = {};
+      const userPlayerChanges = [];
 
       for (const team of teams) {
         for (const pid of team.roster) {
@@ -1338,6 +1354,14 @@ export function reducer(state, action) {
           const aged = seasonAgeStep(p, p.seasonMinutes || 0, team.wageScale ?? 1);
           const next = { ...p, ...aged };
           finalPlayersById[pid] = next;
+          if (team.id === state.userTeamId && next.overall !== p.overall) {
+            userPlayerChanges.push({
+              playerId: pid,
+              name: p.name,
+              before: p.overall,
+              after: next.overall,
+            });
+          }
           if (shouldRetire(next)) {
             if (!retiredByTeam[team.id]) retiredByTeam[team.id] = [];
             retiredByTeam[team.id].push(pid);
@@ -1434,7 +1458,7 @@ export function reducer(state, action) {
         for (const g of resolved[divId].groups) {
           for (const t of g.teams) {
             const from = divisionOfId[t.id];
-            if (from && from !== divId) moves.push({ name: t.name, from, to: divId });
+            if (from && from !== divId) moves.push({ id: t.id, name: t.name, logoUrl: t.logoUrl, from, to: divId });
           }
         }
       }
@@ -1442,18 +1466,22 @@ export function reducer(state, action) {
       const seasonSummary = {
         seasonYear: state.seasonYear || FIRST_SEASON_YEAR,
         retiredNames,
+        playerChanges: userPlayerChanges,
         userMoved: null,
         divisions: DIVISION_ORDER.map((divId) => {
           const pre = preDivisions[divId];
-          const champions = pre.groups.map((g) => sortStandings(g.teams)[0]?.name).filter(Boolean);
+          const champions = pre.groups
+            .map((g) => sortStandings(g.teams)[0])
+            .filter(Boolean)
+            .map((t) => ({ id: t.id, name: t.name, logoUrl: t.logoUrl }));
           const tier = DIVISION_META[divId].tier;
           const outgoing = moves.filter((m) => m.from === divId);
           return {
             id: divId,
             name: DIVISION_META[divId].name,
             champions,
-            promoted: outgoing.filter((m) => DIVISION_META[m.to].tier < tier).map((m) => m.name),
-            relegated: outgoing.filter((m) => DIVISION_META[m.to].tier > tier).map((m) => m.name),
+            promoted: outgoing.filter((m) => DIVISION_META[m.to].tier < tier),
+            relegated: outgoing.filter((m) => DIVISION_META[m.to].tier > tier),
           };
         }),
       };

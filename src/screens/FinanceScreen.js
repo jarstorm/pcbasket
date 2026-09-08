@@ -47,7 +47,7 @@ export default function FinanceScreen() {
   seasons.reverse();
 
   const wages = Math.round(playerWageTotal(team, state.playersById) * ROUNDS_PER_MONTH);
-  const staffWages = Math.round(staffWageTotal(team.staff) * ROUNDS_PER_MONTH);
+  const staffWages = Math.round(staffWageTotal(team.staff, team.wageScale ?? 1) * ROUNDS_PER_MONTH);
   const maintenance = Math.round(stadiumMaintenance(team.stadium, team.staff) * ROUNDS_PER_MONTH);
   const jerseySponsor = Math.round(sponsorIncome(team.sponsors?.jersey) * ROUNDS_PER_MONTH);
   const stadiumSponsor = Math.round(sponsorIncome(team.sponsors?.stadium) * ROUNDS_PER_MONTH);

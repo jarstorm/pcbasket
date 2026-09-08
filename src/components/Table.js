@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 10,
     justifyContent: "center",
+    overflow: "hidden",
   },
   headerText: {
     color: colors.textDim,

@@ -3,9 +3,12 @@
 // selling team would actually take), and a near-value bid is accepted.
 export function evaluateTransferOffer(player, amount) {
   const ratio = amount / player.value;
-  if (ratio >= 0.9) return { result: "accept" };
-  if (ratio >= 0.6) {
-    return { result: "counter", counterAmount: Math.round(player.value * 0.9) };
+  // Thresholds sit a bit below the player's raw value so a user offer can
+  // land under market price — the buy-cheap half of the buy-cheap/sell-dear
+  // balance change (the sell-dear half lives in GameContext's AI offers).
+  if (ratio >= 0.8) return { result: "accept" };
+  if (ratio >= 0.5) {
+    return { result: "counter", counterAmount: Math.round(player.value * 0.8) };
   }
   return { result: "reject" };
 }

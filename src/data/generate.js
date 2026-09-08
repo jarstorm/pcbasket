@@ -42,10 +42,14 @@ function overallOf(ratings) {
   );
 }
 
-export function valueOf(overall, age, potential) {
+// `scale` mirrors wageOf's below — without it a player's transfer value
+// stayed flat across divisions while their wage collapsed with wageScale,
+// so a Tercera FEB player earning next to nothing still carried a Primera
+// FEB-sized buyout price, wildly out of step with what they're paid.
+export function valueOf(overall, age, potential, scale = 1) {
   const ageFactor = age <= 24 ? 1.15 : age <= 29 ? 1.0 : age <= 33 ? 0.7 : 0.4;
-  const potentialBonus = potential ? (potential - overall) * 4000 : 0;
-  return Math.max(20000, Math.round((overall ** 2.1) * 40 * ageFactor + potentialBonus));
+  const potentialBonus = potential ? (potential - overall) * 4000 * scale : 0;
+  return Math.max(Math.round(20000 * scale), Math.round((overall ** 2.1) * 40 * ageFactor * scale + potentialBonus));
 }
 
 // Recurring per-round salary — modest relative to transfer value (valueOf).
@@ -72,7 +76,7 @@ export function makePlayer({ age, base, spread, isProspect = false, teamId = nul
     ratings,
     overall,
     potential,
-    value: valueOf(overall, playerAge, isProspect ? potential : null),
+    value: valueOf(overall, playerAge, isProspect ? potential : null, wageScale),
     wage: wageOf(overall, playerAge, wageScale),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
@@ -100,7 +104,7 @@ function buildRealPlayer(rp, wageScale = 1) {
     ratings: rp.ratings,
     overall,
     potential,
-    value: valueOf(overall, rp.age, potential),
+    value: valueOf(overall, rp.age, potential, wageScale),
     wage: wageOf(overall, rp.age, wageScale),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
@@ -131,7 +135,7 @@ function buildRealIdentityRatedPlayer(rp, { base, spread }, wageScale = 1) {
     ratings,
     overall,
     potential: overall,
-    value: valueOf(overall, rp.age, null),
+    value: valueOf(overall, rp.age, null, wageScale),
     wage: wageOf(overall, rp.age, wageScale),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
