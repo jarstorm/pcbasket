@@ -117,6 +117,16 @@ function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Each capacity-tier expansion (stadium.level) makes the venue harder to
+// fill as a fraction of seats — a bigger bowl doesn't sell itself just
+// because it exists. Amenities counter this by making the atmosphere worth
+// the extra seats, so subtract their attendance bonus from the penalty.
+function fillDifficultyFactor(stadium) {
+  const tiersBuilt = Math.max(0, stadium.level - 1);
+  const penalty = Math.max(0, tiersBuilt * 0.07 - amenityAttendanceBonus(stadium));
+  return clamp(1 - penalty, 0.55, 1);
+}
+
 // Better league position and a reasonable ticket price fill more seats.
 function attendanceRate(team, teams) {
   const position = leaguePosition(team, teams);
@@ -129,7 +139,11 @@ function attendanceRate(team, teams) {
     1
   );
   const base = 0.05 + positionFactor * 0.1 + priceFactor * 0.05 + amenityAttendanceBonus(team.stadium);
-  return clamp(base + (Math.random() - 0.5) * 0.06, 0.03, 0.45);
+  return clamp(
+    (base + (Math.random() - 0.5) * 0.06) * fillDifficultyFactor(team.stadium),
+    0.03,
+    0.45
+  );
 }
 
 // Season ticket holders lock in a chunk of capacity at the start of the
@@ -154,7 +168,6 @@ function advanceStadiumProject(stadium) {
   if (project.kind === "tier") {
     next.level = stadium.level + 1;
     next.capacity = stadium.capacity + project.capacityGain;
-    next.ticketPrice = Math.min(MAX_TICKET_PRICE, stadium.ticketPrice + project.priceGain);
   } else {
     next.amenities = { ...(stadium.amenities || {}), [project.amenityId]: project.level };
   }
@@ -169,7 +182,7 @@ function seasonTicketRate(stadium) {
     1
   );
   const base = 0.18 + amenityAttendanceBonus(stadium) * 2;
-  return clamp(base * priceFactor, 0.05, 0.4);
+  return clamp(base * priceFactor * fillDifficultyFactor(stadium), 0.05, 0.4);
 }
 
 const BACKGROUND_GENERATORS = {
@@ -733,7 +746,6 @@ export function reducer(state, action) {
                   kind: "tier",
                   label: tier.label,
                   capacityGain: tier.capacityGain,
-                  priceGain: tier.priceGain,
                   weeksLeft,
                   weeksTotal: weeksLeft,
                 },

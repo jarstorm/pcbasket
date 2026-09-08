@@ -312,18 +312,18 @@ describe("reducer", () => {
 
   it("UPGRADE_STADIUM refuses to start a second build while one is in progress", () => {
     const state = baseState();
-    state.teams[0].stadium.pendingProject = { kind: "tier", label: "x", capacityGain: 1, priceGain: 1, weeksLeft: 1, weeksTotal: 3 };
+    state.teams[0].stadium.pendingProject = { kind: "tier", label: "x", capacityGain: 1, weeksLeft: 1, weeksTotal: 3 };
     const next = reducer(state, { type: "UPGRADE_STADIUM", teamId: "a", tierId: "small" });
     expect(next).toBe(state);
   });
 
-  it("a stadium build applies capacity/level/price once weeksLeft counts down to zero", () => {
+  it("a stadium build applies capacity/level once weeksLeft counts down to zero, leaving ticket price to the player", () => {
     const state = baseState();
+    const ticketPriceBefore = state.teams[0].stadium.ticketPrice;
     state.teams[0].stadium.pendingProject = {
       kind: "tier",
       label: "Ampliación media",
       capacityGain: 2500,
-      priceGain: 5,
       weeksLeft: 1,
       weeksTotal: 3,
     };
@@ -332,7 +332,7 @@ describe("reducer", () => {
     expect(team.stadium.pendingProject).toBeNull();
     expect(team.stadium.level).toBe(2);
     expect(team.stadium.capacity).toBe(10500);
-    expect(team.stadium.ticketPrice).toBe(30);
+    expect(team.stadium.ticketPrice).toBe(ticketPriceBefore);
   });
 
   it("SET_TICKET_PRICE clamps to a sane range", () => {

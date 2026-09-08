@@ -2,7 +2,7 @@
 - [hecho] cuando se avanza una semana sin liga poner un loader o algo
 - [hecho] al inicio poder seleccionar equipos de cualquier liga
 - [hecho] no se si la economia es real, se gana demasiado dinero
-- las mejoras de estadio son demasiado beneficiosas hoy. Por cada ampliacion de aforo por ejemplo no debe ser atraer a mas gente y subir el precio de las entradas. SI cabe mas gentre deberia ser mas dificl llenar.
+- [hecho] las mejoras de estadio son demasiado beneficiosas hoy. Por cada ampliacion de aforo por ejemplo no debe ser atraer a mas gente y subir el precio de las entradas. SI cabe mas gentre deberia ser mas dificl llenar.
 - [hecho] el precio de las entradas deberia tener 100 euros maximo
 - poder mejorar poner palco vip y el videomarcador
 - poder fichar jugadores de otras ligas. pero añadir realismo aqui, un jugador de nivel superior y mucho mejor que plantilla actual no deberia poder fichar por ese equipo

@@ -123,7 +123,7 @@ export default function StadiumScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.tierLabel}>{tier.label}</Text>
                 <Text style={styles.tierDesc}>
-                  +{tier.capacityGain.toLocaleString()} asientos · +${tier.priceGain} entrada
+                  +{tier.capacityGain.toLocaleString()} asientos · más aforo, más difícil de llenar
                 </Text>
               </View>
               <Text style={[styles.tierCost, !affordable && styles.tierCostBad]}>
