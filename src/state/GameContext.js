@@ -902,7 +902,10 @@ export function reducer(state, action) {
       const { teamId, slot, sponsorId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const offers = slot === "stadium" ? getStadiumSponsorOffers(team, state.teams) : getJerseySponsorOffers(team, state.teams);
+      const offers =
+        slot === "stadium"
+          ? getStadiumSponsorOffers(team, state.teams, state.activeDivisionId)
+          : getJerseySponsorOffers(team, state.teams, state.activeDivisionId);
       const offer = offers.find((s) => s.id === sponsorId);
       if (!offer) return state;
       const teams = state.teams.map((t) =>

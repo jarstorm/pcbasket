@@ -11,7 +11,7 @@ describe("generateAcbDivision", () => {
     expect(players.length).toBeGreaterThan(0);
     for (const t of teams) {
       expect(t.roster.length).toBeGreaterThanOrEqual(5);
-      expect(t.budget).toBeGreaterThan(900000); // above Primera FEB's max
+      expect(t.budget).toBeGreaterThan(1200000); // above Primera FEB's max
     }
   });
 

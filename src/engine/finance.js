@@ -48,22 +48,40 @@ const STADIUM_SPONSOR_TIERS = [
   { id: "stadium_nacional", label: "Naming Rights Nacional", incomePerRound: 14000, maxPosition: 4 },
 ];
 
-// Offers available right now: better-paying sponsors want a team that's
-// actually doing well in the league.
-export function getJerseySponsorOffers(team, teams) {
-  const position = leaguePosition(team, teams);
-  return JERSEY_SPONSOR_TIERS.filter((t) => t.maxPosition === null || position <= t.maxPosition);
+// Sponsorship deals scale with the division too — a Tercera FEB shirt deal
+// and an ACB one aren't remotely the same money. Tiers above are ACB-scale
+// list prices; this multiplies them down for the lower divisions, same
+// relative shape as DIVISION_TV_BASE below.
+const DIVISION_SPONSOR_SCALE = { acb: 1, primerafeb: 0.3, segundafeb: 0.1, tercerafeb: 0.03 };
+
+function scaleSponsorTiers(tiers, divisionId) {
+  const scale = DIVISION_SPONSOR_SCALE[divisionId] ?? DIVISION_SPONSOR_SCALE.segundafeb;
+  return tiers.map((t) => ({ ...t, incomePerRound: Math.max(200, Math.round(t.incomePerRound * scale)) }));
 }
 
-export function getStadiumSponsorOffers(team, teams) {
+// Offers available right now: better-paying sponsors want a team that's
+// actually doing well in the league, scaled to what a club at this level
+// can actually command.
+export function getJerseySponsorOffers(team, teams, divisionId) {
   const position = leaguePosition(team, teams);
-  return STADIUM_SPONSOR_TIERS.filter((t) => t.maxPosition === null || position <= t.maxPosition);
+  return scaleSponsorTiers(JERSEY_SPONSOR_TIERS, divisionId).filter(
+    (t) => t.maxPosition === null || position <= t.maxPosition
+  );
+}
+
+export function getStadiumSponsorOffers(team, teams, divisionId) {
+  const position = leaguePosition(team, teams);
+  return scaleSponsorTiers(STADIUM_SPONSOR_TIERS, divisionId).filter(
+    (t) => t.maxPosition === null || position <= t.maxPosition
+  );
 }
 
 // TV rights: automatic, not a deal you pick — higher divisions and a better
 // league position both draw more broadcast money, same shape as ticket
-// attendance's position factor.
-const DIVISION_TV_BASE = { acb: 15000, primerafeb: 6000, segundafeb: 2000, tercerafeb: 800 };
+// attendance's position factor. FEB divisions' real TV money is minimal to
+// nonexistent below ACB, so these stay a token amount rather than a real
+// income stream.
+const DIVISION_TV_BASE = { acb: 15000, primerafeb: 1500, segundafeb: 400, tercerafeb: 100 };
 
 export function tvRightsIncome(divisionId, team, teams) {
   const base = DIVISION_TV_BASE[divisionId] ?? DIVISION_TV_BASE.segundafeb;

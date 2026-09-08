@@ -7,6 +7,11 @@ import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
 
+// Real Madrid and Barça run budgets far above the rest of ACB (multi-sport
+// clubs with their own sponsorship/broadcast scale) — everyone else in the
+// division sits in a much narrower band.
+const BIG_BUDGET_ACB_TEAMS = new Set(["acb9", "acb2"]);
+
 let idCounter = 1;
 function nextId(prefix) {
   return `${prefix}${idCounter++}`;
@@ -142,14 +147,14 @@ function buildRealIdentityRatedPlayer(rp, { base, spread }) {
 // always 9x the base ticket price — must match SEASON_TICKET_MULTIPLIER in
 // state/GameContext.js (can't import it directly: that module imports from
 // here, so the reverse would be circular).
-function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice }) {
+function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice, stadiumName }) {
   return {
     id,
     name,
     city: name,
     budget: randInt(budgetRange[0], budgetRange[1]),
     stadium: {
-      name: `Pabellón ${name}`,
+      name: stadiumName || `Pabellón ${name}`,
       level: 1,
       capacity: stadiumCapacity,
       ticketPrice,
@@ -209,13 +214,16 @@ function addAcademyProspects(team, players) {
   }
 }
 
+// Primera FEB (second tier). Real per-venue capacities weren't scraped
+// (no reliable public source covering every club), so this uses the
+// fallback capacity tier for this level instead of a made-up real figure.
 export function generateRealLeague() {
   idCounter = 1;
   const teams = [];
   const players = [];
 
   for (const t of febData.teams) {
-    teams.push(buildBaseTeam(t.id, t.name, { budgetRange: [300000, 900000], stadiumCapacity: 8000, ticketPrice: 25 }));
+    teams.push(buildBaseTeam(t.id, t.name, { budgetRange: [250000, 1200000], stadiumCapacity: 3000, ticketPrice: 25 }));
   }
 
   const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
@@ -276,15 +284,19 @@ function buildRealGroupedDivision(data, { budgetRange, stadiumCapacity, ticketPr
 // Loads the real, scraped Segunda FEB division (third tier): 2 geographic
 // groups (Este/Oeste), 14 teams each. Lower budget/capacity than Primera
 // FEB — a lower category should have a smaller budget than the one above.
+// Real per-venue capacities weren't scraped (semi-amateur regional clubs,
+// no reliable public source for hundreds of them), so this uses the
+// fallback tier the user asked for when real data isn't available.
 export function generateSegundaFebDivision() {
-  return buildRealGroupedDivision(segundaFebData, { budgetRange: [150000, 450000], stadiumCapacity: 4000, ticketPrice: 15 });
+  return buildRealGroupedDivision(segundaFebData, { budgetRange: [80000, 350000], stadiumCapacity: 2000, ticketPrice: 15 });
 }
 
 // Loads the real, scraped Tercera FEB division (fourth tier, the floor of
 // the modeled pyramid): 10 real regional groups (~14 teams each). Budget/
-// capacity scaled down again from Segunda FEB.
+// capacity scaled down again from Segunda FEB. Same fallback-capacity
+// caveat as generateSegundaFebDivision above.
 export function generateTerceraFebDivision() {
-  return buildRealGroupedDivision(terceraFebData, { budgetRange: [60000, 200000], stadiumCapacity: 1500, ticketPrice: 8 });
+  return buildRealGroupedDivision(terceraFebData, { budgetRange: [20000, 80000], stadiumCapacity: 1000, ticketPrice: 8 });
 }
 
 // Top-tier division (ACB / Liga Endesa). Real clubs and current rosters,
@@ -299,8 +311,16 @@ export function generateAcbDivision() {
   const teams = [];
   const players = [];
 
+  // Real arena names/capacities (see scripts/acb_league_data.json), scraped
+  // from public sources — not procedurally generated like the divisions
+  // below it.
   for (const t of acbData.teams) {
-    const team = buildBaseTeam(t.id, t.name, { budgetRange: [1500000, 4000000], stadiumCapacity: 10000, ticketPrice: 35 });
+    const team = buildBaseTeam(t.id, t.name, {
+      budgetRange: BIG_BUDGET_ACB_TEAMS.has(t.id) ? [12000000, 35000000] : [3000000, 9000000],
+      stadiumCapacity: t.capacity || 10000,
+      stadiumName: t.arena || null,
+      ticketPrice: 35,
+    });
     team.stadium.level = 2;
     team.logoUrl = t.logo || null;
     teams.push(team);

@@ -5,92 +5,128 @@
     {
       "id": "acb8",
       "name": "Asisa Joventut",
-      "logo": "https://static.acb.com/img/www/clubes2026/202526AsisaJoventutLogoPosisitvo.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202526AsisaJoventutLogoPosisitvo.png",
+      "arena": "Palau Olímpic de Badalona",
+      "capacity": 12760
     },
     {
       "id": "acb2",
       "name": "Barça",
-      "logo": "https://static.acb.com/img/www/clubes2024/2324BarcaLogoweb.png"
+      "logo": "https://static.acb.com/img/www/clubes2024/2324BarcaLogoweb.png",
+      "arena": "Palau Blaugrana",
+      "capacity": 7585
     },
     {
       "id": "acb16",
       "name": "Casademont Zaragoza",
-      "logo": "https://static.acb.com/img/www/clubes2024/2425CasademontZaragoza.png"
+      "logo": "https://static.acb.com/img/www/clubes2024/2425CasademontZaragoza.png",
+      "arena": "Pabellón Príncipe Felipe",
+      "capacity": 10744
     },
     {
       "id": "acb591",
       "name": "FIATC Girona",
-      "logo": "https://static.acb.com/img/www/clubes2026/202627FIATCGironaLogoPositivo.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202627FIATCGironaLogoPositivo.png",
+      "arena": "Pavelló Girona-Fontajau",
+      "capacity": 5500
     },
     {
       "id": "acb658",
       "name": "iLERNA Lleida",
-      "logo": "https://static.acb.com/img/www/clubes2026/202526IlernaLleidaLogoPositivo.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202526IlernaLleidaLogoPositivo.png",
+      "arena": "Barris Nord",
+      "capacity": 6100
     },
     {
       "id": "acb10",
       "name": "Kids&Us Manresa",
-      "logo": "https://static.acb.com/img/www/clubes2026/202526KidsUsManresa.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202526KidsUsManresa.png",
+      "arena": "Nou Congost",
+      "capacity": 5000
     },
     {
       "id": "acb3",
       "name": "Kosner Baskonia",
-      "logo": "https://static.acb.com/img/www/clubes2025/2526KosnerBaskoniaLogo.png"
+      "logo": "https://static.acb.com/img/www/clubes2025/2526KosnerBaskoniaLogo.png",
+      "arena": "Fernando Buesa Arena",
+      "capacity": 15504
     },
     {
       "id": "acb28",
       "name": "La Laguna Tenerife",
-      "logo": "https://static.acb.com/img/www/clubes2024/2425LaLagunaTenerifeLogo.png"
+      "logo": "https://static.acb.com/img/www/clubes2024/2425LaLagunaTenerifeLogo.png",
+      "arena": "Pabellón Santiago Martín",
+      "capacity": 5000
     },
     {
       "id": "acb657",
       "name": "Leyma Coruña",
-      "logo": "https://static.acb.com/img/www/clubes2026/202627LeymaCorunaLogoPositivoOK.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202627LeymaCorunaLogoPositivoOK.png",
+      "arena": "Coliseum da Coruña",
+      "capacity": 9300
     },
     {
       "id": "acb57",
       "name": "Monbus Obradoiro",
-      "logo": "https://static.acb.com/img/www/clubes2026/202627MonbusObradoiroLogoPositivoOK.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202627MonbusObradoiroLogoPositivoOK.png",
+      "arena": "Multiusos Fontes do Sar",
+      "capacity": 5060
     },
     {
       "id": "acb22",
       "name": "MoraBanc Andorra",
-      "logo": "https://static.acb.com/img/www/clubes2026/20252026MorabancAndorraLogoPositivoOK.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/20252026MorabancAndorraLogoPositivoOK.png",
+      "arena": "Poliesportiu d'Andorra",
+      "capacity": 5000
     },
     {
       "id": "acb9",
       "name": "Real Madrid",
-      "logo": "https://static.acb.com/img/www/clubes2024/2324RealMadrid_Logoweb.png"
+      "logo": "https://static.acb.com/img/www/clubes2024/2324RealMadrid_Logoweb.png",
+      "arena": "WiZink Center",
+      "capacity": 13109
     },
     {
       "id": "acb549",
       "name": "Recoletas Salud San Pablo Burgos",
-      "logo": "https://static.acb.com/img/www/clubes2025/2526SanPabloLogo.png"
+      "logo": "https://static.acb.com/img/www/clubes2025/2526SanPabloLogo.png",
+      "arena": "Coliseum Burgos",
+      "capacity": 9454
     },
     {
       "id": "acb25",
       "name": "Río Breogán",
-      "logo": "https://static.acb.com/logos/1718/breogan_00.png"
+      "logo": "https://static.acb.com/logos/1718/breogan_00.png",
+      "arena": "Pazo dos Deportes de Lugo",
+      "capacity": 6500
     },
     {
       "id": "acb4",
       "name": "Surne Bilbao",
-      "logo": "https://static.acb.com/img/www/clubes2022/logo_surnebb_pos.png"
+      "logo": "https://static.acb.com/img/www/clubes2022/logo_surnebb_pos.png",
+      "arena": "Bilbao Arena",
+      "capacity": 10014
     },
     {
       "id": "acb12",
       "name": "UCAM Murcia",
-      "logo": "https://static.acb.com/img/www/clubes2024/2425UCAMMurciapositivo.png"
+      "logo": "https://static.acb.com/img/www/clubes2024/2425UCAMMurciapositivo.png",
+      "arena": "Palacio de los Deportes de Murcia",
+      "capacity": 7454
     },
     {
       "id": "acb14",
       "name": "Unicaja",
-      "logo": "https://static.acb.com/img/www/clubes2024/2324UnicajaLogo.png"
+      "logo": "https://static.acb.com/img/www/clubes2024/2324UnicajaLogo.png",
+      "arena": "Martín Carpena",
+      "capacity": 10642
     },
     {
       "id": "acb13",
       "name": "Valencia Basket",
-      "logo": "https://static.acb.com/img/www/clubes2026/202627ValenciaBasket40Anys.png"
+      "logo": "https://static.acb.com/img/www/clubes2026/202627ValenciaBasket40Anys.png",
+      "arena": "Roig Arena",
+      "capacity": 15600
     }
   ],
   "players": [

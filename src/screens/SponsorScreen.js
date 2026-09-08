@@ -35,8 +35,8 @@ export default function SponsorScreen() {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const position = leaguePosition(team, state.teams);
-  const jerseyOffers = getJerseySponsorOffers(team, state.teams);
-  const stadiumOffers = getStadiumSponsorOffers(team, state.teams);
+  const jerseyOffers = getJerseySponsorOffers(team, state.teams, state.activeDivisionId);
+  const stadiumOffers = getStadiumSponsorOffers(team, state.teams, state.activeDivisionId);
   const tvIncome = tvRightsIncome(state.activeDivisionId, team, state.teams);
   const divisionName = DIVISION_META[state.activeDivisionId]?.name || state.activeDivisionId;
 
