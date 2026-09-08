@@ -65,6 +65,7 @@ function baseState() {
     results: [],
     lastRoundResults: [],
     pendingContracts: [],
+    pendingOffers: [],
     log: [],
     seasonYear: 2025,
     currentDate: "2025-09-01",
@@ -251,19 +252,93 @@ describe("reducer", () => {
     expect(next).toBe(state);
   });
 
-  it("UPGRADE_STADIUM charges the tier cost and bumps capacity/level", () => {
+  it("MAKE_OFFER near the player's value gets accepted and moves the player", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "MAKE_OFFER", buyerTeamId: "a", playerId: "p4", amount: 95000 });
+    const teamA = next.teams.find((t) => t.id === "a");
+    const teamB = next.teams.find((t) => t.id === "b");
+    expect(teamA.roster).toContain("p4");
+    expect(teamB.roster).not.toContain("p4");
+    expect(teamA.budget).toBe(500000 - 95000);
+    expect(teamB.budget).toBe(500000 + 95000);
+    expect(next.playersById.p4.teamId).toBe("a");
+  });
+
+  it("MAKE_OFFER in the middle range gets countered instead of accepted or moving the player", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "MAKE_OFFER", buyerTeamId: "a", playerId: "p4", amount: 70000 });
+    expect(next.teams.find((t) => t.id === "b").roster).toContain("p4");
+    expect(next.log[0].text).toContain("$90,000");
+  });
+
+  it("MAKE_OFFER far below value gets flatly rejected", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "MAKE_OFFER", buyerTeamId: "a", playerId: "p4", amount: 20000 });
+    expect(next.teams.find((t) => t.id === "b").roster).toContain("p4");
+    expect(next.log[0].text).toContain("rechazó");
+  });
+
+  it("RESOLVE_OFFER accept moves the player and money, and clears the offer", () => {
+    const state = baseState();
+    state.pendingOffers = [{ id: "o1", playerId: "p1", fromTeamId: "b", amount: 90000 }];
+    const next = reducer(state, { type: "RESOLVE_OFFER", offerId: "o1", accept: true });
+    const teamA = next.teams.find((t) => t.id === "a");
+    const teamB = next.teams.find((t) => t.id === "b");
+    expect(teamA.roster).not.toContain("p1");
+    expect(teamB.roster).toContain("p1");
+    expect(teamA.budget).toBe(500000 + 90000);
+    expect(teamB.budget).toBe(500000 - 90000);
+    expect(next.pendingOffers).toHaveLength(0);
+  });
+
+  it("RESOLVE_OFFER reject leaves the roster untouched and clears the offer", () => {
+    const state = baseState();
+    state.pendingOffers = [{ id: "o1", playerId: "p1", fromTeamId: "b", amount: 90000 }];
+    const next = reducer(state, { type: "RESOLVE_OFFER", offerId: "o1", accept: false });
+    expect(next.teams.find((t) => t.id === "a").roster).toContain("p1");
+    expect(next.pendingOffers).toHaveLength(0);
+  });
+
+  it("UPGRADE_STADIUM charges the tier cost immediately but starts a multi-week build", () => {
     const state = baseState();
     const next = reducer(state, { type: "UPGRADE_STADIUM", teamId: "a", tierId: "medium" });
     const team = next.teams.find((t) => t.id === "a");
-    expect(team.stadium.level).toBe(2);
-    expect(team.stadium.capacity).toBeGreaterThan(8000);
     expect(team.budget).toBeLessThan(500000);
+    // Capacity/level don't apply until the build finishes.
+    expect(team.stadium.level).toBe(1);
+    expect(team.stadium.capacity).toBe(8000);
+    expect(team.stadium.pendingProject).toMatchObject({ kind: "tier", weeksLeft: 3, weeksTotal: 3 });
+  });
+
+  it("UPGRADE_STADIUM refuses to start a second build while one is in progress", () => {
+    const state = baseState();
+    state.teams[0].stadium.pendingProject = { kind: "tier", label: "x", capacityGain: 1, priceGain: 1, weeksLeft: 1, weeksTotal: 3 };
+    const next = reducer(state, { type: "UPGRADE_STADIUM", teamId: "a", tierId: "small" });
+    expect(next).toBe(state);
+  });
+
+  it("a stadium build applies capacity/level/price once weeksLeft counts down to zero", () => {
+    const state = baseState();
+    state.teams[0].stadium.pendingProject = {
+      kind: "tier",
+      label: "Ampliación media",
+      capacityGain: 2500,
+      priceGain: 5,
+      weeksLeft: 1,
+      weeksTotal: 3,
+    };
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.stadium.pendingProject).toBeNull();
+    expect(team.stadium.level).toBe(2);
+    expect(team.stadium.capacity).toBe(10500);
+    expect(team.stadium.ticketPrice).toBe(30);
   });
 
   it("SET_TICKET_PRICE clamps to a sane range", () => {
     const state = baseState();
     const next = reducer(state, { type: "SET_TICKET_PRICE", teamId: "a", price: 9999 });
-    expect(next.teams.find((t) => t.id === "a").stadium.ticketPrice).toBe(200);
+    expect(next.teams.find((t) => t.id === "a").stadium.ticketPrice).toBe(100);
   });
 
   it("HIRE_STAFF_ROLE fills the role and charges the hire cost", () => {
@@ -495,19 +570,82 @@ describe("reducer", () => {
     expect(next.teams.find((t) => t.id === "a").stadium.seasonTicketPrice).toBe(500);
 
     const clamped = reducer(state, { type: "SET_SEASON_TICKET_PRICE", teamId: "a", price: 10 });
-    expect(clamped.teams.find((t) => t.id === "a").stadium.seasonTicketPrice).toBe(50);
+    expect(clamped.teams.find((t) => t.id === "a").stadium.seasonTicketPrice).toBe(30);
   });
 
-  it("BUILD_AMENITY upgrades one level at a time, each one pricier than the last", () => {
+  it("REQUEST_LOAN adds the principal to the budget and clamps to the team's cap", () => {
     const state = baseState();
-    const level1 = reducer(state, { type: "BUILD_AMENITY", teamId: "a", amenityId: "shops" });
+    const next = reducer(state, { type: "REQUEST_LOAN", teamId: "a", amount: 5000 });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.budget).toBe(505000);
+    expect(team.loan).toMatchObject({ principal: 5000, weeksLeft: 20 });
+    expect(team.loan.remaining).toBeGreaterThan(5000);
+
+    // Way beyond this team's cap (its wage/maintenance bill is tiny) gets
+    // clamped down instead of handing out an unbounded loan.
+    const state2 = baseState();
+    const huge = reducer(state2, { type: "REQUEST_LOAN", teamId: "a", amount: 50000000 });
+    const team2 = huge.teams.find((t) => t.id === "a");
+    expect(team2.budget - 500000).toBeLessThan(50000000);
+  });
+
+  it("REQUEST_LOAN refuses a second loan while one is outstanding", () => {
+    const state = baseState();
+    state.teams[0].loan = { principal: 1000, remaining: 1000, weeklyPayment: 100, weeksLeft: 10 };
+    const next = reducer(state, { type: "REQUEST_LOAN", teamId: "a", amount: 5000 });
+    expect(next).toBe(state);
+  });
+
+  it("a loan's weekly payment is deducted from the budget by SIM_ROUND, clearing once repaid", () => {
+    const state = baseState();
+    state.teams[0].loan = { principal: 1000, remaining: 500, weeklyPayment: 500, weeksLeft: 1 };
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.loan).toBeNull();
+    expect(next.log.some((e) => e.text === "Crédito saldado.")).toBe(true);
+  });
+
+  it("BUILD_AMENITY charges the cost immediately but starts a multi-week build", () => {
+    const state = baseState();
+    const next = reducer(state, { type: "BUILD_AMENITY", teamId: "a", amenityId: "shops" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.budget).toBeLessThan(500000);
+    expect(team.stadium.amenities?.shops).toBeUndefined();
+    expect(team.stadium.pendingProject).toMatchObject({
+      kind: "amenity",
+      amenityId: "shops",
+      level: 1,
+      weeksLeft: 2,
+      weeksTotal: 2,
+    });
+  });
+
+  it("BUILD_AMENITY refuses to start a second build while one is in progress", () => {
+    const state = baseState();
+    state.teams[0].stadium.pendingProject = { kind: "amenity", label: "x", amenityId: "shops", level: 1, weeksLeft: 1, weeksTotal: 2 };
+    const next = reducer(state, { type: "BUILD_AMENITY", teamId: "a", amenityId: "scoreboard" });
+    expect(next).toBe(state);
+  });
+
+  it("an amenity build applies its level once weeksLeft counts down to zero, one level at a time", () => {
+    const state = baseState();
+    state.teams[0].stadium.pendingProject = {
+      kind: "amenity",
+      label: "Tienda oficial",
+      amenityId: "shops",
+      level: 1,
+      weeksLeft: 1,
+      weeksTotal: 2,
+    };
+    const level1 = reducer(state, { type: "SIM_ROUND" });
     const team1 = level1.teams.find((t) => t.id === "a");
+    expect(team1.stadium.pendingProject).toBeNull();
     expect(team1.stadium.amenities.shops).toBe(1);
 
-    const level2 = reducer(level1, { type: "BUILD_AMENITY", teamId: "a", amenityId: "shops" });
-    const team2 = level2.teams.find((t) => t.id === "a");
-    expect(team2.stadium.amenities.shops).toBe(2);
-    expect(team1.budget - team2.budget).toBeGreaterThan(500000 - team1.budget);
+    const withNextBuild = reducer(level1, { type: "BUILD_AMENITY", teamId: "a", amenityId: "shops" });
+    const team1b = withNextBuild.teams.find((t) => t.id === "a");
+    expect(team1b.stadium.pendingProject).toMatchObject({ amenityId: "shops", level: 2 });
+    expect(team1.budget - team1b.budget).toBeGreaterThan(0);
   });
 
   it("pushLog keeps entries within the retention window and drops older ones", () => {

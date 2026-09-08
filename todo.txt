@@ -1,18 +1,18 @@
 - la media de los jugadores debe ser proporcional a la categoria, no puede se gente de media 80 en tercera
 - cuando se avanza una semana sin liga poner un loader o algo
 - [hecho] al inicio poder seleccionar equipos de cualquier liga
-- no se si la economia es real, se gana demasiado dinero
+- [hecho] no se si la economia es real, se gana demasiado dinero
 - las mejoras de estadio son demasiado beneficiosas hoy. Por cada ampliacion de aforo por ejemplo no debe ser atraer a mas gente y subir el precio de las entradas. SI cabe mas gentre deberia ser mas dificl llenar.
-- el precio de las entradas deberia tener 100 euros maximo
+- [hecho] el precio de las entradas deberia tener 100 euros maximo
 - poder mejorar poner palco vip y el videomarcador
 - poder fichar jugadores de otras ligas. pero añadir realismo aqui, un jugador de nivel superior y mucho mejor que plantilla actual no deberia poder fichar por ese equipo
 - poder fichar a gente sin equipo
-- el indicar de jugador extranjero deberia ser un punto rojo (tanto en plantilla como en mercado)
+- [hecho] el indicar de jugador extranjero deberia ser un punto rojo (tanto en plantilla como en mercado)
 - intentar buscar la capacidad real de los estadios. si no se encuentra poner 1000 para categoria mas baja, 2000 para la siguiente y 3000 para la siguiente. los de acb rpobablemente si que se peudan saber, pero intentar primero de todo scrappear los estadios
 - mirar a ver el presupuesto de los equipos en funciona de la liga para que sea realista.
 - la media de los jugadores deberia ser proporcional a la categoria. por ejemplo de 40 a 55 para tercera, 50 a 65 para segunda, 55 a 70 para primera y 70 a 85 para acb. Puede haber casos en ACB que lleguen hasta casi 90
 - los patrocinadores y derechos de tv que sean precios realistas
-- poder pedir un credito
+- [hecho] poder pedir un credito
 - no poder estar en numeros rojos muchas jornadas
-- las mejoras del estado no pueden hacerse automaticamente, deben llevar semanas
-- los fichajes se pueden hacer ofertas? quizás esto sea muy complicado
+- [hecho] las mejoras del estado no pueden hacerse automaticamente, deben llevar semanas
+- [hecho] los fichajes se pueden hacer ofertas? quizás esto sea muy complicado

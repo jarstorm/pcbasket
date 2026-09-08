@@ -7,6 +7,10 @@ import {
   getStadiumSponsorOffers,
   tvRightsIncome,
   estimatedTicketIncomePerRound,
+  maxLoanAmount,
+  previewLoanTerms,
+  advanceLoan,
+  LOAN_TERM_WEEKS,
 } from "../finance";
 
 function team(id, wins, losses, roster) {
@@ -62,5 +66,37 @@ describe("finance", () => {
 
     const topAcb = tvRightsIncome("acb", teams[0], teams);
     expect(topAcb).toBeGreaterThan(topPrimera);
+  });
+
+  it("scales the loan cap with a team's actual fixed costs", () => {
+    const cheapTeam = { roster: ["p1"], staff: {}, stadium: { capacity: 1500, level: 1 } };
+    const bigTeam = { roster: ["p1"], staff: {}, stadium: { capacity: 10000, level: 2 } };
+    const playersById = { p1: { wage: 500 } };
+    expect(maxLoanAmount(bigTeam, playersById)).toBeGreaterThan(maxLoanAmount(cheapTeam, playersById));
+  });
+
+  it("charges flat interest on a loan, repaid in equal weekly installments", () => {
+    const { remaining, weeklyPayment } = previewLoanTerms(100000);
+    expect(remaining).toBeGreaterThan(100000);
+    expect(weeklyPayment * LOAN_TERM_WEEKS).toBeGreaterThanOrEqual(remaining);
+  });
+
+  it("advanceLoan deducts one weekly payment and clears the loan once fully repaid", () => {
+    const team = {
+      budget: 10000,
+      loan: { principal: 1000, remaining: 1000, weeklyPayment: 600, weeksLeft: 2 },
+    };
+    const afterOne = advanceLoan(team);
+    expect(afterOne.budget).toBe(9400);
+    expect(afterOne.loan).toMatchObject({ remaining: 400, weeksLeft: 1 });
+
+    const afterTwo = advanceLoan(afterOne);
+    expect(afterTwo.budget).toBe(9000);
+    expect(afterTwo.loan).toBeNull();
+  });
+
+  it("advanceLoan is a no-op for a team with no loan", () => {
+    const team = { budget: 5000, loan: null };
+    expect(advanceLoan(team)).toBe(team);
   });
 });

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
+import Button from "../components/Button";
 import {
   playerWageTotal,
   staffWageTotal,
@@ -10,6 +11,9 @@ import {
   estimatedTicketIncomePerRound,
   amortizedSeasonTicketIncomePerRound,
   tvRightsIncome,
+  maxLoanAmount,
+  previewLoanTerms,
+  LOAN_TERM_WEEKS,
 } from "../engine/finance";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
@@ -21,7 +25,7 @@ import SectionHeader from "../components/SectionHeader";
 const ROUNDS_PER_MONTH = 30 / 7;
 
 export default function FinanceScreen() {
-  const { state } = useGame();
+  const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const history = team.financeHistory || [];
   const [browseIndex, setBrowseIndex] = useState(null);
@@ -105,6 +109,8 @@ export default function FinanceScreen() {
         <Text style={styles.dim}>Presupuesto actual: ${team.budget.toLocaleString()}</Text>
       </Card>
 
+      <LoanCard team={team} playersById={state.playersById} dispatch={dispatch} />
+
       <Card>
         <SectionHeader>HISTORIAL POR JORNADA</SectionHeader>
         {!shownEntry ? (
@@ -159,6 +165,40 @@ export default function FinanceScreen() {
         )}
       </Card>
     </View>
+  );
+}
+
+function LoanCard({ team, playersById, dispatch }) {
+  const loan = team.loan;
+  if (loan) {
+    return (
+      <Card>
+        <SectionHeader>CRÉDITO</SectionHeader>
+        <Row label="Pendiente de devolver" value={-loan.remaining} />
+        <Row label="Cuota semanal" value={-loan.weeklyPayment} />
+        <Text style={styles.dim}>Quedan {loan.weeksLeft} semanas de pago.</Text>
+      </Card>
+    );
+  }
+
+  const cap = maxLoanAmount(team, playersById);
+  const { remaining, weeklyPayment } = previewLoanTerms(cap);
+  return (
+    <Card>
+      <SectionHeader>CRÉDITO</SectionHeader>
+      <Text style={styles.dim}>
+        Puedes pedir hasta ${cap.toLocaleString()}, a devolver ${remaining.toLocaleString()} en{" "}
+        {LOAN_TERM_WEEKS} semanas (${weeklyPayment.toLocaleString()}/semana). El importe queda
+        descontado semana a semana aunque el presupuesto entre en números rojos.
+      </Text>
+      <Button
+        primary
+        onPress={() => dispatch({ type: "REQUEST_LOAN", teamId: team.id, amount: cap })}
+        style={{ marginTop: spacing.sm }}
+      >
+        Pedir crédito de ${cap.toLocaleString()}
+      </Button>
+    </Card>
   );
 }
 

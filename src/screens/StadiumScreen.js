@@ -15,9 +15,21 @@ export default function StadiumScreen() {
   const [selectedId, setSelectedId] = useState(tiers[1]?.id ?? tiers[0]?.id);
   const selected = tiers.find((t) => t.id === selectedId);
   const amenities = getAmenityOptions(team.stadium);
+  const project = team.stadium.pendingProject;
 
   return (
     <View>
+      {project && (
+        <Card>
+          <SectionHeader>OBRA EN CURSO</SectionHeader>
+          <Text style={styles.tierLabel}>{project.label}</Text>
+          <Text style={styles.dim}>
+            Termina en {project.weeksLeft} {project.weeksLeft === 1 ? "semana" : "semanas"} de{" "}
+            {project.weeksTotal}.
+          </Text>
+        </Card>
+      )}
+
       <Card>
         <SectionHeader>{team.stadium.name.toUpperCase()}</SectionHeader>
         <View style={styles.statsBox}>
@@ -123,11 +135,11 @@ export default function StadiumScreen() {
 
         <Button
           primary
-          disabled={!selected || team.budget < selected.cost}
+          disabled={!!project || !selected || team.budget < selected.cost}
           onPress={() => dispatch({ type: "UPGRADE_STADIUM", teamId: team.id, tierId: selectedId })}
           style={{ marginTop: spacing.sm }}
         >
-          Mejorar estadio
+          {project ? "Obra en curso…" : "Mejorar estadio"}
         </Button>
       </Card>
 
@@ -152,7 +164,7 @@ export default function StadiumScreen() {
               <Text style={styles.builtText}>AL MÁXIMO</Text>
             ) : (
               <Button
-                disabled={team.budget < a.cost}
+                disabled={!!project || team.budget < a.cost}
                 onPress={() => dispatch({ type: "BUILD_AMENITY", teamId: team.id, amenityId: a.id })}
                 style={styles.amenityBtn}
               >

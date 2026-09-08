@@ -214,7 +214,7 @@ function PlayerRow({ player, odd, onPress }) {
         </View>
         <View style={styles.playerRight}>
           <OvrBadge value={player.overall} />
-          {isForeign(player) && <Text style={styles.foreign}>EXT</Text>}
+          {isForeign(player) && <View style={styles.foreignDot} />}
           {player.injured && <Text style={styles.injured}>LESIONADO</Text>}
           {player.listed && <Text style={styles.listed}>EN VENTA</Text>}
         </View>
@@ -345,6 +345,6 @@ const styles = StyleSheet.create({
   tacticRow: { flexDirection: "row", gap: spacing.md },
   tacticLabel: { color: colors.textDim, fontSize: 11, fontWeight: "700", marginBottom: 4, letterSpacing: 0.4 },
   tacticDesc: { color: colors.textDim, fontSize: 11, marginTop: 4 },
-  foreign: { color: colors.textDim, fontSize: 9, fontWeight: "800", marginTop: 2 },
+  foreignDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.loss, marginTop: 4 },
   listed: { color: colors.accent, fontSize: 9, fontWeight: "800", marginTop: 2 },
 });

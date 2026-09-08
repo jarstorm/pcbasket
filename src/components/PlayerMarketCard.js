@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import OvrBadge from "./OvrBadge";
 import Button from "./Button";
-import Plaque from "./Plaque";
 import StatBar from "./StatBar";
 import { POSITION_ABBR } from "../data/positions";
 import { isForeign } from "../engine/rules";
@@ -19,7 +18,7 @@ export default function PlayerMarketCard({ player, teamName, feeLabel, feeValue,
         <View style={{ flex: 1 }}>
           <View style={styles.nameRow}>
             <Text style={styles.name} numberOfLines={1}>{player.name}</Text>
-            {isForeign(player) && <Plaque>EXT</Plaque>}
+            {isForeign(player) && <View style={styles.foreignDot} />}
           </View>
           <Text style={styles.meta} numberOfLines={1}>
             {teamName ? `${teamName} · ` : ""}{player.age} años · {POSITION_ABBR[player.position] || player.position}
@@ -94,6 +93,7 @@ const styles = StyleSheet.create({
   avatarText: { color: colors.text, fontWeight: "800", fontSize: 11 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 5 },
   name: { color: colors.text, fontSize: 13, fontWeight: "700", flexShrink: 1 },
+  foreignDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.loss },
   meta: { color: colors.textDim, fontSize: 10, fontWeight: "600", marginTop: 3 },
   barsRow: { flexDirection: "row", gap: spacing.xs, paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
   footer: {

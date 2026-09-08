@@ -139,8 +139,9 @@ function buildRealIdentityRatedPlayer(rp, { base, spread }) {
 
 // Builds the shared team-object shape (budget/stadium/roster/lineup/staff/
 // ...) used by every division — real or fictional. seasonTicketPrice is
-// always 15x the base ticket price (matches every division's existing
-// numbers: 25->375, 15->225, 35->525).
+// always 9x the base ticket price — must match SEASON_TICKET_MULTIPLIER in
+// state/GameContext.js (can't import it directly: that module imports from
+// here, so the reverse would be circular).
 function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice }) {
   return {
     id,
@@ -153,7 +154,7 @@ function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice }) 
       capacity: stadiumCapacity,
       ticketPrice,
       amenities: {},
-      seasonTicketPrice: ticketPrice * 15,
+      seasonTicketPrice: ticketPrice * 9,
       seasonTicketHolders: 0,
     },
     roster: [],
@@ -166,6 +167,7 @@ function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice }) 
     tactics: { offense: "balanced", defense: "man" },
     scoutCooldown: null,
     scoutSearchTotal: null,
+    loan: null,
   };
 }
 

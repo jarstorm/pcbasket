@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
+import Button from "../components/Button";
 import PlayerMarketCard from "../components/PlayerMarketCard";
 import Select from "../components/Select";
 import { POSITION_ORDER, POSITION_LABEL } from "../data/positions";
 import { seededShuffle } from "../engine/random";
-import { colors, spacing } from "../theme";
+import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
 const MARKET_POOL_SIZE = 40;
@@ -58,9 +59,44 @@ export default function TransferMarket() {
   }, [state.playersById, posFilter, sortBy]);
 
   const annualWage = (p) => p.wage * state.schedule.length;
+  const pendingOffers = state.pendingOffers || [];
 
   return (
     <View>
+      {pendingOffers.length > 0 && (
+        <Card style={{ borderColor: colors.accent }}>
+          <SectionHeader>OFERTAS RECIBIDAS</SectionHeader>
+          {pendingOffers.map((offer) => {
+            const player = state.playersById[offer.playerId];
+            if (!player) return null;
+            return (
+              <View key={offer.id} style={styles.offerReceivedRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.offerReceivedName}>{player.name}</Text>
+                  <Text style={styles.dim}>
+                    {teamNameById[offer.fromTeamId] || "Un equipo"} ofrece $
+                    {offer.amount.toLocaleString()}
+                  </Text>
+                </View>
+                <Button
+                  primary
+                  style={styles.offerBtn}
+                  onPress={() => dispatch({ type: "RESOLVE_OFFER", offerId: offer.id, accept: true })}
+                >
+                  Aceptar
+                </Button>
+                <Button
+                  style={[styles.offerBtn, styles.offerBtnReject]}
+                  onPress={() => dispatch({ type: "RESOLVE_OFFER", offerId: offer.id, accept: false })}
+                >
+                  Rechazar
+                </Button>
+              </View>
+            );
+          })}
+        </Card>
+      )}
+
       <Card>
         <SectionHeader>Mercado de fichajes</SectionHeader>
         <Text style={styles.dim}>
@@ -74,16 +110,13 @@ export default function TransferMarket() {
         </View>
 
         {marketPlayers.map((p) => (
-          <PlayerMarketCard
+          <MarketPlayerRow
             key={p.id}
             player={p}
             teamName={teamNameById[p.teamId]}
-            feeLabel="CLÁUSULA"
-            feeValue={p.value}
-            wageValue={annualWage(p)}
-            disabled={team.budget < p.value || team.roster.length >= 15}
-            buyLabel="Fichar"
-            onBuy={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: p.id })}
+            team={team}
+            dispatch={dispatch}
+            annualWage={annualWage(p)}
           />
         ))}
       </Card>
@@ -110,8 +143,104 @@ export default function TransferMarket() {
   );
 }
 
+const OFFER_STEP = 5000;
+
+function MarketPlayerRow({ player, teamName, team, dispatch, annualWage }) {
+  const [offering, setOffering] = useState(false);
+  const [amount, setAmount] = useState(Math.round(player.value * 0.8));
+
+  return (
+    <View style={{ marginBottom: spacing.sm + 1 }}>
+      <PlayerMarketCard
+        player={player}
+        teamName={teamName}
+        feeLabel="CLÁUSULA"
+        feeValue={player.value}
+        wageValue={annualWage}
+        disabled={team.budget < player.value || team.roster.length >= 15}
+        buyLabel="Fichar"
+        onBuy={() => dispatch({ type: "BUY_PLAYER", buyerTeamId: team.id, playerId: player.id })}
+      />
+      {!offering ? (
+        <Pressable onPress={() => setOffering(true)}>
+          <Text style={styles.offerToggle}>Ofrecer menos de la cláusula</Text>
+        </Pressable>
+      ) : (
+        <View style={styles.offerPanel}>
+          <View style={styles.stepperRow}>
+            <Pressable
+              style={styles.stepBtn}
+              onPress={() => setAmount(Math.max(OFFER_STEP, amount - OFFER_STEP))}
+            >
+              <Text style={styles.stepBtnText}>−</Text>
+            </Pressable>
+            <Text style={styles.offerAmount}>${amount.toLocaleString()}</Text>
+            <Pressable
+              style={styles.stepBtn}
+              onPress={() => setAmount(Math.min(player.value, amount + OFFER_STEP))}
+            >
+              <Text style={styles.stepBtnText}>+</Text>
+            </Pressable>
+          </View>
+          <Button
+            primary
+            disabled={team.budget < amount || team.roster.length >= 15}
+            onPress={() => {
+              dispatch({ type: "MAKE_OFFER", buyerTeamId: team.id, playerId: player.id, amount });
+              setOffering(false);
+            }}
+          >
+            Enviar oferta
+          </Button>
+        </View>
+      )}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   dim: { color: colors.textDim, fontSize: 13, marginBottom: spacing.sm },
   bold: { fontWeight: "700" },
   filters: { flexDirection: "row", gap: 8, marginBottom: spacing.md },
+  offerReceivedRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  offerReceivedName: { color: colors.text, fontWeight: "700", fontSize: 13 },
+  offerBtn: { paddingHorizontal: spacing.sm, marginBottom: 0 },
+  offerBtnReject: { borderColor: colors.loss },
+  offerToggle: {
+    color: colors.accent,
+    fontSize: 11,
+    fontWeight: "700",
+    textAlign: "center",
+    marginTop: -spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  offerPanel: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radii.sm,
+    padding: spacing.sm,
+    marginTop: -spacing.xs,
+    marginBottom: spacing.sm,
+    gap: spacing.sm,
+  },
+  stepperRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: spacing.md },
+  stepBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: radii.sm,
+    borderWidth: 2,
+    borderColor: colors.border,
+    backgroundColor: colors.panelAlt,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  stepBtnText: { color: colors.accent, fontSize: 16, fontWeight: "800" },
+  offerAmount: { color: colors.text, fontWeight: "800", fontSize: 14, minWidth: 80, textAlign: "center" },
 });

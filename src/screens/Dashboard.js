@@ -121,6 +121,20 @@ export default function Dashboard({ onNavigate }) {
         </Pressable>
       )}
 
+      {(state.pendingOffers || []).length > 0 && (
+        <Pressable onPress={() => onNavigate("market")}>
+          <Card style={styles.warningCard}>
+            <View style={styles.alertRow}>
+              <Icon name="attach-money" size={18} color={colors.accent} />
+              <Text style={styles.warningText}>
+                {state.pendingOffers.length} oferta(s) de fichaje pendiente(s) — toca para resolverlas
+              </Text>
+              <Icon name="chevron-right" size={16} color={colors.accent} />
+            </View>
+          </Card>
+        </Pressable>
+      )}
+
       {!isPreseason && injuredStarter && (
         <Pressable onPress={() => onNavigate("roster")}>
           <Card style={styles.dangerCard}>

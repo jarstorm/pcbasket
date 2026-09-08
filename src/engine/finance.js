@@ -71,3 +71,37 @@ export function tvRightsIncome(divisionId, team, teams) {
   const positionFactor = teams.length > 1 ? 1 - (position - 1) / (teams.length - 1) : 1;
   return Math.round(base * (0.4 + positionFactor * 0.6));
 }
+
+// A loan is a flat amount of interest on top of the principal, repaid in
+// equal weekly installments over a fixed term — no compounding, no early
+// payoff option. Only one loan can be outstanding at a time (enforced by
+// the reducer). Ticked down weekly by advanceLoan below.
+export const LOAN_TERM_WEEKS = 20;
+export const LOAN_INTEREST_RATE = 0.08;
+
+// How much a team can borrow, scaled to its own size instead of a flat cap —
+// roughly one loan term's worth of its actual fixed costs (wages + staff +
+// maintenance), so a small Tercera FEB team and a big ACB team each get a
+// sane ceiling relative to what they could plausibly repay.
+export function maxLoanAmount(team, playersById) {
+  const weeklyFixedCosts =
+    playerWageTotal(team, playersById) +
+    staffWageTotal(team.staff || {}) +
+    stadiumMaintenance(team.stadium, team.staff || {});
+  return Math.max(20000, Math.round(weeklyFixedCosts * LOAN_TERM_WEEKS));
+}
+
+export function previewLoanTerms(principal) {
+  const remaining = Math.round(principal * (1 + LOAN_INTEREST_RATE));
+  const weeklyPayment = Math.ceil(remaining / LOAN_TERM_WEEKS);
+  return { remaining, weeklyPayment };
+}
+
+export function advanceLoan(team) {
+  if (!team.loan) return team;
+  const payment = Math.min(team.loan.weeklyPayment, team.loan.remaining);
+  const remaining = team.loan.remaining - payment;
+  const weeksLeft = team.loan.weeksLeft - 1;
+  const loan = remaining > 0 && weeksLeft > 0 ? { ...team.loan, remaining, weeksLeft } : null;
+  return { ...team, budget: team.budget - payment, loan };
+}

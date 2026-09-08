@@ -36,14 +36,25 @@ import {
   getJerseySponsorOffers,
   getStadiumSponsorOffers,
   tvRightsIncome,
+  maxLoanAmount,
+  previewLoanTerms,
+  advanceLoan,
+  LOAN_TERM_WEEKS,
 } from "../engine/finance";
 import { seasonAgeStep, shouldRetire, evaluateContractOffer } from "../engine/career";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 import { getAmenityOptions, amenityAttendanceBonus, amenityPriceTolerance } from "../engine/amenities";
+import { evaluateTransferOffer } from "../engine/transfers";
 
 const SAVE_KEY = "pcbasket-save-v1";
 const SNAPSHOT_KEY = "pcbasket-snapshot-v1";
 const BASE_TICKET_PRICE = 25; // starting price in generate.js, reference for "reasonable"
+const MAX_TICKET_PRICE = 100;
+// Season ticket = this many single-game tickets, paid upfront as one lump
+// sum before a ball is bounced — was 15x, which combined with a generous
+// holder rate could hand out a lump bigger than a team's whole starting
+// budget in one shot.
+const SEASON_TICKET_MULTIPLIER = 9;
 const MAX_ACADEMY_SIZE = 5;
 // The league proper (state.schedule) doesn't kick off until September — this
 // many fictional weeks of preseason come first so there's time to use the
@@ -80,6 +91,28 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
+// Moves one player from seller to buyer at the given price — shared by
+// BUY_PLAYER (instant, at asking value) and the negotiated-offer paths
+// (MAKE_OFFER, RESOLVE_OFFER), which settle at whatever amount was agreed.
+function transferPlayer(teams, playerId, sellerId, buyerId, price) {
+  return teams.map((t) => {
+    if (t.id === sellerId) {
+      return {
+        ...t,
+        budget: t.budget + price,
+        roster: t.roster.filter((id) => id !== playerId),
+        lineup: Object.fromEntries(
+          Object.entries(t.lineup).map(([pos, id]) => [pos, id === playerId ? null : id])
+        ),
+      };
+    }
+    if (t.id === buyerId) {
+      return { ...t, budget: t.budget - price, roster: [...t.roster, playerId] };
+    }
+    return t;
+  });
+}
+
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -95,23 +128,48 @@ function attendanceRate(team, teams) {
     0.25,
     1
   );
-  const base = 0.35 + positionFactor * 0.35 + priceFactor * 0.2 + amenityAttendanceBonus(team.stadium);
-  return clamp(base + (Math.random() - 0.5) * 0.15, 0.15, 0.98);
+  const base = 0.05 + positionFactor * 0.1 + priceFactor * 0.05 + amenityAttendanceBonus(team.stadium);
+  return clamp(base + (Math.random() - 0.5) * 0.06, 0.03, 0.45);
 }
 
 // Season ticket holders lock in a chunk of capacity at the start of the
 // season (paid upfront, in ADVANCE_PRESEASON below) — no position factor,
 // since standings just reset and can't judge demand yet, only amenities and
 // how the season ticket price compares to a normal ticket's own reference.
+// Capacity-tier upgrades and amenity builds are paid upfront (on purchase)
+// but take real weeks before the crowd/price actually changes — ticked down
+// once per week by advanceStadiumProject below (called from both SIM_ROUND
+// and every ADVANCE_PRESEASON tick, since both represent a week passing).
+const STADIUM_TIER_BUILD_WEEKS = { small: 2, medium: 3, large: 5 };
+const AMENITY_BUILD_WEEKS = 2;
+
+function advanceStadiumProject(stadium) {
+  const project = stadium.pendingProject;
+  if (!project) return { stadium, completedLabel: null };
+  const weeksLeft = project.weeksLeft - 1;
+  if (weeksLeft > 0) {
+    return { stadium: { ...stadium, pendingProject: { ...project, weeksLeft } }, completedLabel: null };
+  }
+  const next = { ...stadium, pendingProject: null };
+  if (project.kind === "tier") {
+    next.level = stadium.level + 1;
+    next.capacity = stadium.capacity + project.capacityGain;
+    next.ticketPrice = Math.min(MAX_TICKET_PRICE, stadium.ticketPrice + project.priceGain);
+  } else {
+    next.amenities = { ...(stadium.amenities || {}), [project.amenityId]: project.level };
+  }
+  return { stadium: next, completedLabel: project.label };
+}
+
 function seasonTicketRate(stadium) {
-  const priceReference = (BASE_TICKET_PRICE + amenityPriceTolerance(stadium)) * 15;
+  const priceReference = (BASE_TICKET_PRICE + amenityPriceTolerance(stadium)) * SEASON_TICKET_MULTIPLIER;
   const priceFactor = clamp(
     1 - (Math.max(0, (stadium.seasonTicketPrice || 0) - priceReference) / priceReference) * 0.6,
     0.2,
     1
   );
-  const base = 0.35 + amenityAttendanceBonus(stadium) * 2;
-  return clamp(base * priceFactor, 0.1, 0.75);
+  const base = 0.18 + amenityAttendanceBonus(stadium) * 2;
+  return clamp(base * priceFactor, 0.05, 0.4);
 }
 
 const BACKGROUND_GENERATORS = {
@@ -207,16 +265,18 @@ function normalizeState(loaded) {
         amenities: Array.isArray(t.stadium.amenities)
           ? Object.fromEntries(t.stadium.amenities.map((id) => [id, 1]))
           : t.stadium.amenities ?? {},
-        seasonTicketPrice: t.stadium.seasonTicketPrice ?? t.stadium.ticketPrice * 15,
+        seasonTicketPrice: t.stadium.seasonTicketPrice ?? t.stadium.ticketPrice * SEASON_TICKET_MULTIPLIER,
         seasonTicketHolders: t.stadium.seasonTicketHolders ?? 0,
       },
       financeHistory: t.financeHistory ?? [],
       tactics: t.tactics ?? { offense: "balanced", defense: "man" },
       scoutCooldown: t.scoutCooldown ?? null,
       scoutSearchTotal: t.scoutSearchTotal ?? null,
+      loan: t.loan ?? null,
     })),
     playersById,
     pendingContracts: loaded.pendingContracts ?? [],
+    pendingOffers: loaded.pendingOffers ?? [],
     activeDivisionId,
     // No save from before groups existed could have had the user resident
     // in anything but a division's sole/first group.
@@ -256,6 +316,7 @@ function freshGame() {
     results: [], // flat list of played matches
     lastRoundResults: [],
     pendingContracts: [],
+    pendingOffers: [],
     log: [],
     seasonYear: FIRST_SEASON_YEAR,
     currentDate: `${FIRST_SEASON_YEAR}-07-01`,
@@ -327,16 +388,32 @@ export function reducer(state, action) {
       const preseasonWeeksLeft = state.preseasonWeeksLeft - 1;
       const currentDate = addDays(state.currentDate, 7);
 
+      // Every preseason week also counts toward any in-progress stadium
+      // project (ampliación/instalación) and any outstanding loan payment,
+      // same as a regular season week.
+      let log = state.log;
+      const advancedTeams = state.teams.map((t) => {
+        const { stadium, completedLabel } = advanceStadiumProject(t.stadium);
+        if (completedLabel && t.id === state.userTeamId) {
+          log = pushLog(currentDate, log, `Obra terminada: ${completedLabel}.`);
+        }
+        const withStadium = stadium === t.stadium ? t : { ...t, stadium };
+        const withLoan = advanceLoan(withStadium);
+        if (withStadium.loan && !withLoan.loan && t.id === state.userTeamId) {
+          log = pushLog(currentDate, log, "Crédito saldado.");
+        }
+        return withLoan;
+      });
+
       // Last tick before the league kicks off: lock in this season's season
       // ticket holders (paid upfront, one lump sum) for every team in the
       // active division — after this the remaining "walk-up" capacity is
       // what SIM_ROUND sells game by game.
       if (preseasonWeeksLeft > 0) {
-        return { ...state, preseasonWeeksLeft, currentDate };
+        return { ...state, preseasonWeeksLeft, currentDate, teams: advancedTeams, log };
       }
 
-      let log = state.log;
-      const teams = state.teams.map((t) => {
+      const teams = advancedTeams.map((t) => {
         const holders = Math.round(t.stadium.capacity * seasonTicketRate(t.stadium));
         const lumpSum = holders * t.stadium.seasonTicketPrice;
         if (t.id === state.userTeamId) {
@@ -407,23 +484,7 @@ export function reducer(state, action) {
       if (buyer.budget < price) return state;
       if (buyer.roster.length >= 15) return state;
 
-      const teams = state.teams.map((t) => {
-        if (t.id === seller.id) {
-          return {
-            ...t,
-            budget: t.budget + price,
-            roster: t.roster.filter((id) => id !== playerId),
-            lineup: Object.fromEntries(
-              Object.entries(t.lineup).map(([pos, id]) => [pos, id === playerId ? null : id])
-            ),
-          };
-        }
-        if (t.id === buyer.id) {
-          return { ...t, budget: t.budget - price, roster: [...t.roster, playerId] };
-        }
-        return t;
-      });
-
+      const teams = transferPlayer(state.teams, playerId, seller.id, buyer.id, price);
       const playersById = {
         ...state.playersById,
         [playerId]: { ...player, teamId: buyer.id, listed: false },
@@ -434,6 +495,95 @@ export function reducer(state, action) {
         teams,
         playersById,
         log: pushLog(state.currentDate, state.log, `${player.name} fichado por ${buyer.name} por $${price.toLocaleString()}`),
+      };
+    }
+
+    case "MAKE_OFFER": {
+      const { buyerTeamId, playerId, amount } = action;
+      const player = state.playersById[playerId];
+      if (!player) return state;
+      const seller = state.teams.find((t) => t.id === player.teamId);
+      const buyer = state.teams.find((t) => t.id === buyerTeamId);
+      if (!buyer || !seller || buyer.id === seller.id) return state;
+      const price = clamp(Math.round(amount), 1, player.value);
+      if (buyer.budget < price) return state;
+      if (buyer.roster.length >= 15) return state;
+
+      const outcome = evaluateTransferOffer(player, price);
+
+      if (outcome.result === "accept") {
+        const teams = transferPlayer(state.teams, playerId, seller.id, buyer.id, price);
+        const playersById = {
+          ...state.playersById,
+          [playerId]: { ...player, teamId: buyer.id, listed: false },
+        };
+        return {
+          ...state,
+          teams,
+          playersById,
+          log: pushLog(
+            state.currentDate,
+            state.log,
+            `${seller.name} aceptó $${price.toLocaleString()} de ${buyer.name} por ${player.name}`
+          ),
+        };
+      }
+
+      if (outcome.result === "counter") {
+        return {
+          ...state,
+          log: pushLog(
+            state.currentDate,
+            state.log,
+            `${seller.name} pide al menos $${outcome.counterAmount.toLocaleString()} por ${player.name}`
+          ),
+        };
+      }
+
+      return {
+        ...state,
+        log: pushLog(state.currentDate, state.log, `${seller.name} rechazó la oferta por ${player.name}`),
+      };
+    }
+
+    case "RESOLVE_OFFER": {
+      const { offerId, accept } = action;
+      const offer = state.pendingOffers.find((o) => o.id === offerId);
+      if (!offer) return state;
+      const pendingOffers = state.pendingOffers.filter((o) => o.id !== offerId);
+      const player = state.playersById[offer.playerId];
+      const seller = state.teams.find((t) => t.id === state.userTeamId);
+      const buyer = state.teams.find((t) => t.id === offer.fromTeamId);
+
+      if (!accept || !player || !seller || !buyer || buyer.budget < offer.amount || buyer.roster.length >= 15) {
+        return {
+          ...state,
+          pendingOffers,
+          log: accept
+            ? state.log
+            : pushLog(
+                state.currentDate,
+                state.log,
+                `Rechazaste la oferta de $${offer.amount.toLocaleString()} por ${player?.name || "un jugador"}`
+              ),
+        };
+      }
+
+      const teams = transferPlayer(state.teams, offer.playerId, seller.id, buyer.id, offer.amount);
+      const playersById = {
+        ...state.playersById,
+        [offer.playerId]: { ...player, teamId: buyer.id, listed: false },
+      };
+      return {
+        ...state,
+        teams,
+        playersById,
+        pendingOffers,
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `Aceptaste $${offer.amount.toLocaleString()} de ${buyer.name} por ${player.name}`
+        ),
       };
     }
 
@@ -567,9 +717,11 @@ export function reducer(state, action) {
       const { teamId, tierId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
+      if (team.stadium.pendingProject) return state;
       const tier = getUpgradeTiers(team.stadium).find((t) => t.id === tierId);
       if (!tier) return state;
       if (team.budget < tier.cost) return state;
+      const weeksLeft = STADIUM_TIER_BUILD_WEEKS[tier.id] ?? 3;
       const teams = state.teams.map((t) =>
         t.id === teamId
           ? {
@@ -577,9 +729,14 @@ export function reducer(state, action) {
               budget: t.budget - tier.cost,
               stadium: {
                 ...t.stadium,
-                level: t.stadium.level + 1,
-                capacity: t.stadium.capacity + tier.capacityGain,
-                ticketPrice: t.stadium.ticketPrice + tier.priceGain,
+                pendingProject: {
+                  kind: "tier",
+                  label: tier.label,
+                  capacityGain: tier.capacityGain,
+                  priceGain: tier.priceGain,
+                  weeksLeft,
+                  weeksTotal: weeksLeft,
+                },
               },
             }
           : t
@@ -587,7 +744,11 @@ export function reducer(state, action) {
       return {
         ...state,
         teams,
-        log: pushLog(state.currentDate, state.log, `${team.name} amplió su estadio: ${tier.label}`),
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `${team.name} inicia obra: ${tier.label} (${weeksLeft} semanas)`
+        ),
       };
     }
 
@@ -595,9 +756,11 @@ export function reducer(state, action) {
       const { teamId, amenityId } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
+      if (team.stadium.pendingProject) return state;
       const option = getAmenityOptions(team.stadium).find((a) => a.id === amenityId);
       if (!option || option.maxed) return state;
       if (team.budget < option.cost) return state;
+      const weeksLeft = AMENITY_BUILD_WEEKS;
       const teams = state.teams.map((t) =>
         t.id === teamId
           ? {
@@ -605,7 +768,14 @@ export function reducer(state, action) {
               budget: t.budget - option.cost,
               stadium: {
                 ...t.stadium,
-                amenities: { ...(t.stadium.amenities || {}), [amenityId]: option.level + 1 },
+                pendingProject: {
+                  kind: "amenity",
+                  label: `${option.label} → ${option.nextTierName}`,
+                  amenityId,
+                  level: option.level + 1,
+                  weeksLeft,
+                  weeksTotal: weeksLeft,
+                },
               },
             }
           : t
@@ -613,7 +783,11 @@ export function reducer(state, action) {
       return {
         ...state,
         teams,
-        log: pushLog(state.currentDate, state.log, `${team.name}: ${option.label} → ${option.nextTierName}`),
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `${team.name} inicia obra: ${option.label} (${weeksLeft} semanas)`
+        ),
       };
     }
 
@@ -693,7 +867,7 @@ export function reducer(state, action) {
       const { teamId, price } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const ticketPrice = clamp(Math.round(price), 5, 200);
+      const ticketPrice = clamp(Math.round(price), 5, MAX_TICKET_PRICE);
       const teams = state.teams.map((t) =>
         t.id === teamId ? { ...t, stadium: { ...t.stadium, ticketPrice } } : t
       );
@@ -704,11 +878,39 @@ export function reducer(state, action) {
       const { teamId, price } = action;
       const team = state.teams.find((t) => t.id === teamId);
       if (!team) return state;
-      const seasonTicketPrice = clamp(Math.round(price), 50, 3000);
+      const seasonTicketPrice = clamp(Math.round(price), 30, MAX_TICKET_PRICE * SEASON_TICKET_MULTIPLIER);
       const teams = state.teams.map((t) =>
         t.id === teamId ? { ...t, stadium: { ...t.stadium, seasonTicketPrice } } : t
       );
       return { ...state, teams };
+    }
+
+    case "REQUEST_LOAN": {
+      const { teamId, amount } = action;
+      const team = state.teams.find((t) => t.id === teamId);
+      if (!team) return state;
+      if (team.loan) return state;
+      const cap = maxLoanAmount(team, state.playersById);
+      const principal = clamp(Math.round(amount), 1000, cap);
+      const { remaining, weeklyPayment } = previewLoanTerms(principal);
+      const teams = state.teams.map((t) =>
+        t.id === teamId
+          ? {
+              ...t,
+              budget: t.budget + principal,
+              loan: { principal, remaining, weeklyPayment, weeksLeft: LOAN_TERM_WEEKS },
+            }
+          : t
+      );
+      return {
+        ...state,
+        teams,
+        log: pushLog(
+          state.currentDate,
+          state.log,
+          `${team.name} pidió un crédito de $${principal.toLocaleString()} (a devolver $${remaining.toLocaleString()} en ${LOAN_TERM_WEEKS} semanas)`
+        ),
+      };
     }
 
     case "SIM_ROUND": {
@@ -754,6 +956,37 @@ export function reducer(state, action) {
           },
         };
         playersById[player.id] = { ...player, teamId: buyer.id, listed: false };
+      }
+
+      // Occasionally an AI team tries to poach one of the user's players
+      // with an unsolicited lowball bid — unlike the listed-player sales
+      // above, this can't auto-resolve: it goes into pendingOffers for the
+      // user to accept or reject from the transfer market screen.
+      const newOffers = [];
+      if (state.userTeamId && Math.random() < 0.08) {
+        const userTeamNow = teamsById[state.userTeamId];
+        const offeredIds = new Set(state.pendingOffers.map((o) => o.playerId));
+        const candidateIds = (userTeamNow?.roster || []).filter((id) => !offeredIds.has(id));
+        if (candidateIds.length > 0) {
+          const targetId = candidateIds[randInt(0, candidateIds.length - 1)];
+          const target = playersById[targetId];
+          const bidders = Object.values(teamsById).filter(
+            (t) => t.id !== state.userTeamId && t.roster.length < 15
+          );
+          if (target && bidders.length > 0) {
+            const bidder = bidders[randInt(0, bidders.length - 1)];
+            const amount = Math.round(target.value * (0.5 + Math.random() * 0.35));
+            if (bidder.budget >= amount) {
+              newOffers.push({
+                id: `offer_${state.round}_${targetId}_${bidder.id}`,
+                playerId: targetId,
+                fromTeamId: bidder.id,
+                amount,
+              });
+              roundLog.push(`${bidder.name} ofrece $${amount.toLocaleString()} por ${target.name}`);
+            }
+          }
+        }
       }
 
       for (const [homeId, awayId] of round) {
@@ -894,38 +1127,54 @@ export function reducer(state, action) {
       }
 
       const teams = Object.values(teamsById).map((t) => {
+        const { stadium, completedLabel } = advanceStadiumProject(t.stadium);
+        if (completedLabel && t.id === state.userTeamId) {
+          roundLog.push(`Obra terminada: ${completedLabel}.`);
+        }
         const upd = teamUpdates[t.id];
-        if (!upd) return t;
-        const nextBudget = t.budget + (upd.netIncome || 0);
-        const financeHistory =
-          t.id === state.userTeamId
-            ? [
-                ...(t.financeHistory || []),
-                {
-                  round: state.round,
-                  seasonYear: state.seasonYear || FIRST_SEASON_YEAR,
-                  income: upd.income,
-                  expenses: upd.expenses,
-                  net: upd.netIncome,
-                  budget: nextBudget,
+        const withFinance = !upd
+          ? stadium === t.stadium
+            ? t
+            : { ...t, stadium }
+          : (() => {
+              const nextBudget = t.budget + (upd.netIncome || 0);
+              const financeHistory =
+                t.id === state.userTeamId
+                  ? [
+                      ...(t.financeHistory || []),
+                      {
+                        round: state.round,
+                        seasonYear: state.seasonYear || FIRST_SEASON_YEAR,
+                        income: upd.income,
+                        expenses: upd.expenses,
+                        net: upd.netIncome,
+                        budget: nextBudget,
+                      },
+                    ].slice(-120)
+                  : t.financeHistory;
+              return {
+                ...t,
+                budget: nextBudget,
+                stadium,
+                financeHistory,
+                scoutCooldown: upd.scoutCooldown,
+                scoutSearchTotal: upd.scoutSearchTotal,
+                lastTicketRevenue: upd.ticketRevenue || 0,
+                academy: upd.newProspectId ? [...t.academy, upd.newProspectId] : t.academy,
+                record: {
+                  wins: t.record.wins + upd.wins,
+                  losses: t.record.losses + upd.losses,
+                  pointsFor: t.record.pointsFor + upd.pf,
+                  pointsAgainst: t.record.pointsAgainst + upd.pa,
                 },
-              ].slice(-120)
-            : t.financeHistory;
-        return {
-          ...t,
-          budget: nextBudget,
-          financeHistory,
-          scoutCooldown: upd.scoutCooldown,
-          scoutSearchTotal: upd.scoutSearchTotal,
-          lastTicketRevenue: upd.ticketRevenue || 0,
-          academy: upd.newProspectId ? [...t.academy, upd.newProspectId] : t.academy,
-          record: {
-            wins: t.record.wins + upd.wins,
-            losses: t.record.losses + upd.losses,
-            pointsFor: t.record.pointsFor + upd.pf,
-            pointsAgainst: t.record.pointsAgainst + upd.pa,
-          },
-        };
+              };
+            })();
+
+        const withLoan = advanceLoan(withFinance);
+        if (withFinance.loan && !withLoan.loan && t.id === state.userTeamId) {
+          roundLog.push("Crédito saldado.");
+        }
+        return withLoan;
       });
 
       // Background divisions (the tiers/groups the user isn't currently
@@ -950,6 +1199,7 @@ export function reducer(state, action) {
           round: nextRound,
           results: [...state.results, ...roundResults],
           lastRoundResults: roundResults,
+          pendingOffers: newOffers.length ? [...state.pendingOffers, ...newOffers] : state.pendingOffers,
           currentDate: roundDate,
           log: roundLog.length ? pushLog(roundDate, state.log, roundLog) : state.log,
         };
@@ -1129,6 +1379,7 @@ export function reducer(state, action) {
         results: [],
         lastRoundResults: roundResults,
         pendingContracts,
+        pendingOffers: [...state.pendingOffers, ...newOffers].filter((o) => finalPlayersById[o.playerId]),
         activeDivisionId: newActiveDivisionId,
         activeGroupId: newActiveGroupId,
         otherDivisions: newOtherDivisions,
