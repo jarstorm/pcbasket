@@ -6,7 +6,7 @@ import Button from "../components/Button";
 import TeamLogo from "../components/TeamLogo";
 import Icon from "../components/Icon";
 import { leaguePosition } from "../engine/standings";
-import { colors, spacing } from "../theme";
+import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
 const MONTHS = [
@@ -18,6 +18,32 @@ function formatFictionalDate(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-").map(Number);
   return `${d} de ${MONTHS[m - 1]} de ${y}`;
+}
+
+const DAY_ABBR = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
+function dayAbbr(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return DAY_ABBR[new Date(y, m - 1, d).getDay()];
+}
+
+function formatCompact(n) {
+  const sign = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+  if (abs >= 1_000_000) return `${sign}${(abs / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+  if (abs >= 1000) return `${sign}${Math.round(abs / 1000)}K`;
+  return `${sign}${abs}`;
+}
+
+function StatTile({ icon, value, caption, valueColor }) {
+  return (
+    <View style={styles.statTile}>
+      <Icon name={icon} size={15} color={colors.accent} />
+      <Text style={[styles.statValue, valueColor && { color: valueColor }]} numberOfLines={1}>
+        {value}
+      </Text>
+      <Text style={styles.statCaption}>{caption}</Text>
+    </View>
+  );
 }
 
 export default function Dashboard({ onNavigate }) {
@@ -58,7 +84,7 @@ export default function Dashboard({ onNavigate }) {
     if (inRedNumbers) {
       Alert.alert(
         "Números rojos",
-        `Tu presupuesto está en negativo (${team.budget.toLocaleString()}$). Los sueldos y gastos de esta jornada lo empeorarán.`,
+        `Tu presupuesto está en negativo (${team.budget.toLocaleString()}€). Los sueldos y gastos de esta jornada lo empeorarán.`,
         [
           { text: "Cancelar", style: "cancel" },
           { text: "Jugar de todas formas", onPress: play },
@@ -81,33 +107,66 @@ export default function Dashboard({ onNavigate }) {
     <View>
       <Card>
         <Text style={styles.dim}>{formatFictionalDate(state.currentDate)}</Text>
-        <Text style={styles.p}>
-          Récord: <Text style={styles.bold}>{team.record.wins}V - {team.record.losses}D</Text> · Presupuesto:{" "}
-          <Text style={[styles.bold, { color: inRedNumbers ? colors.loss : colors.accent }]}>
-            ${team.budget.toLocaleString()}
-          </Text>
-        </Text>
 
         {isPreseason ? (
-          <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>
-            Pretemporada — faltan {state.preseasonWeeksLeft} semana(s) para el inicio de la liga.
-            Aprovecha para fichar, contratar personal y mejorar el estadio.
-          </Text>
+          <>
+            <Text style={styles.p}>
+              Récord: <Text style={styles.bold}>{team.record.wins}V - {team.record.losses}D</Text> · Presupuesto:{" "}
+              <Text style={[styles.bold, { color: inRedNumbers ? colors.loss : colors.accent }]}>
+                €{team.budget.toLocaleString()}
+              </Text>
+            </Text>
+            <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>
+              Pretemporada — faltan {state.preseasonWeeksLeft} semana(s) para el inicio de la liga.
+              Aprovecha para fichar, contratar personal y mejorar el estadio.
+            </Text>
+          </>
         ) : (
           <>
-            <Text style={styles.dim}>
-              JORNADA {state.round} / {totalRounds} · POSICIÓN #{position} DE {state.teams.length}
+            <Text style={[styles.dim, { marginBottom: spacing.sm }]}>
+              JORNADA {state.round} / {totalRounds}
             </Text>
+            <View style={styles.statRow}>
+              <StatTile icon="emoji-events" value={`${position}º`} caption={`DE ${state.teams.length}`} />
+              <StatTile
+                icon="event-note"
+                value={`${team.record.wins}-${team.record.losses}`}
+                caption="V - D"
+              />
+              <StatTile
+                icon="account-balance-wallet"
+                value={formatCompact(team.budget)}
+                caption="SALDO"
+                valueColor={inRedNumbers ? colors.loss : colors.accent}
+              />
+            </View>
             {myNextGame ? (
-              <View style={[styles.nextGameRow, { marginBottom: spacing.sm }]}>
-                <Text style={styles.small}>Próximo partido:</Text>
-                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[0])} size={28} />
-                <Text style={[styles.small, styles.bold]} numberOfLines={1}>
-                  {state.teams.find((t) => t.id === myNextGame[0]).name} vs{" "}
-                  {state.teams.find((t) => t.id === myNextGame[1]).name}
-                </Text>
-                <TeamLogo team={state.teams.find((t) => t.id === myNextGame[1])} size={28} />
-              </View>
+              (() => {
+                const homeTeamObj = state.teams.find((t) => t.id === myNextGame[0]);
+                const awayTeamObj = state.teams.find((t) => t.id === myNextGame[1]);
+                const isHome = myNextGame[0] === team.id;
+                return (
+                  <View style={styles.matchCard}>
+                    <View style={styles.matchHeaderBar}>
+                      <Text style={styles.matchHeaderText}>PRÓXIMO PARTIDO</Text>
+                      <Text style={styles.matchHeaderMeta}>
+                        {dayAbbr(state.currentDate)} · {isHome ? "CASA" : "FUERA"}
+                      </Text>
+                    </View>
+                    <View style={styles.matchTeamsRow}>
+                      <View style={styles.matchTeamCol}>
+                        <TeamLogo team={homeTeamObj} size={44} />
+                        <Text style={styles.matchTeamName} numberOfLines={2}>{homeTeamObj.name}</Text>
+                      </View>
+                      <Text style={styles.matchVs}>VS</Text>
+                      <View style={styles.matchTeamCol}>
+                        <TeamLogo team={awayTeamObj} size={44} />
+                        <Text style={styles.matchTeamName} numberOfLines={2}>{awayTeamObj.name}</Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })()
             ) : (
               <Text style={[styles.small, styles.dim, { marginBottom: spacing.sm }]}>Temporada finalizada.</Text>
             )}
@@ -273,6 +332,46 @@ function MatchSummary({ result, teams }) {
 
 const styles = StyleSheet.create({
   h3: { fontSize: 13, fontWeight: "800", color: colors.text, marginBottom: 6, letterSpacing: 0.6 },
+  statRow: { flexDirection: "row", gap: spacing.sm, marginBottom: spacing.sm },
+  statTile: {
+    flex: 1,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: radii.sm,
+    backgroundColor: colors.panelAlt,
+    paddingVertical: spacing.sm,
+    alignItems: "center",
+    gap: 2,
+  },
+  statValue: { color: colors.text, fontSize: 20, fontWeight: "800" },
+  statCaption: { color: colors.textDim, fontSize: 9, fontWeight: "700", letterSpacing: 0.4 },
+  matchCard: {
+    borderWidth: 2,
+    borderColor: colors.accent,
+    borderRadius: radii.sm,
+    overflow: "hidden",
+    marginBottom: spacing.sm,
+  },
+  matchHeaderBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: colors.accent,
+    paddingVertical: 6,
+    paddingHorizontal: spacing.md,
+  },
+  matchHeaderText: { color: colors.accentText, fontWeight: "800", fontSize: 11, letterSpacing: 0.8 },
+  matchHeaderMeta: { color: colors.accentText, fontWeight: "700", fontSize: 11 },
+  matchTeamsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
+  },
+  matchTeamCol: { alignItems: "center", gap: 6, flex: 1 },
+  matchTeamName: { color: colors.text, fontSize: 12, fontWeight: "700", textAlign: "center" },
+  matchVs: { color: colors.textDim, fontSize: 14, fontWeight: "800", marginHorizontal: spacing.sm },
   p: { color: colors.text, fontSize: 14, marginVertical: 2 },
   small: { fontSize: 13, color: colors.text, marginVertical: 2 },
   dim: { color: colors.textDim, fontSize: 12, fontWeight: "700", letterSpacing: 0.4 },

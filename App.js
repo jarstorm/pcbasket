@@ -21,6 +21,7 @@ import SeasonSummaryScreen from "./src/screens/SeasonSummaryScreen";
 import PlayerDetailScreen from "./src/screens/PlayerDetailScreen";
 import TeamLogo from "./src/components/TeamLogo";
 import BottomNav from "./src/components/BottomNav";
+import Icon from "./src/components/Icon";
 import { colors, spacing, radii } from "./src/theme";
 
 // Bottom nav groups related screens under one tab; a tab with more than one
@@ -159,10 +160,10 @@ function GameShell() {
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
         )}
         <View style={styles.topbarRight}>
-          <Text style={styles.budget}>${team.budget.toLocaleString()}</Text>
-          {screen === "home" && (
+          <Text style={styles.budget}>€{team.budget.toLocaleString()}</Text>
+          {screen !== "menu" && (
             <Pressable style={styles.menuBtn} onPress={() => setScreen("menu")}>
-              <Text style={styles.menuText}>MENÚ</Text>
+              <Icon name="menu" size={18} color={colors.text} />
             </Pressable>
           )}
         </View>
@@ -280,14 +281,15 @@ const styles = StyleSheet.create({
   topbarRight: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   budget: { fontSize: 13, color: colors.accent, fontWeight: "700" },
   menuBtn: {
+    width: 32,
+    height: 32,
     borderWidth: 2,
     borderColor: colors.border,
     backgroundColor: colors.panelAlt,
     borderRadius: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  menuText: { color: colors.text, fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
   accentLine: { height: 3, backgroundColor: colors.accent },
   hubTabRow: {
     flexDirection: "row",
