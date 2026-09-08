@@ -62,6 +62,9 @@ const MAX_ACADEMY_SIZE = 5;
 const PRESEASON_WEEKS = 6;
 const FIRST_SEASON_YEAR = 2025;
 const LOG_RETENTION_DAYS = 30;
+// A club can't stay insolvent forever: this many consecutive jornadas with
+// a negative budget triggers a forced fire-sale (see applyRedNumbersConsequence).
+const RED_STREAK_LIMIT = 4;
 
 // Every log entry is dated so Dashboard can show only the last 5 and purge
 // anything older than a month — entries are matches against `currentDate`
@@ -183,6 +186,43 @@ function seasonTicketRate(stadium) {
   );
   const base = 0.18 + amenityAttendanceBonus(stadium) * 2;
   return clamp(base * priceFactor * fillDifficultyFactor(stadium), 0.05, 0.4);
+}
+
+// Only tracked/enforced for the user's own team — AI teams' budgets aren't
+// surfaced to the player and don't need this. Mutates playersById in place
+// (already a fresh per-round copy) and pushes a news entry to roundLog when
+// it fires; returns the (possibly patched) teams array.
+function applyRedNumbersConsequence(teams, playersById, userTeamId, roundLog) {
+  const team = teams.find((t) => t.id === userTeamId);
+  if (!team) return teams;
+  const redStreak = team.budget < 0 ? (team.redStreak || 0) + 1 : 0;
+  if (redStreak < RED_STREAK_LIMIT) {
+    return redStreak === (team.redStreak || 0)
+      ? teams
+      : teams.map((t) => (t.id === userTeamId ? { ...t, redStreak } : t));
+  }
+  const starterIds = new Set(Object.values(team.lineup).filter(Boolean));
+  const sellable = team.roster
+    .filter((id) => !starterIds.has(id))
+    .map((id) => playersById[id])
+    .filter(Boolean)
+    .sort((a, b) => a.value - b.value);
+  const sold = sellable[0];
+  if (!sold) {
+    // No bench player to sell off (down to the starting five) — nothing more
+    // to force; keep counting so a message could fire again once there is.
+    return teams.map((t) => (t.id === userTeamId ? { ...t, redStreak } : t));
+  }
+  const price = Math.round(sold.value * 0.7);
+  playersById[sold.id] = { ...sold, teamId: null };
+  roundLog.push(
+    `Intervención por números rojos: la liga obligó a vender a ${sold.name} de urgencia por $${price.toLocaleString()}.`
+  );
+  return teams.map((t) =>
+    t.id === userTeamId
+      ? { ...t, budget: t.budget + price, roster: t.roster.filter((id) => id !== sold.id), redStreak: 0 }
+      : t
+  );
 }
 
 const BACKGROUND_GENERATORS = {
@@ -1138,7 +1178,7 @@ export function reducer(state, action) {
         };
       }
 
-      const teams = Object.values(teamsById).map((t) => {
+      let teams = Object.values(teamsById).map((t) => {
         const { stadium, completedLabel } = advanceStadiumProject(t.stadium);
         if (completedLabel && t.id === state.userTeamId) {
           roundLog.push(`Obra terminada: ${completedLabel}.`);
@@ -1188,6 +1228,8 @@ export function reducer(state, action) {
         }
         return withLoan;
       });
+
+      teams = applyRedNumbersConsequence(teams, playersById, state.userTeamId, roundLog);
 
       // Background divisions (the tiers/groups the user isn't currently
       // playing in) advance one round in lockstep, using the same match

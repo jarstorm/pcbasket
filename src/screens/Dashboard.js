@@ -164,7 +164,10 @@ export default function Dashboard({ onNavigate }) {
             <View style={styles.alertRow}>
               <Icon name="warning" size={18} color={colors.loss} />
               <Text style={styles.dangerText}>
-                Presupuesto en números rojos (${team.budget.toLocaleString()}) — toca para revisar finanzas
+                Presupuesto en números rojos (${team.budget.toLocaleString()}){" "}
+                {team.redStreak > 0
+                  ? `— ${team.redStreak} jornada(s) seguida(s). A la 4ª la liga te obligará a vender un jugador.`
+                  : "— toca para revisar finanzas"}
               </Text>
               <Icon name="chevron-right" size={16} color={colors.loss} />
             </View>

@@ -407,6 +407,32 @@ describe("reducer", () => {
     expect(away.budget).toBeLessThan(500000);
   });
 
+  it("SIM_ROUND tracks a red-numbers streak but leaves the roster alone under the limit", () => {
+    const state = baseState();
+    state.teams[0].budget = -1000000;
+    state.teams[0].redStreak = 1;
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.redStreak).toBe(2);
+    expect(team.roster).toEqual(["p1", "p2", "p3"]);
+  });
+
+  it("SIM_ROUND forces a fire-sale of a bench player once the red-numbers streak hits the limit", () => {
+    const state = baseState();
+    state.teams[0].budget = -1000000;
+    state.teams[0].redStreak = 3;
+    const next = reducer(state, { type: "SIM_ROUND" });
+    const team = next.teams.find((t) => t.id === "a");
+    expect(team.redStreak).toBe(0);
+    // p1 is the lineup starter and can't be the one sold off.
+    expect(team.roster).toContain("p1");
+    expect(team.roster.length).toBe(2);
+    const soldId = ["p2", "p3"].find((id) => !team.roster.includes(id));
+    expect(next.playersById[soldId].teamId).toBeNull();
+    expect(team.budget).toBeGreaterThan(-1000000);
+    expect(next.log.some((e) => e.text.includes("Intervención por números rojos"))).toBe(true);
+  });
+
   it("SIM_ROUND is a no-op past the last scheduled round", () => {
     const state = { ...baseState(), round: 2 };
     const next = reducer(state, { type: "SIM_ROUND" });

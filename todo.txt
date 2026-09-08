@@ -13,6 +13,6 @@
 - [hecho] la media de los jugadores deberia ser proporcional a la categoria. por ejemplo de 40 a 55 para tercera, 50 a 65 para segunda, 55 a 70 para primera y 70 a 85 para acb. Puede haber casos en ACB que lleguen hasta casi 90
 - los patrocinadores y derechos de tv que sean precios realistas
 - [hecho] poder pedir un credito
-- no poder estar en numeros rojos muchas jornadas
+- [hecho] no poder estar en numeros rojos muchas jornadas
 - [hecho] las mejoras del estado no pueden hacerse automaticamente, deben llevar semanas
 - [hecho] los fichajes se pueden hacer ofertas? quizás esto sea muy complicado
