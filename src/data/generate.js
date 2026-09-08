@@ -42,22 +42,24 @@ function overallOf(ratings) {
   );
 }
 
-function valueOf(overall, age, potential) {
+export function valueOf(overall, age, potential) {
   const ageFactor = age <= 24 ? 1.15 : age <= 29 ? 1.0 : age <= 33 ? 0.7 : 0.4;
   const potentialBonus = potential ? (potential - overall) * 4000 : 0;
   return Math.max(20000, Math.round((overall ** 2.1) * 40 * ageFactor + potentialBonus));
 }
 
-// Recurring per-round salary — modest relative to transfer value (valueOf),
-// scaled for a second-tier Spanish league budget (no reliable public salary
-// figure was found for Primera FEB specifically, so this is a reasonable
-// in-game approximation, not a sourced real-world number).
-function wageOf(overall, age) {
+// Recurring per-round salary — modest relative to transfer value (valueOf).
+// `scale` brings this down for divisions whose income (tickets/sponsors/TV,
+// all far smaller than Primera FEB's) can't support an ACB/Primera-sized
+// wage bill — without it, a full Segunda/Tercera FEB roster's wages alone
+// dwarf that division's entire weekly income, no matter how well the club
+// is run. 1 = the original Primera FEB-scale figure.
+export function wageOf(overall, age, scale = 1) {
   const ageFactor = age <= 24 ? 1.1 : age <= 29 ? 1.0 : age <= 33 ? 0.85 : 0.65;
-  return Math.max(400, Math.round(overall ** 1.7 * 0.6 * ageFactor));
+  return Math.max(Math.round(400 * scale), Math.round(overall ** 1.7 * 0.6 * ageFactor * scale));
 }
 
-export function makePlayer({ age, base, spread, isProspect = false, teamId = null } = {}) {
+export function makePlayer({ age, base, spread, isProspect = false, teamId = null, wageScale = 1 } = {}) {
   const ratings = makeRatings(base ?? randInt(45, 80), spread ?? 30);
   const overall = overallOf(ratings);
   const playerAge = age ?? randInt(19, 34);
@@ -71,7 +73,7 @@ export function makePlayer({ age, base, spread, isProspect = false, teamId = nul
     overall,
     potential,
     value: valueOf(overall, playerAge, isProspect ? potential : null),
-    wage: wageOf(overall, playerAge),
+    wage: wageOf(overall, playerAge, wageScale),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
     listed: false,
@@ -85,7 +87,7 @@ export function makePlayer({ age, base, spread, isProspect = false, teamId = nul
 
 // Builds a game-model player from a scraped/transformed real player record
 // (rp): shared by every real-data division (Primera/Segunda/Tercera FEB).
-function buildRealPlayer(rp) {
+function buildRealPlayer(rp, wageScale = 1) {
   const overall = rp.overall;
   const potential = rp.potential;
   return {
@@ -99,7 +101,7 @@ function buildRealPlayer(rp) {
     overall,
     potential,
     value: valueOf(overall, rp.age, potential),
-    wage: wageOf(overall, rp.age),
+    wage: wageOf(overall, rp.age, wageScale),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
     listed: false,
@@ -116,7 +118,7 @@ function buildRealPlayer(rp) {
 // derive a rating from — the rating itself is procedurally generated, same
 // as makePlayer(), just attached to a real person instead of an invented
 // one.
-function buildRealIdentityRatedPlayer(rp, { base, spread }) {
+function buildRealIdentityRatedPlayer(rp, { base, spread }, wageScale = 1) {
   const ratings = makeRatings(base, spread);
   const overall = overallOf(ratings);
   return {
@@ -130,7 +132,7 @@ function buildRealIdentityRatedPlayer(rp, { base, spread }) {
     overall,
     potential: overall,
     value: valueOf(overall, rp.age, null),
-    wage: wageOf(overall, rp.age),
+    wage: wageOf(overall, rp.age, wageScale),
     contractYears: randInt(1, 4),
     seasonMinutes: 0,
     listed: false,
@@ -147,12 +149,13 @@ function buildRealIdentityRatedPlayer(rp, { base, spread }) {
 // always 9x the base ticket price — must match SEASON_TICKET_MULTIPLIER in
 // state/GameContext.js (can't import it directly: that module imports from
 // here, so the reverse would be circular).
-function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice, stadiumName }) {
+function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice, stadiumName, wageScale = 1 }) {
   return {
     id,
     name,
     city: name,
     budget: randInt(budgetRange[0], budgetRange[1]),
+    wageScale,
     stadium: {
       name: stadiumName || `Pabellón ${name}`,
       level: 1,
@@ -199,21 +202,6 @@ function pickStartingLineup(team, rosterPlayers) {
   }
 }
 
-function addAcademyProspects(team, players) {
-  const academySize = randInt(2, 3);
-  for (let k = 0; k < academySize; k++) {
-    const prospect = makePlayer({
-      age: randInt(16, 19),
-      base: randInt(35, 55),
-      spread: 20,
-      isProspect: true,
-      teamId: team.id,
-    });
-    players.push(prospect);
-    team.academy.push(prospect.id);
-  }
-}
-
 // Primera FEB (second tier). Real per-venue capacities weren't scraped
 // (no reliable public source covering every club), so this uses the
 // fallback capacity tier for this level instead of a made-up real figure.
@@ -238,7 +226,6 @@ export function generateRealLeague() {
   for (const team of teams) {
     const rosterPlayers = players.filter((p) => p.teamId === team.id);
     pickStartingLineup(team, rosterPlayers);
-    addAcademyProspects(team, players);
   }
 
   return { teams, players };
@@ -247,18 +234,18 @@ export function generateRealLeague() {
 // Builds a multi-group real division (Segunda FEB, Tercera FEB) from a
 // transformed league-data file whose teams each carry a `group` field —
 // shared by generateSegundaFebDivision/generateTerceraFebDivision below.
-function buildRealGroupedDivision(data, { budgetRange, stadiumCapacity, ticketPrice }) {
+function buildRealGroupedDivision(data, { budgetRange, stadiumCapacity, ticketPrice, wageScale = 1 }) {
   const teams = [];
   const players = [];
 
   for (const t of data.teams) {
-    teams.push(buildBaseTeam(t.id, t.name, { budgetRange, stadiumCapacity, ticketPrice }));
+    teams.push(buildBaseTeam(t.id, t.name, { budgetRange, stadiumCapacity, ticketPrice, wageScale }));
   }
 
   const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
 
   for (const rp of data.players) {
-    const player = buildRealPlayer(rp);
+    const player = buildRealPlayer(rp, wageScale);
     players.push(player);
     const team = teamById[rp.teamId];
     if (team) team.roster.push(player.id);
@@ -268,7 +255,6 @@ function buildRealGroupedDivision(data, { budgetRange, stadiumCapacity, ticketPr
   for (const team of nonEmptyTeams) {
     const rosterPlayers = players.filter((p) => p.teamId === team.id);
     pickStartingLineup(team, rosterPlayers);
-    addAcademyProspects(team, players);
   }
 
   const groupIdByTeamId = Object.fromEntries(data.teams.map((t) => [t.id, t.group]));
@@ -288,7 +274,12 @@ function buildRealGroupedDivision(data, { budgetRange, stadiumCapacity, ticketPr
 // no reliable public source for hundreds of them), so this uses the
 // fallback tier the user asked for when real data isn't available.
 export function generateSegundaFebDivision() {
-  return buildRealGroupedDivision(segundaFebData, { budgetRange: [80000, 350000], stadiumCapacity: 2000, ticketPrice: 15 });
+  return buildRealGroupedDivision(segundaFebData, {
+    budgetRange: [80000, 350000],
+    stadiumCapacity: 2000,
+    ticketPrice: 15,
+    wageScale: 0.7,
+  });
 }
 
 // Loads the real, scraped Tercera FEB division (fourth tier, the floor of
@@ -296,7 +287,12 @@ export function generateSegundaFebDivision() {
 // capacity scaled down again from Segunda FEB. Same fallback-capacity
 // caveat as generateSegundaFebDivision above.
 export function generateTerceraFebDivision() {
-  return buildRealGroupedDivision(terceraFebData, { budgetRange: [20000, 80000], stadiumCapacity: 1000, ticketPrice: 8 });
+  return buildRealGroupedDivision(terceraFebData, {
+    budgetRange: [20000, 80000],
+    stadiumCapacity: 1000,
+    ticketPrice: 8,
+    wageScale: 0.22,
+  });
 }
 
 // Top-tier division (ACB / Liga Endesa). Real clubs and current rosters,
@@ -338,7 +334,6 @@ export function generateAcbDivision() {
   for (const team of teams) {
     const rosterPlayers = players.filter((p) => p.teamId === team.id);
     pickStartingLineup(team, rosterPlayers);
-    addAcademyProspects(team, players);
   }
 
   return { teams, players };

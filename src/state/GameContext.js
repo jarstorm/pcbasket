@@ -274,7 +274,7 @@ function applyRedNumbersConsequence(teams, playersById, userTeamId, roundLog) {
   const price = Math.round(sold.value * 0.7);
   playersById[sold.id] = { ...sold, teamId: null };
   roundLog.push(
-    `Intervención por números rojos: la liga obligó a vender a ${sold.name} de urgencia por $${price.toLocaleString()}.`
+    `Intervención por números rojos: la liga obligó a vender a ${sold.name} de urgencia por €${price.toLocaleString()}.`
   );
   return teams.map((t) =>
     t.id === userTeamId
@@ -531,7 +531,7 @@ export function reducer(state, action) {
           log = pushLog(
             currentDate,
             log,
-            `Abonos vendidos: ${holders.toLocaleString()} (+$${lumpSum.toLocaleString()})`
+            `Abonos vendidos: ${holders.toLocaleString()} (+€${lumpSum.toLocaleString()})`
           );
         }
         return {
@@ -607,7 +607,7 @@ export function reducer(state, action) {
         teams,
         otherDivisions,
         playersById,
-        log: pushLog(state.currentDate, state.log, `${player.name} fichado por ${buyer.name} por $${price.toLocaleString()}`),
+        log: pushLog(state.currentDate, state.log, `${player.name} fichado por ${buyer.name} por €${price.toLocaleString()}`),
       };
     }
 
@@ -639,7 +639,7 @@ export function reducer(state, action) {
           log: pushLog(
             state.currentDate,
             state.log,
-            `${seller.name} aceptó $${price.toLocaleString()} de ${buyer.name} por ${player.name}`
+            `${seller.name} aceptó €${price.toLocaleString()} de ${buyer.name} por ${player.name}`
           ),
         };
       }
@@ -650,7 +650,7 @@ export function reducer(state, action) {
           log: pushLog(
             state.currentDate,
             state.log,
-            `${seller.name} pide al menos $${outcome.counterAmount.toLocaleString()} por ${player.name}`
+            `${seller.name} pide al menos €${outcome.counterAmount.toLocaleString()} por ${player.name}`
           ),
         };
       }
@@ -679,7 +679,7 @@ export function reducer(state, action) {
             : pushLog(
                 state.currentDate,
                 state.log,
-                `Rechazaste la oferta de $${offer.amount.toLocaleString()} por ${player?.name || "un jugador"}`
+                `Rechazaste la oferta de €${offer.amount.toLocaleString()} por ${player?.name || "un jugador"}`
               ),
         };
       }
@@ -697,7 +697,7 @@ export function reducer(state, action) {
         log: pushLog(
           state.currentDate,
           state.log,
-          `Aceptaste $${offer.amount.toLocaleString()} de ${buyer.name} por ${player.name}`
+          `Aceptaste €${offer.amount.toLocaleString()} de ${buyer.name} por ${player.name}`
         ),
       };
     }
@@ -753,7 +753,7 @@ export function reducer(state, action) {
           log: pushLog(
             state.currentDate,
             state.log,
-            `${player.name} renovó ${offeredYears} año(s) por $${offeredWage.toLocaleString()}/jornada`
+            `${player.name} renovó ${offeredYears} año(s) por €${offeredWage.toLocaleString()}/jornada`
           ),
         };
       }
@@ -764,7 +764,7 @@ export function reducer(state, action) {
           log: pushLog(
             state.currentDate,
             state.log,
-            `${player.name} pide al menos $${outcome.counterWage.toLocaleString()}/jornada`
+            `${player.name} pide al menos €${outcome.counterWage.toLocaleString()}/jornada`
           ),
         };
       }
@@ -955,7 +955,7 @@ export function reducer(state, action) {
         log: pushLog(
           state.currentDate,
           state.log,
-          `${team.name} despidió a: ${tier.label} (indemnización $${severance.toLocaleString()})`
+          `${team.name} despidió a: ${tier.label} (indemnización €${severance.toLocaleString()})`
         ),
       };
     }
@@ -1025,7 +1025,7 @@ export function reducer(state, action) {
         log: pushLog(
           state.currentDate,
           state.log,
-          `${team.name} pidió un crédito de $${principal.toLocaleString()} (a devolver $${remaining.toLocaleString()} en ${LOAN_TERM_WEEKS} semanas)`
+          `${team.name} pidió un crédito de €${principal.toLocaleString()} (a devolver €${remaining.toLocaleString()} en ${LOAN_TERM_WEEKS} semanas)`
         ),
       };
     }
@@ -1100,7 +1100,7 @@ export function reducer(state, action) {
                 fromTeamId: bidder.id,
                 amount,
               });
-              roundLog.push(`${bidder.name} ofrece $${amount.toLocaleString()} por ${target.name}`);
+              roundLog.push(`${bidder.name} ofrece €${amount.toLocaleString()} por ${target.name}`);
             }
           }
         }
@@ -1182,6 +1182,7 @@ export function reducer(state, action) {
                   spread: range.spread,
                   isProspect: true,
                   teamId: team.id,
+                  wageScale: team.wageScale ?? 1,
                 });
                 playersById[prospect.id] = prospect;
                 newProspects[teamRef] = prospect.id;
@@ -1334,7 +1335,7 @@ export function reducer(state, action) {
         for (const pid of team.roster) {
           const p = finalPlayersById[pid];
           if (!p) continue;
-          const aged = seasonAgeStep(p, p.seasonMinutes || 0);
+          const aged = seasonAgeStep(p, p.seasonMinutes || 0, team.wageScale ?? 1);
           const next = { ...p, ...aged };
           finalPlayersById[pid] = next;
           if (shouldRetire(next)) {

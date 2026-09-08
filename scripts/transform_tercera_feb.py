@@ -2,6 +2,7 @@
 Uses a "tfeb"/"tfebp" id prefix so this division's teams/players never
 collide with Primera/Segunda FEB ids when merged in the app."""
 import json
+import random
 import re
 
 POSITION_MAP = {
@@ -14,10 +15,16 @@ POSITION_MAP = {
     "Pivot": "C",
 }
 
+# Tercera FEB's source doesn't carry height for almost anyone, so falling
+# back to a single fixed position (the old behavior) made ~90% of the whole
+# division "Alero" — pick uniformly at random instead so rosters end up with
+# a normal position spread, same as any other procedurally-rated player.
+POSITIONS = ["PG", "SG", "SF", "PF", "C"]
+
 
 def infer_position(height_cm):
     if not height_cm:
-        return "SF"
+        return random.choice(POSITIONS)
     if height_cm >= 205:
         return "C"
     if height_cm >= 198:

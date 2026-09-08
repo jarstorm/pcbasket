@@ -9,8 +9,12 @@ export function staffWageTotal(staff) {
   return totalStaffWage(staff);
 }
 
+// Proportional to capacity rather than a flat per-level fee — a flat fee
+// calibrated for an ACB-sized venue used to swallow a small Segunda/Tercera
+// FEB club's entire income on its own, regardless of how well it was run.
 export function stadiumMaintenance(stadium, staff) {
-  const base = Math.round(stadium.capacity * 0.4 + stadium.level * 2000);
+  const levelMultiplier = 1 + (stadium.level - 1) * 0.4;
+  const base = Math.round(stadium.capacity * 0.4 * levelMultiplier);
   return Math.round(base * (1 - maintenanceReduction(staff)));
 }
 
