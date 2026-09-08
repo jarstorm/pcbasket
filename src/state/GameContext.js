@@ -44,7 +44,7 @@ import {
 import { seasonAgeStep, shouldRetire, evaluateContractOffer } from "../engine/career";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
 import { getAmenityOptions, amenityAttendanceBonus, amenityPriceTolerance } from "../engine/amenities";
-import { evaluateTransferOffer } from "../engine/transfers";
+import { evaluateTransferOffer, canRealisticallySign } from "../engine/transfers";
 
 const SAVE_KEY = "pcbasket-save-v1";
 const SNAPSHOT_KEY = "pcbasket-snapshot-v1";
@@ -114,6 +114,64 @@ function transferPlayer(teams, playerId, sellerId, buyerId, price) {
     }
     return t;
   });
+}
+
+// Players from every division share one pool (see generate.js), but only
+// the active division's teams live in state.teams — the rest sit nested in
+// state.otherDivisions[divisionId].groups[].teams. These two helpers find
+// and patch a team wherever it actually lives, so the transfer market can
+// let the user sign a player from a division they aren't currently playing
+// in (see BUY_PLAYER/MAKE_OFFER below).
+function findTeamAnywhere(state, teamId) {
+  const active = state.teams.find((t) => t.id === teamId);
+  if (active) return active;
+  for (const division of Object.values(state.otherDivisions)) {
+    for (const group of division.groups || []) {
+      const found = group.teams.find((t) => t.id === teamId);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+// Same shape as transferPlayer above, but resolves the seller wherever it
+// lives (active division or nested in otherDivisions) instead of assuming
+// it's in `teams`. The buyer is always the active division's own team.
+function transferPlayerAnywhere(state, playerId, sellerId, buyerId, price) {
+  if (state.teams.some((t) => t.id === sellerId)) {
+    return { teams: transferPlayer(state.teams, playerId, sellerId, buyerId, price), otherDivisions: state.otherDivisions };
+  }
+  const teams = state.teams.map((t) =>
+    t.id === buyerId ? { ...t, budget: t.budget - price, roster: [...t.roster, playerId] } : t
+  );
+  const otherDivisions = { ...state.otherDivisions };
+  for (const [divId, division] of Object.entries(otherDivisions)) {
+    const groups = division.groups || [];
+    const groupIdx = groups.findIndex((g) => g.teams.some((t) => t.id === sellerId));
+    if (groupIdx === -1) continue;
+    const newGroups = groups.map((g, i) =>
+      i !== groupIdx
+        ? g
+        : {
+            ...g,
+            teams: g.teams.map((t) =>
+              t.id === sellerId
+                ? {
+                    ...t,
+                    budget: t.budget + price,
+                    roster: t.roster.filter((id) => id !== playerId),
+                    lineup: Object.fromEntries(
+                      Object.entries(t.lineup || {}).map(([pos, id]) => [pos, id === playerId ? null : id])
+                    ),
+                  }
+                : t
+            ),
+          }
+    );
+    otherDivisions[divId] = { ...division, groups: newGroups };
+    break;
+  }
+  return { teams, otherDivisions };
 }
 
 function randInt(min, max) {
@@ -530,14 +588,15 @@ export function reducer(state, action) {
       const { buyerTeamId, playerId } = action;
       const player = state.playersById[playerId];
       if (!player) return state;
-      const seller = state.teams.find((t) => t.id === player.teamId);
+      const seller = findTeamAnywhere(state, player.teamId);
       const buyer = state.teams.find((t) => t.id === buyerTeamId);
       if (!buyer || !seller || buyer.id === seller.id) return state;
       const price = player.value;
       if (buyer.budget < price) return state;
       if (buyer.roster.length >= 15) return state;
+      if (!canRealisticallySign(buyer, player, state.playersById)) return state;
 
-      const teams = transferPlayer(state.teams, playerId, seller.id, buyer.id, price);
+      const { teams, otherDivisions } = transferPlayerAnywhere(state, playerId, seller.id, buyer.id, price);
       const playersById = {
         ...state.playersById,
         [playerId]: { ...player, teamId: buyer.id, listed: false },
@@ -546,6 +605,7 @@ export function reducer(state, action) {
       return {
         ...state,
         teams,
+        otherDivisions,
         playersById,
         log: pushLog(state.currentDate, state.log, `${player.name} fichado por ${buyer.name} por $${price.toLocaleString()}`),
       };
@@ -555,17 +615,18 @@ export function reducer(state, action) {
       const { buyerTeamId, playerId, amount } = action;
       const player = state.playersById[playerId];
       if (!player) return state;
-      const seller = state.teams.find((t) => t.id === player.teamId);
+      const seller = findTeamAnywhere(state, player.teamId);
       const buyer = state.teams.find((t) => t.id === buyerTeamId);
       if (!buyer || !seller || buyer.id === seller.id) return state;
       const price = clamp(Math.round(amount), 1, player.value);
       if (buyer.budget < price) return state;
       if (buyer.roster.length >= 15) return state;
+      if (!canRealisticallySign(buyer, player, state.playersById)) return state;
 
       const outcome = evaluateTransferOffer(player, price);
 
       if (outcome.result === "accept") {
-        const teams = transferPlayer(state.teams, playerId, seller.id, buyer.id, price);
+        const { teams, otherDivisions } = transferPlayerAnywhere(state, playerId, seller.id, buyer.id, price);
         const playersById = {
           ...state.playersById,
           [playerId]: { ...player, teamId: buyer.id, listed: false },
@@ -573,6 +634,7 @@ export function reducer(state, action) {
         return {
           ...state,
           teams,
+          otherDivisions,
           playersById,
           log: pushLog(
             state.currentDate,

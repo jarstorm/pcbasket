@@ -252,6 +252,73 @@ describe("reducer", () => {
     expect(next).toBe(state);
   });
 
+  it("BUY_PLAYER can sign a player from a background division, patching that team inside otherDivisions", () => {
+    const state = baseState();
+    const acbTeam = state.otherDivisions.acb.groups[0].teams[0]; // acb1
+    state.playersById.p5 = {
+      id: "p5",
+      name: "p5",
+      position: "PG",
+      nationality: "España",
+      age: 25,
+      ratings: { shooting: 60, defense: 60, passing: 60, rebounding: 60, physical: 60 },
+      overall: 60,
+      potential: 60,
+      value: 90000,
+      wage: 900,
+      contractYears: 2,
+      seasonMinutes: 0,
+      listed: false,
+      morale: 80,
+      form: 99,
+      injured: false,
+      teamId: acbTeam.id,
+      isProspect: false,
+    };
+    acbTeam.roster.push("p5");
+    acbTeam.lineup = { PG: "p5" };
+    acbTeam.budget = 0;
+
+    const next = reducer(state, { type: "BUY_PLAYER", buyerTeamId: "a", playerId: "p5" });
+    const buyer = next.teams.find((t) => t.id === "a");
+    const seller = next.otherDivisions.acb.groups[0].teams.find((t) => t.id === acbTeam.id);
+    expect(buyer.roster).toContain("p5");
+    expect(seller.roster).not.toContain("p5");
+    expect(seller.lineup.PG).toBeNull();
+    expect(seller.budget).toBe(90000);
+    expect(next.playersById.p5.teamId).toBe("a");
+  });
+
+  it("BUY_PLAYER refuses a cross-division signing far above the buyer's actual level", () => {
+    const state = baseState();
+    const acbTeam = state.otherDivisions.acb.groups[0].teams[0];
+    state.playersById.p5 = {
+      id: "p5",
+      name: "Star Player",
+      position: "PG",
+      nationality: "España",
+      age: 25,
+      ratings: { shooting: 90, defense: 90, passing: 90, rebounding: 90, physical: 90 },
+      overall: 90,
+      potential: 90,
+      value: 900000,
+      wage: 9000,
+      contractYears: 2,
+      seasonMinutes: 0,
+      listed: false,
+      morale: 80,
+      form: 99,
+      injured: false,
+      teamId: acbTeam.id,
+      isProspect: false,
+    };
+    acbTeam.roster.push("p5");
+    state.teams[0].budget = 5000000; // affordability isn't the blocker here
+
+    const next = reducer(state, { type: "BUY_PLAYER", buyerTeamId: "a", playerId: "p5" });
+    expect(next).toBe(state);
+  });
+
   it("MAKE_OFFER near the player's value gets accepted and moves the player", () => {
     const state = baseState();
     const next = reducer(state, { type: "MAKE_OFFER", buyerTeamId: "a", playerId: "p4", amount: 95000 });

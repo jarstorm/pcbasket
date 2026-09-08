@@ -7,6 +7,8 @@ import PlayerMarketCard from "../components/PlayerMarketCard";
 import Select from "../components/Select";
 import { POSITION_ORDER, POSITION_LABEL } from "../data/positions";
 import { seededShuffle } from "../engine/random";
+import { canRealisticallySign } from "../engine/transfers";
+import { DIVISION_META } from "../engine/pyramid";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
@@ -22,31 +24,62 @@ const SORT_OPTIONS = [
   { label: "Ordenar por precio", value: "value" },
 ];
 
+// Only tags the team name with its division when it differs from the one
+// the user is currently playing in — a cross-league signing, so it's clear
+// at a glance why that player is on the market at all.
+function marketTeamLabel(player, teamNameById, teamDivisionById, activeDivisionId) {
+  const name = teamNameById[player.teamId] || "";
+  const divisionId = teamDivisionById[player.teamId];
+  if (!divisionId || divisionId === activeDivisionId) return name;
+  const divisionName = DIVISION_META[divisionId]?.name || divisionId;
+  return `${name} · ${divisionName}`;
+}
+
 export default function TransferMarket() {
   const { state, dispatch } = useGame();
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const [posFilter, setPosFilter] = useState("ALL");
   const [sortBy, setSortBy] = useState("overall");
 
-  const teamNameById = useMemo(
-    () => Object.fromEntries(state.teams.map((t) => [t.id, t.name])),
-    [state.teams]
-  );
+  // Every team across every division, active or simulated in the
+  // background — needed so the market can offer (and label) players from
+  // leagues the user isn't currently playing in.
+  const { teamNameById, teamDivisionById } = useMemo(() => {
+    const names = {};
+    const divisions = {};
+    for (const t of state.teams) {
+      names[t.id] = t.name;
+      divisions[t.id] = state.activeDivisionId;
+    }
+    for (const [divisionId, division] of Object.entries(state.otherDivisions)) {
+      for (const group of division.groups || []) {
+        for (const t of group.teams) {
+          names[t.id] = t.name;
+          divisions[t.id] = divisionId;
+        }
+      }
+    }
+    return { teamNameById: names, teamDivisionById: divisions };
+  }, [state.teams, state.otherDivisions, state.activeDivisionId]);
 
   // A rotating random pool of listed players (seeded by jornada) instead of
-  // literally every player in the league always being for sale. Restricted
-  // to the active division — background divisions' teams aren't in
-  // state.teams, so buying from them would silently fail.
+  // literally every player in the league always being for sale — spans
+  // every division, but gated to players who'd realistically consider
+  // joining a club at this team's level (see canRealisticallySign).
   const marketPlayers = useMemo(() => {
-    const divisionTeamIds = new Set(state.teams.map((t) => t.id));
     const eligible = Object.values(state.playersById).filter(
-      (p) => p.teamId !== team.id && divisionTeamIds.has(p.teamId) && !p.isProspect && !p.retired
+      (p) =>
+        p.teamId &&
+        p.teamId !== team.id &&
+        !p.isProspect &&
+        !p.retired &&
+        canRealisticallySign(team, p, state.playersById)
     );
     const pool = seededShuffle(eligible, state.round).slice(0, MARKET_POOL_SIZE);
     return pool
       .filter((p) => posFilter === "ALL" || p.position === posFilter)
       .sort((a, b) => (sortBy === "overall" ? b.overall - a.overall : a.value - b.value));
-  }, [state.playersById, state.teams, state.round, team.id, posFilter, sortBy]);
+  }, [state.playersById, state.round, team, posFilter, sortBy]);
 
   // Released or rejected-renewal players with no club — free to sign, no fee.
   const freeAgents = useMemo(() => {
@@ -113,7 +146,7 @@ export default function TransferMarket() {
           <MarketPlayerRow
             key={p.id}
             player={p}
-            teamName={teamNameById[p.teamId]}
+            teamName={marketTeamLabel(p, teamNameById, teamDivisionById, state.activeDivisionId)}
             team={team}
             dispatch={dispatch}
             annualWage={annualWage(p)}
