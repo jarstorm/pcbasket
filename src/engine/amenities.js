@@ -104,6 +104,28 @@ export const AMENITIES = [
     priceTolerance: 5,
     tierNames: ["Parking básico", "Más plazas", "Parking cubierto", "Parking VIP", "Parking valet"],
   },
+  {
+    id: "vipBox",
+    label: "Palco VIP",
+    costFactor: 0.45,
+    attendanceBonus: 0.02,
+    priceTolerance: 10,
+    tierNames: ["Palco básico", "Palco reservado", "Palco con catering", "Palco VIP", "Palco presidencial"],
+  },
+  {
+    id: "scoreboard",
+    label: "Videomarcador",
+    costFactor: 0.4,
+    attendanceBonus: 0.03,
+    priceTolerance: 5,
+    tierNames: [
+      "Marcador electrónico",
+      "Videomarcador HD",
+      "Videomarcador 4K",
+      "Videomarcador de última generación",
+      "Videomarcador tipo NBA",
+    ],
+  },
 ];
 
 function levelOf(stadium, amenityId) {
