@@ -77,7 +77,11 @@ export default function PyramidScreen() {
         </Text>
         <View style={styles.tabRow}>
           {DIVISION_ORDER.map((id) => (
-            <Pressable key={id} onPress={() => selectTab(id)} style={styles.tabBtn}>
+            <Pressable
+              key={id}
+              onPress={() => selectTab(id)}
+              style={[styles.tabBtn, id === state.activeDivisionId && styles.tabBtnMine]}
+            >
               {tab === id && (
                 <LinearGradient
                   colors={["#ffb14d", colors.accent]}
@@ -88,7 +92,6 @@ export default function PyramidScreen() {
               )}
               <Text style={[styles.tabText, tab === id && styles.tabTextActive]}>
                 {DIVISION_META[id].name}
-                {id === state.activeDivisionId ? " (tú)" : ""}
               </Text>
             </Pressable>
           ))}
@@ -96,10 +99,17 @@ export default function PyramidScreen() {
         {division.groups.length > 1 && (
           <View style={styles.groupRow}>
             {division.groups.map((g) => (
-              <Pressable key={g.id} onPress={() => setGroupTab(g.id)} style={[styles.groupChip, g.id === group.id && styles.groupChipActive]}>
+              <Pressable
+                key={g.id}
+                onPress={() => setGroupTab(g.id)}
+                style={[
+                  styles.groupChip,
+                  viewingOwn && g.id === state.activeGroupId && styles.groupChipMine,
+                  g.id === group.id && styles.groupChipActive,
+                ]}
+              >
                 <Text style={[styles.groupChipText, g.id === group.id && styles.groupChipTextActive]}>
                   {formatGroupLabel(g.id)}
-                  {viewingOwn && g.id === state.activeGroupId ? " (tú)" : ""}
                 </Text>
               </Pressable>
             ))}
@@ -198,6 +208,7 @@ const styles = StyleSheet.create({
   },
   tabText: { color: colors.textDim, fontSize: 11, fontWeight: "700" },
   tabTextActive: { color: colors.accentText },
+  tabBtnMine: { borderColor: colors.win },
   groupRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.sm },
   groupChip: {
     borderWidth: 1.5,
@@ -208,6 +219,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   groupChipActive: { borderColor: colors.accent, backgroundColor: "rgba(255,149,0,0.14)" },
+  groupChipMine: { borderColor: colors.win },
   groupChipText: { color: colors.textDim, fontSize: 10.5, fontWeight: "700" },
   groupChipTextActive: { color: colors.accent },
 });
