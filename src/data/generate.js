@@ -46,14 +46,19 @@ function overallOf(ratings) {
 // stayed flat across divisions while their wage collapsed with wageScale,
 // so a Tercera FEB player earning next to nothing still carried a Primera
 // FEB-sized buyout price, wildly out of step with what they're paid.
+//
+// Real transfer clauses run roughly 10x-20x a player's annual wage, not
+// their per-round one — approximated here with a single reference season
+// length (actual seasons run 24-34 rounds depending on division/group
+// size, close enough that a fixed figure doesn't skew any one division).
+export const ROUNDS_PER_SEASON_APPROX = 30;
+
 export function valueOf(overall, age, potential, scale = 1) {
   const ageFactor = age <= 24 ? 1.15 : age <= 29 ? 1.0 : age <= 33 ? 0.7 : 0.4;
   const potentialBonus = potential ? (potential - overall) * 4000 * scale : 0;
   const raw = Math.round((overall ** 2.1) * 40 * ageFactor * scale + potentialBonus);
-  // Capped at 10x the player's wage — a raw curve grows much faster than
-  // wageOf's, so uncapped it produced buyout clauses 40x+ a player's wage
-  // (e.g. a €3,000 earner with a €120,000 clause), way out of proportion.
-  return Math.min(raw, wageOf(overall, age, scale) * 10);
+  const annualWage = wageOf(overall, age, scale) * ROUNDS_PER_SEASON_APPROX;
+  return Math.min(Math.max(raw, annualWage * 10), annualWage * 20);
 }
 
 // Recurring per-round salary — modest relative to transfer value (valueOf).
@@ -303,6 +308,12 @@ export function generateTerceraFebDivision() {
   });
 }
 
+// ACB is the top of the pyramid — its best players are genuine
+// professionals earning real money (six figures and up, low-to-mid
+// millions for the actual stars), nothing like Primera FEB's semi-pro
+// scale. 1 = that Primera FEB reference figure.
+const ACB_WAGE_SCALE = 22;
+
 // Top-tier division (ACB / Liga Endesa). Real clubs and current rosters,
 // scraped from acb.com (see scripts/acb_scraper.py) — team names, and each
 // player's real name/position/age/nationality/height. acb.com has no
@@ -324,6 +335,7 @@ export function generateAcbDivision() {
       stadiumCapacity: t.capacity || 10000,
       stadiumName: t.arena || null,
       ticketPrice: 35,
+      wageScale: ACB_WAGE_SCALE,
     });
     team.stadium.level = 2;
     team.logoUrl = t.logo || null;
@@ -333,7 +345,7 @@ export function generateAcbDivision() {
   const teamById = Object.fromEntries(teams.map((t) => [t.id, t]));
 
   for (const rp of acbData.players) {
-    const player = buildRealIdentityRatedPlayer(rp, { base: randInt(70, 85), spread: 20 });
+    const player = buildRealIdentityRatedPlayer(rp, { base: randInt(70, 85), spread: 20 }, ACB_WAGE_SCALE);
     players.push(player);
     const team = teamById[rp.teamId];
     if (team) team.roster.push(player.id);

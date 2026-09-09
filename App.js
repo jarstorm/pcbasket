@@ -4,6 +4,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import { GameProvider, useGame, findTeamAnywhere } from "./src/state/GameContext";
+import { MusicProvider, useMusic } from "./src/state/MusicContext";
 import TeamPicker from "./src/screens/TeamPicker";
 import Dashboard from "./src/screens/Dashboard";
 import RosterScreen from "./src/screens/RosterScreen";
@@ -82,6 +83,16 @@ const SCREEN_COMPONENTS = {
   sponsor: SponsorScreen,
   contracts: ContractsScreen,
 };
+
+function MusicToggle() {
+  const music = useMusic();
+  if (!music) return null;
+  return (
+    <Pressable style={styles.menuBtn} onPress={music.toggleMute}>
+      <Icon name={music.muted ? "volume-off" : "volume-up"} size={18} color={colors.text} />
+    </Pressable>
+  );
+}
 
 function HubTabs({ hub, activeId, onSelect }) {
   if (hub.screens.length < 2) return null;
@@ -174,6 +185,7 @@ function GameShell() {
         )}
         <View style={styles.topbarRight}>
           <Text style={styles.budget}>€{team.budget.toLocaleString()}</Text>
+          <MusicToggle />
           {screen !== "menu" && (
             <Pressable style={styles.menuBtn} onPress={() => setScreen("menu")}>
               <Icon name="menu" size={18} color={colors.text} />
@@ -203,6 +215,7 @@ function GameShell() {
             <Text style={styles.footer}>
               Nombres de equipos y jugadores: Primera FEB 2025/26 (datos públicos de baloncestoenvivo.feb.es).
               Ratings de habilidad, economía y simulación son ficticios. Proyecto no oficial, sin ánimo de lucro.
+              Música: Geomancer, jkjkke e isaiah658 (CC0, opengameart.org).
             </Text>
           )}
         </ScrollView>
@@ -260,7 +273,9 @@ export default function App() {
           <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
             <StatusBar style="light" />
             <GameProvider loadingFallback={<Loading />}>
-              <GameShell />
+              <MusicProvider>
+                <GameShell />
+              </MusicProvider>
             </GameProvider>
           </SafeAreaView>
         </ImageBackground>

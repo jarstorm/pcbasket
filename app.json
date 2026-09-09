@@ -33,7 +33,8 @@
             "backgroundColor": "#050a1f"
           }
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "extra": {
       "eas": {

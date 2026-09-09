@@ -5,38 +5,47 @@ import {
   generateTerceraFebDivision,
   valueOf,
   wageOf,
+  ROUNDS_PER_SEASON_APPROX,
 } from "../generate";
 
 function teamsOf({ groups }) {
   return groups.flatMap((g) => g.teams);
 }
 
+function annualWage(overall, age, scale = 1) {
+  return wageOf(overall, age, scale) * ROUNDS_PER_SEASON_APPROX;
+}
+
 describe("valueOf", () => {
-  it("never exceeds 10x the player's wage", () => {
+  it("always lands between 10x and 20x the player's annual wage", () => {
     for (let overall = 30; overall <= 99; overall += 3) {
       for (const age of [19, 25, 30, 34, 39]) {
         const value = valueOf(overall, age, null);
-        const wage = wageOf(overall, age);
-        expect(value).toBeLessThanOrEqual(wage * 10);
+        const annual = annualWage(overall, age);
+        expect(value).toBeGreaterThanOrEqual(annual * 10);
+        expect(value).toBeLessThanOrEqual(annual * 20);
       }
     }
   });
 
-  it("stays capped at 10x wage even with a big potential bonus (young prospect)", () => {
+  it("stays within the 10x-20x annual-wage band even with a big potential bonus (young prospect)", () => {
     const overall = 60;
     const age = 19;
     const value = valueOf(overall, age, /* potential */ 99);
-    const wage = wageOf(overall, age);
-    expect(value).toBeLessThanOrEqual(wage * 10);
+    const annual = annualWage(overall, age);
+    expect(value).toBeGreaterThanOrEqual(annual * 10);
+    expect(value).toBeLessThanOrEqual(annual * 20);
   });
 
-  it("scales with the division's wage scale, keeping the same ratio", () => {
+  it("scales with the division's wage scale, keeping the same band", () => {
     const full = valueOf(80, 27, null, 1);
     const scaled = valueOf(80, 27, null, 0.2);
-    const fullWage = wageOf(80, 27, 1);
-    const scaledWage = wageOf(80, 27, 0.2);
-    expect(full).toBeLessThanOrEqual(fullWage * 10);
-    expect(scaled).toBeLessThanOrEqual(scaledWage * 10);
+    const fullAnnual = annualWage(80, 27, 1);
+    const scaledAnnual = annualWage(80, 27, 0.2);
+    expect(full).toBeGreaterThanOrEqual(fullAnnual * 10);
+    expect(full).toBeLessThanOrEqual(fullAnnual * 20);
+    expect(scaled).toBeGreaterThanOrEqual(scaledAnnual * 10);
+    expect(scaled).toBeLessThanOrEqual(scaledAnnual * 20);
     expect(scaled).toBeLessThan(full);
   });
 });
@@ -58,6 +67,17 @@ describe("generateAcbDivision", () => {
     const avg = (list) => list.reduce((s, p) => s + p.overall, 0) / list.length;
     expect(avg(acbPlayers)).toBeGreaterThan(avg(sfebPlayers));
     expect(acbTeams.length).toBeGreaterThan(0);
+  });
+
+  it("pays real professional wages — average well above Primera FEB, top earners into 6-7 figures a year", () => {
+    const { players: acbPlayers } = generateAcbDivision();
+    const { players: primeraPlayers } = generateRealLeague();
+    const avgAnnualWage = (list) =>
+      list.reduce((s, p) => s + p.wage * ROUNDS_PER_SEASON_APPROX, 0) / list.length;
+    expect(avgAnnualWage(acbPlayers)).toBeGreaterThan(avgAnnualWage(primeraPlayers) * 5);
+
+    const topEarner = Math.max(...acbPlayers.map((p) => p.wage * ROUNDS_PER_SEASON_APPROX));
+    expect(topEarner).toBeGreaterThan(400000);
   });
 });
 
