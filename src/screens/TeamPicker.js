@@ -7,7 +7,7 @@ import { DIVISION_ORDER, DIVISION_META, assembleActiveDivision, formatGroupLabel
 
 export default function TeamPicker() {
   const { state, dispatch } = useGame();
-  const [divisionId, setDivisionId] = useState(state.activeDivisionId);
+  const [divisionId, setDivisionId] = useState("acb");
 
   const activeDivision = assembleActiveDivision(state);
   const divisionsById = { ...state.otherDivisions, [state.activeDivisionId]: activeDivision };

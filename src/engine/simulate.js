@@ -15,16 +15,42 @@ export function positionMismatchFactor(slotPos, playerPos) {
   return Math.max(0.4, 1 - distance * 0.15);
 }
 
+// Named after the real systems coaches actually run, not abstract labels —
+// see each tactic's own comment below for which ratings it leans on and why.
 export const OFFENSE_TACTICS = {
-  balanced: { id: "balanced", label: "Equilibrado", desc: "Sin sesgo — rinde igual con cualquier quinteto." },
-  interior: { id: "interior", label: "Juego interior", desc: "Más puntos si el quinteto reboatea y físico fuerte; penaliza si no." },
-  exterior: { id: "exterior", label: "Juego exterior", desc: "Más puntos si el quinteto tira bien; penaliza si no." },
+  motion: {
+    id: "motion",
+    label: "Juego libre (por conceptos)",
+    desc: "Sin jugadas fijas — lee la defensa y mueve el balón. Rinde con buen pase y tiro exterior; flojo si el quinteto no lee ni tira bien.",
+  },
+  setPlays: {
+    id: "setPlays",
+    label: "Ataques sistematizados",
+    desc: "Jugadas preparadas para tus mejores tiradores o interiores — rinde con especialistas de calidad, no con un quinteto genérico.",
+  },
+  fastBreak: {
+    id: "fastBreak",
+    label: "Contraataque",
+    desc: "Transición rápida antes de que el rival se organice — pide físico y buen pase; floja sin ellos.",
+  },
 };
 
 export const DEFENSE_TACTICS = {
-  man: { id: "man", label: "Hombre a hombre", desc: "Sin sesgo — rinde igual con cualquier quinteto." },
-  zone: { id: "zone", label: "Zona", desc: "Defensa algo mejor si el quinteto defiende bien; floja si no." },
-  press: { id: "press", label: "Presión", desc: "Fuerte si el quinteto defiende y es físico; floja si no." },
+  manToMan: {
+    id: "manToMan",
+    label: "Individual (hombre a hombre)",
+    desc: "Marcaje directo por toda la pista — exige mucha intensidad física y buena defensa individual.",
+  },
+  zone: {
+    id: "zone",
+    label: "Zona",
+    desc: "Defiende espacios, no rivales — rinde si el quinteto rebotea y defiende bien la pintura.",
+  },
+  mixed: {
+    id: "mixed",
+    label: "Mixta",
+    desc: "Marca al mejor rival al hombre y cubre en zona con el resto — más consistente, con menos techo que las opciones puras.",
+  },
 };
 
 function startersAvgRating(team, playersById, key) {
@@ -37,32 +63,54 @@ function startersAvgRating(team, playersById, key) {
 }
 
 // Tactics don't give a flat bonus — they're a bet on the roster you have.
-// "Interior"/"exterior" pay off only with the ratings they lean on, same for
-// "zona"/"presión" on defense; a mismatched pick actively costs you.
-export function offenseTacticBonus(team, playersById) {
-  const tactic = team.tactics?.offense || "balanced";
-  if (tactic === "interior") {
-    const reb = startersAvgRating(team, playersById, "rebounding");
-    const phys = startersAvgRating(team, playersById, "physical");
-    return ((reb + phys) / 2 - 60) * 0.1;
-  }
-  if (tactic === "exterior") {
+// Each one pays off only with the ratings it leans on, and actively costs
+// you when the quinteto doesn't have them. tacticId defaults to the team's
+// own pick, but callers that just want to score a hypothetical tactic (e.g.
+// the coach hint on TacticsScreen) can pass one explicitly without touching
+// team.tactics.
+export function offenseTacticBonus(team, playersById, tacticId = team.tactics?.offense || "motion") {
+  if (tacticId === "motion") {
+    // Ball movement and reads carry it, spacing (shooting) helps it breathe.
+    const passing = startersAvgRating(team, playersById, "passing");
     const shooting = startersAvgRating(team, playersById, "shooting");
-    return (shooting - 60) * 0.12;
+    return (passing * 0.6 + shooting * 0.4 - 60) * 0.11;
+  }
+  if (tacticId === "setPlays") {
+    // Built around whichever specialty the team actually has — great
+    // shooters to spring open, or a strong frontcourt to feed inside.
+    const shooting = startersAvgRating(team, playersById, "shooting");
+    const post = (startersAvgRating(team, playersById, "rebounding") + startersAvgRating(team, playersById, "physical")) / 2;
+    return (Math.max(shooting, post) - 60) * 0.11;
+  }
+  if (tacticId === "fastBreak") {
+    // Speed/athleticism to run, passing to finish the break.
+    const physical = startersAvgRating(team, playersById, "physical");
+    const passing = startersAvgRating(team, playersById, "passing");
+    return ((physical + passing) / 2 - 60) * 0.12;
   }
   return 0;
 }
 
-export function defenseTacticBonus(team, playersById) {
-  const tactic = team.tactics?.defense || "man";
-  if (tactic === "zone") {
+export function defenseTacticBonus(team, playersById, tacticId = team.tactics?.defense || "manToMan") {
+  if (tacticId === "manToMan") {
+    // Individual lockdown defense, physically demanding all game long.
     const defense = startersAvgRating(team, playersById, "defense");
-    return (defense - 60) * 0.08;
+    const physical = startersAvgRating(team, playersById, "physical");
+    return ((defense + physical) / 2 - 60) * 0.11;
   }
-  if (tactic === "press") {
+  if (tacticId === "zone") {
+    // Boxes out a space rather than a man — rebounding controls the paint.
     const defense = startersAvgRating(team, playersById, "defense");
-    const phys = startersAvgRating(team, playersById, "physical");
-    return ((defense + phys) / 2 - 60) * 0.11;
+    const rebounding = startersAvgRating(team, playersById, "rebounding");
+    return ((defense + rebounding) / 2 - 60) * 0.09;
+  }
+  if (tacticId === "mixed") {
+    // Blends both — smaller swing either way since it's hedging, not
+    // committing fully to either system.
+    const defense = startersAvgRating(team, playersById, "defense");
+    const physical = startersAvgRating(team, playersById, "physical");
+    const rebounding = startersAvgRating(team, playersById, "rebounding");
+    return ((defense + physical + rebounding) / 3 - 60) * 0.07;
   }
   return 0;
 }

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image, StyleSheet } from "react-native";
+import { View, Text, Pressable, Image, Alert, StyleSheet } from "react-native";
 import { useGame } from "../state/GameContext";
 import Card from "../components/Card";
 import OvrBadge from "../components/OvrBadge";
@@ -7,7 +7,7 @@ import Select from "../components/Select";
 import Icon from "../components/Icon";
 import { POSITION_ORDER, POSITION_ABBR } from "../data/positions";
 import { FOREIGN_PLAYER_QUOTA, isForeign } from "../engine/rules";
-import { positionMismatchFactor, OFFENSE_TACTICS, DEFENSE_TACTICS } from "../engine/simulate";
+import { positionMismatchFactor } from "../engine/simulate";
 import Plaque from "../components/Plaque";
 import { colors, spacing, radii } from "../theme";
 import SectionHeader from "../components/SectionHeader";
@@ -32,25 +32,18 @@ export default function RosterScreen({ onOpenPlayer }) {
   const lineupSlots = POSITION_ORDER.map((pos) => {
     const starterId = team.lineup[pos];
     const starter = starterId ? state.playersById[starterId] : null;
-    // Foreign starters elsewhere in the lineup (not this slot) already
-    // committed against the quota — a foreign candidate here can only be
-    // picked if there's still room for one more.
-    const foreignElsewhere = foreignStarterCount - (isForeign(starter) ? 1 : 0);
-    const quotaLeft = FOREIGN_PLAYER_QUOTA - foreignElsewhere;
-    // A foreign candidate is always offered when there's quota room, and
-    // also when the current starter here is foreign too (swapping one
-    // foreigner for another doesn't make an already-over-quota lineup worse
-    // — see the matching "no worse than before" check in SET_LINEUP).
-    const eligible = roster.filter(
-      (p) => p.id !== starterId && !p.injured && (!isForeign(p) || quotaLeft > 0 || isForeign(starter))
-    );
+    // Every other starter is already committed to their own slot — only the
+    // bench (plus the current occupant, so it still shows as selected) is
+    // offered here. The foreign-quota cap on the pick itself is enforced by
+    // SET_LINEUP, not filtered out of the list — the bench is always shown
+    // in full regardless of which slot is being changed.
+    const eligible = bench.filter((p) => !p.injured);
     const label = (p) => {
       const penalized = p.position !== pos ? Math.round(p.overall * positionMismatchFactor(pos, p.position)) : null;
       const ovrLabel = penalized !== null ? `${p.overall}→${penalized}` : `${p.overall}`;
-      return `${p.name} (${POSITION_ABBR[p.position] || p.position}, ${ovrLabel})${isForeign(p) ? " •" : ""}${penalized !== null ? " ⚠" : ""}`;
+      return `${p.name} (${POSITION_ABBR[p.position] || p.position}, ${ovrLabel})${isForeign(p) ? " •" : ""}`;
     };
     const options = [
-      { label: "-- vacío --", value: "" },
       ...(starter ? [{ label: `${label(starter)} (actual)`, value: starter.id }] : []),
       ...eligible.map((p) => ({ label: label(p), value: p.id })),
     ];
@@ -59,7 +52,23 @@ export default function RosterScreen({ onOpenPlayer }) {
       ? Math.round(starter.overall * positionMismatchFactor(pos, starter.position))
       : null;
 
-    return { pos, starter, starterId, options, outOfPosition, effectiveOverall };
+    const selectPlayer = (playerId) => {
+      if (playerId) {
+        const candidate = state.playersById[playerId];
+        const foreignElsewhere = foreignStarterCount - (isForeign(starter) ? 1 : 0);
+        const foreignAfter = foreignElsewhere + (isForeign(candidate) ? 1 : 0);
+        if (foreignAfter > FOREIGN_PLAYER_QUOTA && foreignAfter > foreignStarterCount) {
+          Alert.alert(
+            "Cupo de extranjeros lleno",
+            `Ya tienes ${FOREIGN_PLAYER_QUOTA} extranjeros en el quinteto. Saca a uno antes de meter a ${candidate.name}.`
+          );
+          return;
+        }
+      }
+      dispatch({ type: "SET_LINEUP", teamId: team.id, position: pos, playerId: playerId || null });
+    };
+
+    return { pos, starter, starterId, options, outOfPosition, effectiveOverall, selectPlayer };
   });
 
   const filledSlots = lineupSlots.filter((s) => s.starter);
@@ -70,7 +79,7 @@ export default function RosterScreen({ onOpenPlayer }) {
       )
     : null;
 
-  const warnings = filledSlots.filter((s) => s.starter.injured || s.outOfPosition);
+  const warnings = filledSlots.filter((s) => s.starter.injured);
 
   return (
     <View>
@@ -78,7 +87,7 @@ export default function RosterScreen({ onOpenPlayer }) {
         <SectionHeader>QUINTETO INICIAL</SectionHeader>
         <View style={styles.summaryRow}>
           <Text style={styles.dim}>
-            Media: <Text style={styles.summaryValue}>{lineupAverage !== null ? lineupAverage : "-"}</Text> ({filledSlots.length}/5)
+            Media: <Text style={styles.summaryValueBig}>{lineupAverage !== null ? lineupAverage : "-"}</Text> ({filledSlots.length}/5)
           </Text>
           <Text style={styles.dim}>
             EXT: <Text style={styles.summaryValue}>{foreignStarterCount}/{FOREIGN_PLAYER_QUOTA}</Text>
@@ -110,14 +119,7 @@ export default function RosterScreen({ onOpenPlayer }) {
                 <Select
                   value={slot.starterId || ""}
                   options={slot.options}
-                  onChange={(playerId) =>
-                    dispatch({
-                      type: "SET_LINEUP",
-                      teamId: team.id,
-                      position: slot.pos,
-                      playerId: playerId || null,
-                    })
-                  }
+                  onChange={slot.selectPlayer}
                   renderTrigger={() => (
                     <View style={styles.dot}>
                       <View
@@ -129,8 +131,8 @@ export default function RosterScreen({ onOpenPlayer }) {
                       >
                         <Text style={styles.dotAvatarText}>{POSITION_ABBR[slot.pos]}</Text>
                         {slot.starter && (
-                          <View style={styles.dotOvr}>
-                            <Text style={styles.dotOvrText}>
+                          <View style={[styles.dotOvr, slot.outOfPosition && styles.dotOvrBad]}>
+                            <Text style={[styles.dotOvrText, slot.outOfPosition && styles.dotOvrTextBad]}>
                               {slot.outOfPosition ? slot.effectiveOverall : slot.starter.overall}
                             </Text>
                           </View>
@@ -153,43 +155,12 @@ export default function RosterScreen({ onOpenPlayer }) {
           <View style={{ marginTop: spacing.sm, gap: 6 }}>
             {warnings.map((s) => (
               <View key={s.pos} style={styles.warningRow}>
-                <Icon name={s.starter.injured ? "healing" : "warning"} size={15} color={colors.loss} />
-                <Text style={styles.warningText}>
-                  {s.starter.name}
-                  {s.starter.injured ? " está lesionado en el quinteto" : ` fuera de posición (${s.starter.overall}→${s.effectiveOverall})`}
-                </Text>
+                <Icon name="healing" size={15} color={colors.loss} />
+                <Text style={styles.warningText}>{s.starter.name} está lesionado en el quinteto</Text>
               </View>
             ))}
           </View>
         )}
-      </Card>
-
-      <Card>
-        <SectionHeader>TÁCTICA</SectionHeader>
-        <View style={styles.tacticRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.tacticLabel}>Ataque</Text>
-            <Select
-              value={team.tactics?.offense || "balanced"}
-              options={Object.values(OFFENSE_TACTICS).map((t) => ({ label: t.label, value: t.id }))}
-              onChange={(value) => dispatch({ type: "SET_TACTIC", teamId: team.id, kind: "offense", value })}
-            />
-            <Text style={styles.tacticDesc}>
-              {OFFENSE_TACTICS[team.tactics?.offense || "balanced"].desc}
-            </Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.tacticLabel}>Defensa</Text>
-            <Select
-              value={team.tactics?.defense || "man"}
-              options={Object.values(DEFENSE_TACTICS).map((t) => ({ label: t.label, value: t.id }))}
-              onChange={(value) => dispatch({ type: "SET_TACTIC", teamId: team.id, kind: "defense", value })}
-            />
-            <Text style={styles.tacticDesc}>
-              {DEFENSE_TACTICS[team.tactics?.defense || "man"].desc}
-            </Text>
-          </View>
-        </View>
       </Card>
 
       <Card>
@@ -240,6 +211,7 @@ function PlayerRow({ player, odd, onPress }) {
 const styles = StyleSheet.create({
   dim: { color: colors.textDim, fontSize: 12, fontWeight: "700" },
   summaryValue: { color: colors.text, fontWeight: "800" },
+  summaryValueBig: { color: colors.text, fontWeight: "800", fontSize: 18 },
   summaryRow: { flexDirection: "row", gap: spacing.lg, marginBottom: spacing.sm },
   court: {
     height: 300,
@@ -332,19 +304,21 @@ const styles = StyleSheet.create({
   dotAvatarText: { color: colors.text, fontWeight: "800", fontSize: 12 },
   dotOvr: {
     position: "absolute",
-    bottom: -5,
-    right: -6,
-    minWidth: 19,
-    height: 15,
-    paddingHorizontal: 3,
-    borderRadius: 4,
+    bottom: -8,
+    right: -9,
+    minWidth: 26,
+    height: 20,
+    paddingHorizontal: 4,
+    borderRadius: 6,
     backgroundColor: colors.panelAlt,
     borderWidth: 1.5,
     borderColor: colors.accent,
     alignItems: "center",
     justifyContent: "center",
   },
-  dotOvrText: { color: colors.accent, fontWeight: "800", fontSize: 9 },
+  dotOvrText: { color: colors.accent, fontWeight: "800", fontSize: 13 },
+  dotOvrBad: { borderColor: colors.loss },
+  dotOvrTextBad: { color: colors.loss },
   dotLabel: {
     paddingHorizontal: 4,
     paddingVertical: 1,
@@ -352,8 +326,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(10,14,31,0.75)",
     color: colors.text,
     fontWeight: "700",
-    fontSize: 9,
-    maxWidth: 74,
+    fontSize: 11,
+    maxWidth: 78,
   },
   courtHint: {
     position: "absolute",
@@ -381,9 +355,6 @@ const styles = StyleSheet.create({
   formaText: { fontSize: 10, fontWeight: "800", alignSelf: "center" },
   playerRight: { alignItems: "flex-end" },
   injured: { color: colors.loss, fontSize: 9, fontWeight: "800", marginTop: 2 },
-  tacticRow: { flexDirection: "row", gap: spacing.md },
-  tacticLabel: { color: colors.textDim, fontSize: 11, fontWeight: "700", marginBottom: 4, letterSpacing: 0.4 },
-  tacticDesc: { color: colors.textDim, fontSize: 11, marginTop: 4 },
   foreignDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.loss, marginTop: 4 },
   listed: { color: colors.accent, fontSize: 9, fontWeight: "800", marginTop: 2 },
 });

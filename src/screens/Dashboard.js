@@ -46,10 +46,9 @@ function StatTile({ icon, value, caption, valueColor }) {
   );
 }
 
-export default function Dashboard({ onNavigate }) {
+export default function Dashboard({ onNavigate, onAdvancingChange }) {
   const { state, dispatch } = useGame();
   const [showAllNews, setShowAllNews] = useState(false);
-  const [advancingPreseason, setAdvancingPreseason] = useState(false);
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const nextRound = state.schedule[state.round];
   const myNextGame = nextRound?.find(([h, a]) => h === team.id || a === team.id);
@@ -96,24 +95,19 @@ export default function Dashboard({ onNavigate }) {
   };
 
   const handleAdvancePreseason = () => {
-    setAdvancingPreseason(true);
-    // A deliberate delay so the loading spinner is actually visible — the
-    // dispatch itself is instant, and without this the button just flickers.
+    onAdvancingChange?.(true);
+    // A deliberate delay so the full-screen loading screen is actually
+    // visible — the dispatch itself is instant, and without this it'd just flash.
     setTimeout(() => {
       dispatch({ type: "ADVANCE_PRESEASON" });
-      setAdvancingPreseason(false);
-    }, 500);
+      onAdvancingChange?.(false);
+    }, 1800);
   };
 
   return (
     <View>
       {isPreseason ? (
-        <Button
-          primary
-          loading={advancingPreseason}
-          onPress={handleAdvancePreseason}
-          style={styles.playBtn}
-        >
+        <Button primary onPress={handleAdvancePreseason} style={styles.playBtn}>
           Avanzar semana
         </Button>
       ) : (

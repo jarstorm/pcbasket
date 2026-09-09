@@ -24,10 +24,10 @@ export default function WelcomeScreen({ onNewGame }) {
       <Text style={styles.title}>PC Basket Manager</Text>
       <Text style={styles.subtitle}>Gestiona tu club de baloncesto desde Tercera FEB hasta la ACB.</Text>
       <Button primary onPress={onNewGame} style={{ marginTop: spacing.xl }}>
-        Comenzar partida
+        Nueva liga
       </Button>
       <Button onPress={handleLoad} style={{ marginTop: spacing.sm }}>
-        Cargar partida desde fichero
+        Cargar liga desde fichero
       </Button>
     </View>
   );

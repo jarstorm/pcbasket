@@ -272,6 +272,12 @@ export function scoutTierIndex(staff) {
 export function lawyerTierIndex(staff) {
   return tierIndexOf(staff, "lawyer");
 }
+export function offenseCoachTierIndex(staff) {
+  return tierIndexOf(staff, "offenseCoach");
+}
+export function defenseCoachTierIndex(staff) {
+  return tierIndexOf(staff, "defenseCoach");
+}
 export function maintenanceReduction(staff) {
   return Math.min(0.8, effectSum(staff, "maintenanceReduction"));
 }

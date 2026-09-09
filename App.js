@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { View, Text, Pressable, ScrollView, Animated, Easing, ImageBackground, StyleSheet } from "react-native";
+import { View, Text, Pressable, ScrollView, Animated, ImageBackground, StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -7,8 +7,10 @@ import { GameProvider, useGame, findTeamAnywhere } from "./src/state/GameContext
 import { MusicProvider, useMusic } from "./src/state/MusicContext";
 import TeamPicker from "./src/screens/TeamPicker";
 import WelcomeScreen from "./src/screens/WelcomeScreen";
+import LoadingScreen from "./src/components/LoadingScreen";
 import Dashboard from "./src/screens/Dashboard";
 import RosterScreen from "./src/screens/RosterScreen";
+import TacticsScreen from "./src/screens/TacticsScreen";
 import TransferMarket from "./src/screens/TransferMarket";
 import AcademyScreen from "./src/screens/AcademyScreen";
 import StadiumScreen from "./src/screens/StadiumScreen";
@@ -40,8 +42,8 @@ const HUBS = {
     icon: "groups",
     screens: [
       { id: "roster", label: "Plantilla" },
+      { id: "tactics", label: "Táctica" },
       { id: "academy", label: "Cantera" },
-      { id: "contracts", label: "Contratos" },
     ],
   },
   management: {
@@ -51,6 +53,7 @@ const HUBS = {
       { id: "market", label: "Mercado" },
       { id: "stadium", label: "Estadio" },
       { id: "staff", label: "Personal" },
+      { id: "contracts", label: "Contratos" },
     ],
   },
   finance: {
@@ -77,6 +80,7 @@ const LEAF_TO_HUB = Object.fromEntries(
 
 const SCREEN_COMPONENTS = {
   market: TransferMarket,
+  tactics: TacticsScreen,
   academy: AcademyScreen,
   stadium: StadiumScreen,
   staff: StaffScreen,
@@ -120,12 +124,19 @@ function GameShell() {
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [advancingWeek, setAdvancingWeek] = useState(false);
+  // Where "VOLVER" should return to for a drill-down screen — the screen we
+  // were on right before opening it, not always the home dashboard.
+  const [playerOrigin, setPlayerOrigin] = useState("roster");
+  const [teamOrigin, setTeamOrigin] = useState("pyramid");
   const fade = useRef(new Animated.Value(1)).current;
   const openPlayer = (playerId) => {
+    setPlayerOrigin(screen);
     setSelectedPlayerId(playerId);
     setScreen("player");
   };
   const openTeam = (teamId) => {
+    setTeamOrigin(screen);
     setSelectedTeamId(teamId);
     setScreen("teamRoster");
   };
@@ -142,6 +153,11 @@ function GameShell() {
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const ActiveScreen = SCREEN_COMPONENTS[screen];
   const goHome = () => setScreen("home");
+  const goBack = () => {
+    if (screen === "player") return setScreen(playerOrigin);
+    if (screen === "teamRoster") return setScreen(teamOrigin);
+    goHome();
+  };
 
   const hubId = LEAF_TO_HUB[screen];
   const hub = hubId ? HUBS[hubId] : null;
@@ -181,7 +197,7 @@ function GameShell() {
             </Text>
           </View>
         ) : showBack ? (
-          <Pressable onPress={goHome} style={styles.backBtn}>
+          <Pressable onPress={goBack} style={styles.backBtn}>
             <Text style={styles.backText}>‹ VOLVER</Text>
           </Pressable>
         ) : (
@@ -206,7 +222,9 @@ function GameShell() {
       {hub && <HubTabs hub={hub} activeId={screen} onSelect={setScreen} />}
       <Animated.View style={{ flex: 1, opacity: fade }}>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm }}>
-          {screen === "home" && <Dashboard onNavigate={setScreen} />}
+          {screen === "home" && (
+            <Dashboard onNavigate={setScreen} onAdvancingChange={setAdvancingWeek} />
+          )}
           {screen === "menu" && <MainMenu onDone={goHome} />}
           {screen === "result" && <MatchResult onContinue={goHome} />}
           {screen === "seasonSummary" && <SeasonSummaryScreen onContinue={goHome} />}
@@ -229,35 +247,11 @@ function GameShell() {
         activeId={activeTab}
         onSelect={(id) => setScreen(id === "home" ? "home" : HUBS[id].screens[0].id)}
       />
-    </View>
-  );
-}
-
-function Loading() {
-  const spin = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.timing(spin, {
-        toValue: 1,
-        duration: 1100,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [spin]);
-
-  const rotate = spin.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
-
-  return (
-    <View style={styles.loading}>
-      <Animated.Image
-        source={require("./assets/splash-icon.png")}
-        style={[styles.loadingBall, { transform: [{ rotate }] }]}
-      />
-      <Text style={styles.loadingText}>CARGANDO…</Text>
+      {advancingWeek && (
+        <View style={styles.loadingOverlay}>
+          <LoadingScreen label="AVANZANDO SEMANA…" />
+        </View>
+      )}
     </View>
   );
 }
@@ -276,7 +270,7 @@ export default function App() {
         >
           <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
             <StatusBar style="light" />
-            <GameProvider loadingFallback={<Loading />}>
+            <GameProvider loadingFallback={<LoadingScreen />}>
               <MusicProvider>
                 <GameShell />
               </MusicProvider>
@@ -292,9 +286,14 @@ const styles = StyleSheet.create({
   gradient: { flex: 1 },
   safe: { flex: 1 },
   shell: { flex: 1 },
-  loading: { flex: 1, alignItems: "center", justifyContent: "center" },
-  loadingBall: { width: 72, height: 72, marginBottom: spacing.lg },
-  loadingText: { color: colors.textDim, fontSize: 14, fontWeight: "700", letterSpacing: 1 },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.bg,
+  },
   topbar: {
     flexDirection: "row",
     alignItems: "center",

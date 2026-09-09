@@ -126,7 +126,7 @@ export default function PyramidScreen({ onOpenTeam }) {
         )}
         <Table
           columns={[
-            { key: "pos", label: "#", width: 30 },
+            { key: "pos", label: "#", width: 40 },
             {
               key: "name",
               label: "Equipo",

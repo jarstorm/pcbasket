@@ -17,24 +17,24 @@ function annualWage(overall, age, scale = 1) {
 }
 
 describe("valueOf", () => {
-  it("always lands between 10x and 20x the player's annual wage", () => {
+  it("always lands between 3x and 5x the player's annual wage", () => {
     for (let overall = 30; overall <= 99; overall += 3) {
       for (const age of [19, 25, 30, 34, 39]) {
         const value = valueOf(overall, age, null);
         const annual = annualWage(overall, age);
-        expect(value).toBeGreaterThanOrEqual(annual * 10);
-        expect(value).toBeLessThanOrEqual(annual * 20);
+        expect(value).toBeGreaterThanOrEqual(annual * 3);
+        expect(value).toBeLessThanOrEqual(annual * 5);
       }
     }
   });
 
-  it("stays within the 10x-20x annual-wage band even with a big potential bonus (young prospect)", () => {
+  it("stays within the 3x-5x annual-wage band even with a big potential bonus (young prospect)", () => {
     const overall = 60;
     const age = 19;
     const value = valueOf(overall, age, /* potential */ 99);
     const annual = annualWage(overall, age);
-    expect(value).toBeGreaterThanOrEqual(annual * 10);
-    expect(value).toBeLessThanOrEqual(annual * 20);
+    expect(value).toBeGreaterThanOrEqual(annual * 3);
+    expect(value).toBeLessThanOrEqual(annual * 5);
   });
 
   it("scales with the division's wage scale, keeping the same band", () => {
@@ -42,10 +42,10 @@ describe("valueOf", () => {
     const scaled = valueOf(80, 27, null, 0.2);
     const fullAnnual = annualWage(80, 27, 1);
     const scaledAnnual = annualWage(80, 27, 0.2);
-    expect(full).toBeGreaterThanOrEqual(fullAnnual * 10);
-    expect(full).toBeLessThanOrEqual(fullAnnual * 20);
-    expect(scaled).toBeGreaterThanOrEqual(scaledAnnual * 10);
-    expect(scaled).toBeLessThanOrEqual(scaledAnnual * 20);
+    expect(full).toBeGreaterThanOrEqual(fullAnnual * 3);
+    expect(full).toBeLessThanOrEqual(fullAnnual * 5);
+    expect(scaled).toBeGreaterThanOrEqual(scaledAnnual * 3);
+    expect(scaled).toBeLessThanOrEqual(scaledAnnual * 5);
     expect(scaled).toBeLessThan(full);
   });
 });

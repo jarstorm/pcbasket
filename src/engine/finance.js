@@ -54,10 +54,13 @@ const STADIUM_SPONSOR_TIERS = [
 ];
 
 // Sponsorship deals scale with the division too — a Tercera FEB shirt deal
-// and an ACB one aren't remotely the same money. Tiers above are ACB-scale
-// list prices; this multiplies them down for the lower divisions, same
-// relative shape as DIVISION_TV_BASE below.
-const DIVISION_SPONSOR_SCALE = { acb: 1, primerafeb: 0.3, segundafeb: 0.1, tercerafeb: 0.03 };
+// and an ACB one aren't remotely the same money. Tiers above are the base
+// (sub-ACB) list prices; this scales them per division, same relative shape
+// as DIVISION_TV_BASE below. ACB's own multiplier is well above 1 — a real
+// top-flight shirt/naming-rights deal runs into the millions per season for
+// a club near the top of the table, nothing like the honest-but-modest FEB
+// figures the base tiers were tuned for.
+const DIVISION_SPONSOR_SCALE = { acb: 5, primerafeb: 0.3, segundafeb: 0.1, tercerafeb: 0.03 };
 
 function scaleSponsorTiers(tiers, divisionId) {
   const scale = DIVISION_SPONSOR_SCALE[divisionId] ?? DIVISION_SPONSOR_SCALE.segundafeb;

@@ -95,35 +95,32 @@ describe("simulateMatch", () => {
 });
 
 describe("tactic bonuses", () => {
-  it("balanced/man tactics never help or hurt regardless of ratings", () => {
-    const weakTeam = { lineup: { PG: "p1" }, tactics: { offense: "balanced", defense: "man" } };
-    const players = { p1: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20 } } };
-    expect(offenseTacticBonus(weakTeam, players)).toBe(0);
-    expect(defenseTacticBonus(weakTeam, players)).toBe(0);
+  const players = {
+    strong: { ratings: { shooting: 90, rebounding: 90, physical: 90, defense: 90, passing: 90 } },
+    weak: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20, passing: 20 } },
+  };
+
+  it("every offense tactic rewards a strong lineup and punishes a weak one", () => {
+    for (const offense of ["motion", "setPlays", "fastBreak"]) {
+      const strongTeam = { lineup: { PG: "strong" }, tactics: { offense } };
+      const weakTeam = { lineup: { PG: "weak" }, tactics: { offense } };
+      expect(offenseTacticBonus(strongTeam, players)).toBeGreaterThan(0);
+      expect(offenseTacticBonus(weakTeam, players)).toBeLessThan(0);
+    }
   });
 
-  it("interior/exterior offense rewards a strong lineup and punishes a weak one", () => {
-    const players = {
-      strong: { ratings: { shooting: 90, rebounding: 90, physical: 90, defense: 90 } },
-      weak: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20 } },
-    };
-    const strongTeam = { lineup: { PG: "strong" }, tactics: { offense: "interior" } };
-    const weakTeam = { lineup: { PG: "weak" }, tactics: { offense: "interior" } };
-    expect(offenseTacticBonus(strongTeam, players)).toBeGreaterThan(0);
-    expect(offenseTacticBonus(weakTeam, players)).toBeLessThan(0);
-
-    const strongExterior = { lineup: { PG: "strong" }, tactics: { offense: "exterior" } };
-    expect(offenseTacticBonus(strongExterior, players)).toBeGreaterThan(0);
+  it("every defense tactic rewards a strong lineup and punishes a weak one", () => {
+    for (const defense of ["manToMan", "zone", "mixed"]) {
+      const strongTeam = { lineup: { PG: "strong" }, tactics: { defense } };
+      const weakTeam = { lineup: { PG: "weak" }, tactics: { defense } };
+      expect(defenseTacticBonus(strongTeam, players)).toBeGreaterThan(0);
+      expect(defenseTacticBonus(weakTeam, players)).toBeLessThan(0);
+    }
   });
 
-  it("zone/press defense rewards a strong lineup and punishes a weak one", () => {
-    const players = {
-      strong: { ratings: { shooting: 90, rebounding: 90, physical: 90, defense: 90 } },
-      weak: { ratings: { shooting: 20, rebounding: 20, physical: 20, defense: 20 } },
-    };
-    const strongTeam = { lineup: { PG: "strong" }, tactics: { defense: "press" } };
-    const weakTeam = { lineup: { PG: "weak" }, tactics: { defense: "press" } };
-    expect(defenseTacticBonus(strongTeam, players)).toBeGreaterThan(0);
-    expect(defenseTacticBonus(weakTeam, players)).toBeLessThan(0);
+  it("an unrecognized tactic id (e.g. from an old save) scores as neutral", () => {
+    const team = { lineup: { PG: "strong" }, tactics: { offense: "balanced", defense: "man" } };
+    expect(offenseTacticBonus(team, players)).toBe(0);
+    expect(defenseTacticBonus(team, players)).toBe(0);
   });
 });

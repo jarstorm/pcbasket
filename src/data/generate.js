@@ -48,10 +48,11 @@ function overallOf(ratings) {
 // so a Tercera FEB player earning next to nothing still carried a Primera
 // FEB-sized buyout price, wildly out of step with what they're paid.
 //
-// Real transfer clauses run roughly 10x-20x a player's annual wage, not
-// their per-round one — approximated here with a single reference season
-// length (actual seasons run 24-34 rounds depending on division/group
-// size, close enough that a fixed figure doesn't skew any one division).
+// Clamped to 3x-5x a player's annual wage, not their per-round one —
+// approximated here with a single reference season length (actual seasons
+// run 24-34 rounds depending on division/group size, close enough that a
+// fixed figure doesn't skew any one division). Real transfer clauses run
+// well above this, but 10x+ made buyouts unaffordable in-game.
 export const ROUNDS_PER_SEASON_APPROX = 30;
 
 export function valueOf(overall, age, potential, scale = 1) {
@@ -59,7 +60,7 @@ export function valueOf(overall, age, potential, scale = 1) {
   const potentialBonus = potential ? (potential - overall) * 4000 * scale : 0;
   const raw = Math.round((overall ** 2.1) * 40 * ageFactor * scale + potentialBonus);
   const annualWage = wageOf(overall, age, scale) * ROUNDS_PER_SEASON_APPROX;
-  return Math.min(Math.max(raw, annualWage * 10), annualWage * 20);
+  return Math.min(Math.max(raw, annualWage * 3), annualWage * 5);
 }
 
 // Recurring per-round salary — modest relative to transfer value (valueOf).
@@ -204,7 +205,7 @@ function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice, st
     staff: {},
     sponsors: { jersey: null, stadium: null },
     financeHistory: [],
-    tactics: { offense: "balanced", defense: "man" },
+    tactics: { offense: "motion", defense: "manToMan" },
     scoutCooldown: null,
     scoutSearchTotal: null,
     loan: null,

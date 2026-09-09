@@ -286,6 +286,43 @@ function applyRedNumbersConsequence(teams, playersById, userTeamId, roundLog) {
   );
 }
 
+// An AI team trying to poach one of the user's players with an unsolicited
+// (overpaying) bid — used by both SIM_ROUND (per round played) and
+// ADVANCE_PRESEASON (per week with no match, which shouldn't be a dead week
+// for the transfer market either). idSeed just needs to be unique per tick
+// so two ticks' offer ids never collide. Returns null when nothing fires.
+function rollUnsolicitedOffer(state, teamsById, playersById, idSeed) {
+  if (!state.userTeamId || Math.random() >= 0.9) return null;
+  const userTeamNow = teamsById[state.userTeamId];
+  const offeredIds = new Set(state.pendingOffers.map((o) => o.playerId));
+  const candidateIds = (userTeamNow?.roster || []).filter((id) => !offeredIds.has(id));
+  if (candidateIds.length === 0) return null;
+  const targetId = candidateIds[randInt(0, candidateIds.length - 1)];
+  const target = playersById[targetId];
+  if (!target) return null;
+  // Richest-first so the overpay offer actually lands even in a division
+  // whose typical team budget sits well under transfer value (values don't
+  // scale down by division the way wages do) — picking a random bidder here
+  // meant the affordability check below silently dropped the offer most
+  // rounds in Segunda/Tercera FEB, leaving the user with none.
+  const bidders = Object.values(teamsById)
+    .filter((t) => t.id !== state.userTeamId && t.roster.length < 15)
+    .sort((a, b) => b.budget - a.budget);
+  if (bidders.length === 0) return null;
+  const desired = Math.round(target.value * (0.95 + Math.random() * 0.35));
+  const bidder = bidders[0];
+  // AI bidders overpay for the user's players so selling is consistently
+  // profitable — the flip side of the buy-cheap discount elsewhere. Clamp
+  // to what the richest bidder can actually pay rather than dropping the
+  // offer outright; only skip if even that falls short of a fair price.
+  const amount = Math.min(desired, bidder.budget);
+  if (amount < Math.round(target.value * 0.7)) return null;
+  return {
+    offer: { id: `offer_${idSeed}_${targetId}_${bidder.id}`, playerId: targetId, fromTeamId: bidder.id, amount },
+    logLine: `${bidder.name} ofrece €${amount.toLocaleString()} por ${target.name}`,
+  };
+}
+
 const BACKGROUND_GENERATORS = {
   acb: { generate: generateAcbDivision, singleGroup: true },
   primerafeb: { generate: generateRealLeague, singleGroup: true },
@@ -303,6 +340,20 @@ const BACKGROUND_GENERATORS = {
 // already covers one of its groups, so the freshly generated first group
 // is dropped (kept teams' players filtered accordingly) rather than
 // duplicating/colliding with it — everything else becomes its siblings.
+// Old saves used a different set of tactic ids (balanced/interior/exterior,
+// man/zone/press) — remapped here to their closest new equivalent so an old
+// save doesn't crash TacticsScreen's OFFENSE_TACTICS/DEFENSE_TACTICS lookup.
+const OLD_OFFENSE_TACTIC_MAP = { balanced: "motion", interior: "setPlays", exterior: "setPlays" };
+const OLD_DEFENSE_TACTIC_MAP = { man: "manToMan", press: "manToMan" };
+function migrateTactics(tactics) {
+  const offense = tactics?.offense;
+  const defense = tactics?.defense;
+  return {
+    offense: OFFENSE_TACTICS[offense] ? offense : OLD_OFFENSE_TACTIC_MAP[offense] || "motion",
+    defense: DEFENSE_TACTICS[defense] ? defense : OLD_DEFENSE_TACTIC_MAP[defense] || "manToMan",
+  };
+}
+
 function migrateBackgroundDivision(divisionId, existing, activeDivisionId) {
   if (existing?.groups) return { division: existing, extraPlayers: [] };
 
@@ -383,7 +434,7 @@ function normalizeState(loaded) {
         seasonTicketHolders: t.stadium.seasonTicketHolders ?? 0,
       },
       financeHistory: t.financeHistory ?? [],
-      tactics: t.tactics ?? { offense: "balanced", defense: "man" },
+      tactics: migrateTactics(t.tactics),
       scoutCooldown: t.scoutCooldown ?? null,
       scoutSearchTotal: t.scoutSearchTotal ?? null,
       loan: t.loan ?? null,
@@ -519,12 +570,27 @@ export function reducer(state, action) {
         return withLoan;
       });
 
+      // A preseason week has no match to simulate, but the transfer market
+      // doesn't go quiet just because there's no jornada — an AI team can
+      // still try to poach one of the user's players here too.
+      const pendingOffers = [...state.pendingOffers];
+      const rolledOffer = rollUnsolicitedOffer(
+        state,
+        Object.fromEntries(advancedTeams.map((t) => [t.id, t])),
+        state.playersById,
+        `preseason_${state.preseasonWeeksLeft}`
+      );
+      if (rolledOffer) {
+        pendingOffers.push(rolledOffer.offer);
+        log = pushLog(currentDate, log, rolledOffer.logLine);
+      }
+
       // Last tick before the league kicks off: lock in this season's season
       // ticket holders (paid upfront, one lump sum) for every team in the
       // active division — after this the remaining "walk-up" capacity is
       // what SIM_ROUND sells game by game.
       if (preseasonWeeksLeft > 0) {
-        return { ...state, preseasonWeeksLeft, currentDate, teams: advancedTeams, log };
+        return { ...state, preseasonWeeksLeft, currentDate, teams: advancedTeams, log, pendingOffers };
       }
 
       const teams = advancedTeams.map((t) => {
@@ -544,7 +610,7 @@ export function reducer(state, action) {
         };
       });
 
-      return { ...state, preseasonWeeksLeft, currentDate, teams, log };
+      return { ...state, preseasonWeeksLeft, currentDate, teams, log, pendingOffers };
     }
 
     case "SET_TACTIC": {
@@ -1103,42 +1169,10 @@ export function reducer(state, action) {
       // pendingOffers for the user to accept or reject from the transfer
       // market screen.
       const newOffers = [];
-      if (state.userTeamId && Math.random() < 0.9) {
-        const userTeamNow = teamsById[state.userTeamId];
-        const offeredIds = new Set(state.pendingOffers.map((o) => o.playerId));
-        const candidateIds = (userTeamNow?.roster || []).filter((id) => !offeredIds.has(id));
-        if (candidateIds.length > 0) {
-          const targetId = candidateIds[randInt(0, candidateIds.length - 1)];
-          const target = playersById[targetId];
-          // Richest-first so the overpay offer actually lands even in a
-          // division whose typical team budget sits well under transfer
-          // value (values don't scale down by division the way wages do) —
-          // picking a random bidder here meant the affordability check
-          // below silently dropped the offer most rounds in Segunda/Tercera
-          // FEB, leaving the user with none.
-          const bidders = Object.values(teamsById)
-            .filter((t) => t.id !== state.userTeamId && t.roster.length < 15)
-            .sort((a, b) => b.budget - a.budget);
-          if (target && bidders.length > 0) {
-            const desired = Math.round(target.value * (0.95 + Math.random() * 0.35));
-            const bidder = bidders[0];
-            // AI bidders overpay for the user's players so selling is
-            // consistently profitable — the flip side of the buy-cheap
-            // discount above. Clamp to what the richest bidder can actually
-            // pay rather than dropping the offer outright; only skip if
-            // even that falls short of a fair price.
-            const amount = Math.min(desired, bidder.budget);
-            if (amount >= Math.round(target.value * 0.7)) {
-              newOffers.push({
-                id: `offer_${state.round}_${targetId}_${bidder.id}`,
-                playerId: targetId,
-                fromTeamId: bidder.id,
-                amount,
-              });
-              roundLog.push(`${bidder.name} ofrece €${amount.toLocaleString()} por ${target.name}`);
-            }
-          }
-        }
+      const rolledOffer = rollUnsolicitedOffer(state, teamsById, playersById, state.round);
+      if (rolledOffer) {
+        newOffers.push(rolledOffer.offer);
+        roundLog.push(rolledOffer.logLine);
       }
 
       for (const [homeId, awayId] of round) {

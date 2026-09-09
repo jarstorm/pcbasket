@@ -12,7 +12,7 @@ function baseState() {
     staff: {},
     sponsors: { jersey: null, stadium: null },
     financeHistory: [],
-    tactics: { offense: "balanced", defense: "man" },
+    tactics: { offense: "motion", defense: "manToMan" },
     record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
     lineup: { PG: "p1", SG: null, SF: null, PF: null, C: null },
   };
@@ -26,7 +26,7 @@ function baseState() {
     staff: {},
     sponsors: { jersey: null, stadium: null },
     financeHistory: [],
-    tactics: { offense: "balanced", defense: "man" },
+    tactics: { offense: "motion", defense: "manToMan" },
     record: { wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 },
     lineup: { PG: "p4", SG: null, SF: null, PF: null, C: null },
   };
@@ -219,10 +219,10 @@ describe("reducer", () => {
 
   it("SET_TACTIC updates the given kind and rejects an unknown value", () => {
     const state = baseState();
-    const next = reducer(state, { type: "SET_TACTIC", teamId: "a", kind: "offense", value: "exterior" });
+    const next = reducer(state, { type: "SET_TACTIC", teamId: "a", kind: "offense", value: "setPlays" });
     const team = next.teams.find((t) => t.id === "a");
-    expect(team.tactics.offense).toBe("exterior");
-    expect(team.tactics.defense).toBe("man");
+    expect(team.tactics.offense).toBe("setPlays");
+    expect(team.tactics.defense).toBe("manToMan");
 
     const rejected = reducer(state, { type: "SET_TACTIC", teamId: "a", kind: "offense", value: "nope" });
     expect(rejected).toBe(state);
