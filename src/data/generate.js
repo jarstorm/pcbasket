@@ -1,4 +1,5 @@
 import { randomName } from "./names";
+import { seededRandom } from "../engine/random";
 import febData from "./feb_league_data.json";
 import segundaFebData from "./segunda_feb_league_data.json";
 import terceraFebData from "./tercera_feb_league_data.json";
@@ -157,6 +158,24 @@ function buildRealIdentityRatedPlayer(rp, { base, spread }, wageScale = 1) {
   };
 }
 
+// A stable integer seed from a string (team id) — no real financial data
+// exists for most of these clubs (semi-pro leagues, nothing public), so a
+// budget still has to be picked within a plausible range, but it must be
+// the *same* pick every time a new game starts, not a fresh roll each
+// time. Deterministic in the id, not in Math.random.
+function hashSeed(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) | 0;
+  }
+  return h;
+}
+
+function fixedBudget(id, budgetRange) {
+  const rand = seededRandom(hashSeed(id));
+  return budgetRange[0] + Math.round(rand() * (budgetRange[1] - budgetRange[0]));
+}
+
 // Builds the shared team-object shape (budget/stadium/roster/lineup/staff/
 // ...) used by every division — real or fictional. seasonTicketPrice is
 // always 9x the base ticket price — must match SEASON_TICKET_MULTIPLIER in
@@ -167,7 +186,7 @@ function buildBaseTeam(id, name, { budgetRange, stadiumCapacity, ticketPrice, st
     id,
     name,
     city: name,
-    budget: randInt(budgetRange[0], budgetRange[1]),
+    budget: fixedBudget(id, budgetRange),
     wageScale,
     stadium: {
       name: stadiumName || `Pabellón ${name}`,

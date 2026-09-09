@@ -6,7 +6,7 @@ import { colors, spacing } from "../theme";
 import SectionHeader from "../components/SectionHeader";
 
 export default function MainMenu({ onDone }) {
-  const { dispatch, saveSnapshot, loadSnapshot } = useGame();
+  const { dispatch, saveSnapshot, loadSnapshot, exportToFile, importFromFile } = useGame();
 
   const confirmNewGame = () => {
     Alert.alert(
@@ -50,6 +50,35 @@ export default function MainMenu({ onDone }) {
     );
   };
 
+  const handleExport = async () => {
+    try {
+      await exportToFile();
+    } catch (e) {
+      Alert.alert("No se pudo exportar", "Inténtalo de nuevo.");
+    }
+  };
+
+  const confirmImport = () => {
+    Alert.alert(
+      "Cargar partida desde fichero",
+      "Se sustituirá el progreso actual por el fichero que elijas. ¿Seguro?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Elegir fichero",
+          style: "destructive",
+          onPress: async () => {
+            const result = await importFromFile();
+            if (result.ok) onDone();
+            else if (result.reason === "invalid") {
+              Alert.alert("Fichero no válido", "Ese fichero no es una partida de PC Basket Manager.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <View>
       <Card>
@@ -63,6 +92,17 @@ export default function MainMenu({ onDone }) {
         </Button>
         <Button onPress={confirmNewGame} style={{ marginTop: spacing.sm }}>
           Nueva partida
+        </Button>
+      </Card>
+
+      <Card>
+        <SectionHeader>Fichero de partida</SectionHeader>
+        <Text style={styles.dim}>Guarda una copia en tu móvil o carga una partida desde un fichero.</Text>
+        <Button onPress={handleExport} style={{ marginTop: spacing.sm }}>
+          Exportar a fichero
+        </Button>
+        <Button onPress={confirmImport} style={{ marginTop: spacing.sm }}>
+          Cargar desde fichero
         </Button>
       </Card>
     </View>

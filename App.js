@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { GameProvider, useGame, findTeamAnywhere } from "./src/state/GameContext";
 import { MusicProvider, useMusic } from "./src/state/MusicContext";
 import TeamPicker from "./src/screens/TeamPicker";
+import WelcomeScreen from "./src/screens/WelcomeScreen";
 import Dashboard from "./src/screens/Dashboard";
 import RosterScreen from "./src/screens/RosterScreen";
 import TransferMarket from "./src/screens/TransferMarket";
@@ -118,6 +119,7 @@ function GameShell() {
   const [screen, setScreen] = useState("home");
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
   const [selectedTeamId, setSelectedTeamId] = useState(null);
+  const [showPicker, setShowPicker] = useState(false);
   const fade = useRef(new Animated.Value(1)).current;
   const openPlayer = (playerId) => {
     setSelectedPlayerId(playerId);
@@ -133,7 +135,9 @@ function GameShell() {
     Animated.timing(fade, { toValue: 1, duration: 180, useNativeDriver: true }).start();
   }, [screen, fade]);
 
-  if (!state.teamChosen) return <TeamPicker />;
+  if (!state.teamChosen) {
+    return showPicker ? <TeamPicker /> : <WelcomeScreen onNewGame={() => setShowPicker(true)} />;
+  }
 
   const team = state.teams.find((t) => t.id === state.userTeamId);
   const ActiveScreen = SCREEN_COMPONENTS[screen];

@@ -50,6 +50,15 @@ describe("valueOf", () => {
   });
 });
 
+describe("team budgets", () => {
+  it("are fixed per team across separate game starts, not re-rolled each time", () => {
+    const first = generateAcbDivision().teams;
+    const second = generateAcbDivision().teams;
+    const budgetById = (teams) => Object.fromEntries(teams.map((t) => [t.id, t.budget]));
+    expect(budgetById(first)).toEqual(budgetById(second));
+  });
+});
+
 describe("generateAcbDivision", () => {
   it("produces 18 teams with full rosters and a bigger budget than lower tiers", () => {
     const { teams, players } = generateAcbDivision();

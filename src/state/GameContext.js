@@ -1,5 +1,8 @@
 import { createContext, useContext, useReducer, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { File, Paths } from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import * as DocumentPicker from "expo-document-picker";
 import {
   generateRealLeague,
   generateAcbDivision,
@@ -1627,8 +1630,46 @@ export function GameProvider({ children, loadingFallback = null }) {
     return true;
   }
 
+  // Writes the current save to a real file and hands it to the OS share
+  // sheet — lets the user actually keep a copy on their phone (Files app,
+  // Drive, send to themselves...) instead of it only living inside the
+  // app's own storage.
+  async function exportToFile() {
+    const teamName = state.teams.find((t) => t.id === state.userTeamId)?.name || "partida";
+    const safeName = teamName.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+    const fileName = `pcbasket-${safeName}-${state.currentDate || "save"}.json`;
+    const file = new File(Paths.cache, fileName);
+    if (file.exists) file.delete();
+    file.create();
+    file.write(JSON.stringify(state));
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(file.uri, { mimeType: "application/json", dialogTitle: "Guardar partida" });
+    }
+    return file.uri;
+  }
+
+  // Lets the user pick any file (their own exported save) and loads it in
+  // place of the current game.
+  async function importFromFile() {
+    const result = await DocumentPicker.getDocumentAsync({ type: "*/*" });
+    if (result.canceled || !result.assets?.[0]) return { ok: false, reason: "canceled" };
+    try {
+      const picked = new File(result.assets[0].uri);
+      const parsed = JSON.parse(await picked.text());
+      if (!parsed || typeof parsed !== "object" || !parsed.playersById || !parsed.teams) {
+        return { ok: false, reason: "invalid" };
+      }
+      dispatch({ type: "LOAD", state: normalizeState(parsed) });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, reason: "invalid" };
+    }
+  }
+
   return (
-    <GameContext.Provider value={{ state, dispatch, saveSnapshot, loadSnapshot }}>
+    <GameContext.Provider
+      value={{ state, dispatch, saveSnapshot, loadSnapshot, exportToFile, importFromFile }}
+    >
       {children}
     </GameContext.Provider>
   );
